@@ -1,6 +1,6 @@
 # F1-03: Portada y listado de catálogo con filtros
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 1
 - **Depende de:** F1-01, F1-02
 - **Prioridad:** Alta

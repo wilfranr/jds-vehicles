@@ -60,13 +60,19 @@ Orden sugerido: F0-01 → F0-02 → (F0-03, F0-04, F0-06 en paralelo) → F0-05 
 | :-------------------------------------- | :---------------------------------------------- | :----------- | :----- |
 | [F1-01](F1-01-layout-base.md)           | Layout base: header, footer y botón de WhatsApp | F0-08        | DONE   |
 | [F1-02](F1-02-capa-datos-catalogo.md)   | Capa de datos del catálogo                      | F0-08        | DONE   |
-| [F1-03](F1-03-listado-catalogo.md)      | Portada y listado de catálogo con filtros       | F1-01, F1-02 | TODO   |
+| [F1-03](F1-03-listado-catalogo.md)      | Portada y listado de catálogo con filtros       | F1-01, F1-02 | DONE   |
 | [F1-04](F1-04-detalle-vehiculo.md)      | Detalle de vehículo con galería                 | F1-02, F1-03 | TODO   |
 | [F1-05](F1-05-paginas-informativas.md)  | Próximamente, Cómo funciona y Contacto          | F1-01, F1-03 | TODO   |
 | [F1-06](F1-06-seo-calidad-fase1.md)     | SEO básico, errores y pruebas de cierre         | F1-03–F1-05  | TODO   |
 | [F1-07](F1-07-correcciones-revision.md) | Correcciones de la revisión de F1-01 y F1-02    | F1-02        | DONE   |
 
 Orden sugerido: F0-08 → (F1-01 ∥ F1-02) → F1-03 → (F1-04 ∥ F1-05) → F1-06.
+
+### Reglas de contenido (vinculantes)
+
+- Todo texto editorial o comercial de la interfaz (títulos, subtítulos, cifras, tarjetas de beneficios, garantías, certificaciones, plazos) vive en `src/lib/site-content.ts`, nunca escrito directamente en páginas o componentes.
+- Solo se publican afirmaciones comerciales que estén en `docs/` o que el propietario haya aprobado (las cifras provisionales del prototipo están aprobadas como provisionales). Lo demás se deja fuera, con un texto neutro, o se marca con `TODO(owner)` y no se muestra.
+- Si falta un dato (dirección, horario, razón social, textos legales), no se inventa: se oculta.
 
 ### Decisiones pendientes del propietario
 
