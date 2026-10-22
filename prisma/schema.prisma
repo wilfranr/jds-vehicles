@@ -104,6 +104,7 @@ model User {
   direccion          String?       @db.VarChar(255)
   ciudad             String?       @db.VarChar(100)
   activo             Boolean       @default(true)
+  consentimientoDatosAt DateTime?  @map("consentimiento_datos_at") @db.DateTime(0)
   createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt          DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
 
