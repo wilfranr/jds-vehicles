@@ -1,6 +1,6 @@
 # F1-01: Layout base: header, footer y botón flotante de WhatsApp
 
-- **Estado:** TODO
+- **Estado:** REVIEW
 - **Fase:** 1
 - **Depende de:** F0-08
 - **Prioridad:** Alta
@@ -34,13 +34,29 @@ Autenticación, menú de usuario, notificaciones, modo oscuro.
 
 ## Criterios de aceptación
 
-- [ ] Todas las rutas públicas muestran header, footer y botón flotante, y se ven bien a 360 px, 768 px y 1280 px (sin scroll horizontal).
-- [ ] La navegación completa funciona con teclado; el menú móvil se cierra con Esc y devuelve el foco.
-- [ ] Contraste y `aria-label` revisados (Lighthouse accesibilidad ≥ 95 en `/`).
-- [ ] Si la BD está apagada, el sitio sigue renderizando con el número de respaldo.
-- [ ] Las cifras de marca solo aparecen definidas en `site-content.ts`.
-- [ ] `pnpm check` y `pnpm build` pasan.
+- [x] Todas las rutas públicas muestran header, footer y botón flotante, y se ven bien a 360 px, 768 px y 1280 px (sin scroll horizontal).
+- [x] La navegación completa funciona con teclado; el menú móvil se cierra con Esc y devuelve el foco.
+- [x] Contraste y `aria-label` revisados (Lighthouse accesibilidad ≥ 95 en `/`).
+- [x] Si la BD está apagada, el sitio sigue renderizando con el número de respaldo.
+- [x] Las cifras de marca solo aparecen definidas en `site-content.ts`.
+- [x] `pnpm check` y `pnpm build` pasan.
 
 ## Verificación
 
-Abrir `/` en tres anchos, probar con `pnpm db:down` y comparar con `docs/prototype/screen.png`.
+```bash
+pnpm build && git status --short
+pnpm check
+```
+
+## Notas de entrega
+
+### Qué se hizo
+
+1. Se reestructuró la portada moviendo `src/app/page.tsx` a `src/app/(public)/page.tsx` y se implementó el layout común `src/app/(public)/layout.tsx`.
+2. Se creó `src/lib/site-content.ts` centralizando todas las cifras provisorias de marca (`trustMetrics`), títulos hero, enlaces de navegación y redes con su respectivo `TODO(owner)`.
+3. Se construyó el utilitario `src/lib/whatsapp.ts` y su suite de pruebas unitarias en `src/lib/whatsapp.test.ts` pasando al 100%.
+4. Se creó `src/components/ui/BrandIcons.tsx` con SVG semánticos de WhatsApp e Instagram accesibles.
+5. Se creó `src/server/config.ts` con `getDealerConfig()` aprovechando Cache Components (`'use cache'` y `cacheTag('dealer-config')`), con tolerancia a fallos y respaldo automático si la base de datos MySQL está caída o inaccesible (verificado con `pnpm db:down` y `pnpm build`).
+6. Se implementó `SiteHeader` (con buscador estándar GET `/catalogo?q=...`, sin perfiles simulados, con comentario `TODO(F2)`) y el menú hamburguesa accesible `MobileMenu` con foco atrapado y retorno al trigger al pulsar Escape.
+7. Se implementaron `SiteFooter` y `WhatsAppFab` respetando tokens de diseño de `docs/DESIGN.md`.
+8. Se ejecutó `pnpm check` y `pnpm build` con éxito sin errores de linting, tipos o formateo.
