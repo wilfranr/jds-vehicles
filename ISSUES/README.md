@@ -1,0 +1,53 @@
+# ISSUES: JDS Vehículos
+
+Backlog de trabajo gestionado por el **orquestador**. Cada issue es autocontenido: otro agente debe poder desarrollarlo leyendo solo ese archivo más los documentos de referencia.
+
+## Decisiones de proyecto (vinculantes)
+
+| Tema | Decisión |
+| :--- | :--- |
+| Framework | Next.js (App Router) + TypeScript estricto |
+| ORM / BD | Prisma + MySQL 8.0+ |
+| Auth (Fase 2) | Auth.js |
+| Estilos | Tailwind CSS con los tokens de `DESIGN.md` |
+| Gestor de paquetes | pnpm |
+| Hosting | Servidor propio en Oracle Cloud, acceso por SSH (despliegue en Fase 6) |
+| Idioma | UI y contenido en español; código (identificadores) en inglés salvo nombres de tablas/columnas, que se conservan en español como en `database.sql` |
+
+## Documentos de referencia
+- `DOCUMENTACION.md`: reglas de negocio, ERD, diccionario de datos.
+- `database.sql`: esquema original MySQL (fuente de verdad del modelo).
+- `DESIGN.md`: sistema de diseño "Velocita Motors" (colores, tipografía, componentes).
+- `code.html` + `screen.png`: prototipo visual (Tailwind por CDN, contenido de ejemplo).
+
+## Flujo de trabajo para el agente desarrollador
+1. Toma un issue cuyo estado sea `TODO` y cuyas dependencias estén en `DONE`.
+2. Cambia su `Estado` a `IN PROGRESS` en el archivo.
+3. Trabaja en una rama `issue/<ID>-<slug>` (ej. `issue/F0-02-scaffold-nextjs`).
+4. Cumple **todos** los criterios de aceptación y ejecuta los comandos de verificación.
+5. Cambia `Estado` a `REVIEW`, y añade al final una sección `## Notas de entrega` con: qué se hizo, desviaciones respecto al issue y comandos para verificar.
+6. El orquestador revisa y marca `DONE`.
+
+No ampliar el alcance: si surge trabajo extra, anótalo en `Notas de entrega` para que el orquestador cree un issue nuevo.
+
+## Convención de IDs
+`F<fase>-<nn>`: por ejemplo `F0-03`. Un archivo por issue: `F0-03-nombre.md`.
+
+## Índice
+
+### Fase 0: Cimientos
+
+| ID | Título | Depende de | Estado |
+| :--- | :--- | :--- | :--- |
+| [F0-01](F0-01-repo-init.md) | Inicializar repositorio, README y `.env.example` | — | TODO |
+| [F0-02](F0-02-scaffold-nextjs.md) | Scaffold Next.js + TypeScript + estructura | F0-01 | TODO |
+| [F0-03](F0-03-tailwind-design-tokens.md) | Tailwind: tokens de diseño y fuente | F0-02 | TODO |
+| [F0-04](F0-04-prisma-mysql-schema.md) | MySQL local (Docker) + Prisma + migración base | F0-02 | TODO |
+| [F0-05](F0-05-seed-script.md) | Script de seed independiente | F0-04 | TODO |
+| [F0-06](F0-06-quality-tooling.md) | ESLint, Prettier, typecheck y Vitest | F0-02 | TODO |
+| [F0-07](F0-07-ci-pipeline.md) | Pipeline de CI mínimo | F0-04, F0-06 | TODO |
+
+Orden sugerido: F0-01 → F0-02 → (F0-03, F0-04, F0-06 en paralelo) → F0-05 → F0-07.
+
+### Fases siguientes
+Se crearán cuando la Fase 0 esté en `DONE`.

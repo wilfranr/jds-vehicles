@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-secondary-fixed": "#2f1500", "surface-container-low": "#eff4ff", "on-secondary": "#ffffff", "on-tertiary-fixed-variant": "#004e5c", "primary-fixed": "#dae2fd", "secondary": "#904d00", "on-background": "#0b1c30", "on-primary-container": "#7c839b", "tertiary-fixed-dim": "#4cd7f6", "tertiary": "#000000", "outline": "#76777d", "secondary-container": "#fe932c", "secondary-fixed-dim": "#ffb77d", "on-tertiary-fixed": "#001f26", "on-surface-variant": "#45464d", "on-secondary-container": "#663500", "inverse-surface": "#213145", "primary-fixed-dim": "#bec6e0", "on-primary-fixed-variant": "#3f465c", "inverse-on-surface": "#eaf1ff", "on-tertiary-container": "#0090a9", "surface-variant": "#d3e4fe", "on-primary-fixed": "#131b2e", "on-error-container": "#93000a", "tertiary-fixed": "#acedff", "tertiary-container": "#001f26", "primary-container": "#131b2e", "secondary-fixed": "#ffdcc3", "error": "#ba1a1a", "on-surface": "#0b1c30", "surface": "#f8f9ff", "inverse-primary": "#bec6e0", "background": "#f8f9ff", "surface-bright": "#f8f9ff", "error-container": "#ffdad6", "surface-container-high": "#dce9ff", "on-error": "#ffffff", "surface-container-highest": "#d3e4fe", "surface-container-lowest": "#ffffff", "surface-dim": "#cbdbf5", "on-tertiary": "#ffffff", "surface-tint": "#565e74", "outline-variant": "#c6c6cd", "on-primary": "#ffffff", "primary": "#000000", "surface-container": "#e5eeff", "on-secondary-fixed-variant": "#6e3900" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin": "3rem", "space-xl": "2.5rem", "gutter-mobile": "1rem", "gutter": "1.5rem", "space-xs": "0.25rem", "margin-mobile": "1.25rem", "space-lg": "1.5rem", "space-md": "1rem", "space-sm": "0.5rem" }, "fontFamily": { "body-sm": ["Plus Jakarta Sans"], "spec-numerical": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "display-hero-mobile": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Plus Jakarta Sans"], "display-hero": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"] }, "fontSize": { "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" }], "spec-numerical": ["15px", { "lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "0", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "display-hero-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "headline-xl-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "display-hero": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "800" }], "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "0", "fontWeight": "600" }], "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "22px", "letterSpacing": "0", "fontWeight": "400" }], "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 max-w-7xl mx-auto px-gutter flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-sm" data-path="catalogo-inventario" href="#"><img alt="JDS Vehículos Logo" class="h-8 w-auto object-contain" src="logo.jpg"/><span class="font-headline-sm text-headline-sm tracking-tight text-on-surface hidden sm:inline">JDS Vehículos</span></a><nav class="hidden xl:flex items-center gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-label-lg text-label-lg rounded-lg px-space-md py-space-xs"><a class="font-label-lg text-label-lg px-space-md py-space-xs rounded-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="catalogo-inventario" href="#">Catálogo / Inventario</a><a class="font-label-lg text-label-lg px-space-md py-space-xs rounded-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="proximamente-disponibles" href="#">Próximamente Disponibles</a><a class="font-label-lg text-label-lg px-space-md py-space-xs rounded-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="como-funciona" href="#">Cómo Funciona</a><a class="font-label-lg text-label-lg px-space-md py-space-xs rounded-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="contacto" href="#">Contacto</a></nav></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center bg-surface-container-low rounded-lg px-space-md py-space-xs w-64 text-on-surface-variant"><span class="material-symbols-outlined text-lg mr-space-xs">search</span><span class="font-body-sm text-body-sm select-none">Buscar modelo, marca o ref...</span></div><a class="hidden lg:flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors text-on-surface" data-path="panel-concesionario" href="#"><span class="material-symbols-outlined text-lg">admin_panel_settings</span><span class="font-label-md text-label-md">Panel Concesionario</span></a><a href="https://www.instagram.com/jds_77vehiculos?xtok=MW16OThrNW1iY3Nxbg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant hover:text-[#E4405F]" title="Instagram @jds_77vehiculos">
+<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+<div class="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-low transition-colors cursor-pointer text-on-surface-variant"><span class="material-symbols-outlined text-xl">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary-container"></span></div><div class="flex items-center gap-space-sm pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkEZmG9sYmOwSCScJhEkz275vmOEBXbeMKPW_l-d4KJQX5QAv4TmU04SABe1fyBN3yVeHm1NWfbJp9Eahjo-94nf6EmHnFvNz0eincIYz08_ClJIBnXAztEVX4djas3bxqNN-qj6KaoztWKO2Nq4VzqLqp3hhzEdonnH15Ci5WHfY4D4Sg5FwvIQeuaPvSh4PERe3PjfJvIwwsmRqTUgl_ia7Zxyl6U1LKf5h6fxD1-9CwJv3Oz0g7"/><div class="hidden sm:flex flex-col text-left"><span class="font-label-sm text-label-sm text-on-surface leading-tight">Carlos Mendoza</span><span class="font-body-sm text-body-sm text-on-surface-variant leading-tight">Cliente Preferente</span></div></div></div></div></header><main class="w-full pt-20 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Top Ambient Banner -->
+<section class="relative w-full bg-surface-container-low overflow-hidden py-space-xl">
+<div class="absolute -right-24 -top-24 w-96 h-96 bg-primary-fixed/30 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute left-1/3 -bottom-20 w-80 h-80 bg-secondary-container/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="max-w-7xl mx-auto px-gutter relative z-10 flex flex-col gap-space-lg">
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md">
+<div class="flex flex-col gap-space-xs max-w-2xl">
+<div class="flex items-center gap-space-xs">
+<span class="inline-flex items-center justify-center w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+<span class="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant">Showroom Certificado JDS Vehículos 2025</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">
+            Encuentra tu próximo auto nuevo o seminuevo certificado
+          </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+            Inspección pericial de 120 puntos, historial de propiedad verificado y entrega de llave en mano garantizada.
+          </p>
+</div>
+<!-- Metric highlights -->
+<div class="flex items-center gap-space-lg bg-surface-container-lowest px-space-lg py-space-md rounded-xl shadow-sm">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface">42</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Vehículos Curados</span>
+</div>
+<div class="w-px h-8 bg-surface-container-high"></div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-secondary">100%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Garantía Mecánica</span>
+</div>
+<div class="w-px h-8 bg-surface-container-high"></div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface">48h</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Entrega Inmediata</span>
+</div>
+</div>
+</div>
+<!-- Quick Search Bar -->
+<div class="bg-surface-container-lowest rounded-xl p-space-sm shadow-md flex flex-col md:flex-row items-center gap-space-sm">
+<div class="flex-1 flex items-center px-space-md py-space-xs gap-space-sm w-full bg-surface-container-low rounded-lg">
+<span class="material-symbols-outlined text-on-surface-variant text-xl">manage_search</span>
+<input class="bg-transparent border-0 outline-none w-full font-body-md text-body-md text-on-surface placeholder:text-outline" id="quickSearchInput" placeholder="Buscar por marca, modelo, edición o VIN (ej. Audi RS6, M3 Competition)..." type="text"/>
+</div>
+<div class="flex items-center gap-space-sm w-full md:w-auto">
+<button class="flex items-center justify-center gap-space-xs px-space-lg py-space-sm bg-primary text-on-primary rounded-lg font-label-lg text-label-lg hover:bg-inverse-surface transition-all w-full md:w-auto shadow-sm">
+<span class="material-symbols-outlined text-lg">tune</span>
+<span>Explorar Inventario</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Catalog Space: Filters Sidebar + Grid -->
+<div class="max-w-7xl mx-auto px-gutter py-space-xl w-full">
+<div class="flex flex-col lg:flex-row gap-space-lg items-start">
+<!-- LEFT FILTER SIDEBAR -->
+<aside class="w-full lg:w-72 bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-lg shrink-0">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-on-surface">
+<span class="material-symbols-outlined text-lg">filter_alt</span>
+<h2 class="font-headline-sm text-headline-sm">Filtros Activos</h2>
+</div>
+<button class="font-label-sm text-label-sm text-secondary hover:text-on-secondary-fixed-variant transition-colors underline" id="resetFiltersBtn">
+            Restablecer
+          </button>
+</div>
+<!-- 1. Estado del Auto -->
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wide">Condición</span>
+<div class="grid grid-cols-3 gap-space-xs bg-surface-container-low p-1 rounded-lg">
+<button class="filter-condition-btn active-condition py-1.5 text-center font-label-sm text-label-sm rounded bg-primary text-on-primary transition-all" data-type="all">Todos</button>
+<button class="filter-condition-btn py-1.5 text-center font-label-sm text-label-sm rounded text-on-surface-variant hover:text-on-surface transition-all" data-type="nuevo">Nuevo</button>
+<button class="filter-condition-btn py-1.5 text-center font-label-sm text-label-sm rounded text-on-surface-variant hover:text-on-surface transition-all" data-type="usado">Usado</button>
+</div>
+</div>
+<!-- 2. Disponibilidad -->
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wide">Disponibilidad</span>
+<div class="flex flex-col gap-space-xs">
+<label class="flex items-center gap-space-sm cursor-pointer p-space-xs rounded-lg hover:bg-surface-container-low transition-colors">
+<input checked="" class="w-4 h-4 rounded text-primary accent-primary" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface flex-1">En Stock (Inmediato)</span>
+<span class="font-label-sm text-label-sm bg-surface-container px-2 py-0.5 rounded text-on-surface-variant">34</span>
+</label>
+<label class="flex items-center gap-space-sm cursor-pointer p-space-xs rounded-lg hover:bg-surface-container-low transition-colors">
+<input checked="" class="w-4 h-4 rounded text-primary accent-primary" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface flex-1">Próximamente</span>
+<span class="font-label-sm text-label-sm bg-surface-container px-2 py-0.5 rounded text-on-surface-variant">8</span>
+</label>
+</div>
+</div>
+<!-- 3. Marca -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wide">Marca</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">6 seleccionadas</span>
+</div>
+<div class="flex flex-wrap gap-1.5">
+<button class="brand-chip px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-primary text-on-primary">Audi</button>
+<button class="brand-chip px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-surface-container-low text-on-surface hover:bg-surface-container">BMW</button>
+<button class="brand-chip px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-surface-container-low text-on-surface hover:bg-surface-container">Mercedes-Benz</button>
+<button class="brand-chip px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-surface-container-low text-on-surface hover:bg-surface-container">Porsche</button>
+<button class="brand-chip px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-surface-container-low text-on-surface hover:bg-surface-container">Toyota</button>
+<button class="brand-chip px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-surface-container-low text-on-surface hover:bg-surface-container">Land Rover</button>
+</div>
+</div>
+<!-- 4. Rango de Precio USD -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wide">Presupuesto (USD)</span>
+<span class="font-spec-numerical text-spec-numerical text-secondary" id="priceDisplay">$30k - $210k</span>
+</div>
+<input class="w-full accent-primary cursor-pointer" id="priceRangeSlider" max="250000" min="30000" step="5000" type="range" value="210000"/>
+<div class="flex items-center gap-space-xs mt-1">
+<div class="bg-surface-container-low px-2 py-1 rounded flex-1">
+<span class="font-label-sm text-label-sm text-outline block">Mínimo</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">$30,000</span>
+</div>
+<span class="text-outline text-xs">-</span>
+<div class="bg-surface-container-low px-2 py-1 rounded flex-1">
+<span class="font-label-sm text-label-sm text-outline block">Máximo</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">$210,000</span>
+</div>
+</div>
+</div>
+<!-- 5. Carrocería -->
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wide">Tipo de Carrocería</span>
+<div class="grid grid-cols-2 gap-space-xs">
+<button class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-left transition-colors">
+<span class="material-symbols-outlined text-lg text-on-surface-variant">directions_car</span>
+<span class="font-body-sm text-body-sm text-on-surface font-semibold">SUV</span>
+</button>
+<button class="flex items-center gap-2 p-2 rounded-lg bg-primary text-on-primary text-left shadow-sm">
+<span class="material-symbols-outlined text-lg">drive_eta</span>
+<span class="font-body-sm text-body-sm font-semibold">Sedán</span>
+</button>
+<button class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-left transition-colors">
+<span class="material-symbols-outlined text-lg text-on-surface-variant">sports_score</span>
+<span class="font-body-sm text-body-sm text-on-surface font-semibold">Coupé</span>
+</button>
+<button class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-left transition-colors">
+<span class="material-symbols-outlined text-lg text-on-surface-variant">bolt</span>
+<span class="font-body-sm text-body-sm text-on-surface font-semibold">Híbrido/EV</span>
+</button>
+</div>
+</div>
+<!-- 6. Color de Carrocería (Swatches) -->
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wide">Tonalidad Exterior</span>
+<div class="flex items-center justify-between pt-1">
+<button class="w-7 h-7 rounded-full bg-slate-900 shadow-md ring-2 ring-primary ring-offset-2 transition-transform hover:scale-110" title="Negro Obsidiana"></button>
+<button class="w-7 h-7 rounded-full bg-slate-100 shadow-sm border border-slate-300 transition-transform hover:scale-110" title="Blanco Perlado"></button>
+<button class="w-7 h-7 rounded-full bg-slate-500 shadow-sm transition-transform hover:scale-110" title="Gris Nardo"></button>
+<button class="w-7 h-7 rounded-full bg-blue-900 shadow-sm transition-transform hover:scale-110" title="Azul Medianoche"></button>
+<button class="w-7 h-7 rounded-full bg-red-700 shadow-sm transition-transform hover:scale-110" title="Rojo Carmín"></button>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Seleccionado: Negro Obsidiana</span>
+</div>
+<!-- Financing Banner Helper inside sidebar -->
+<div class="bg-surface-container p-space-md rounded-xl flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs text-secondary">
+<span class="material-symbols-outlined text-base">savings</span>
+<span class="font-label-md text-label-md">Simulador de Crédito</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Aprobación pre-calificada en menos de 15 minutos sin afectar tu buró.
+          </p>
+<a class="font-label-sm text-label-sm text-on-surface hover:text-secondary font-bold underline mt-1" href="#">Calcular mi mensualidad</a>
+</div>
+</aside>
+<!-- RIGHT VEHICLES SHOWROOM -->
+<section class="flex-1 flex flex-col gap-space-lg w-full">
+<!-- Grid Header Control Bar -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
+<div class="flex items-center gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface">Inventario Activo</span>
+<span class="bg-surface-container-low px-space-sm py-0.5 rounded-full font-label-sm text-label-sm text-on-surface-variant">Mostrando 18 de 42</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<label class="font-label-sm text-label-sm text-on-surface-variant hidden sm:inline" for="sortSelector">Ordenar:</label>
+<select class="bg-surface-container-low border-0 text-on-surface font-label-md text-label-md px-space-md py-1.5 rounded-lg outline-none cursor-pointer" id="sortSelector">
+<option>Relevancia & Destacados</option>
+<option>Precio: Menor a Mayor</option>
+<option>Precio: Mayor a Menor</option>
+<option>Año: Más Reciente</option>
+<option>Menor Kilometraje</option>
+</select>
+<div class="hidden md:flex items-center bg-surface-container-low p-1 rounded-lg">
+<button class="p-1 rounded bg-surface-container-lowest text-on-surface shadow-xs">
+<span class="material-symbols-outlined text-lg leading-none">grid_view</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-lg leading-none">view_agenda</span>
+</button>
+</div>
+</div>
+</div>
+<!-- 3-Column Vehicle Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-space-lg">
+<!-- CARD 1: Seminuevo Certificado con Placa -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+<div class="relative w-full aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Front three-quarters view of a sleek metallic dark grey Porsche 911 Carrera modern coupe parked inside a minimalist high-end architectural luxury showroom with soft ambient studio spotlights and clean slate floor." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRWvfua2n_H47IFXBlwdZNxlachRdaNzZpANqOjBIBbW5duFqcX9hfhMj71BNWb1VwhU6luBnyEdzVTNIxon0JkFOCo_UqMpz4fZIMemLlQwkcHin4ml7LRSTIdRlqAIFoXOFyzR40DMxSJVYFDV3J1ZZNPlA--0ts9uYpFKwXwLpvAWg5uxX3JVF69q7AMjfJgN00hI4yxb0ssbwQkkOYZuIGsCzIBgayDgf02i63yzD2ZIFa49z1"/>
+<!-- Badges Overlays -->
+<div class="absolute top-3 left-3 flex flex-wrap gap-1.5 items-center">
+<span class="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase bg-cyan-50 text-cyan-800 shadow-xs">CERTIFICADO</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase bg-emerald-50 text-emerald-800 shadow-xs flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                  Stock Inmediato
+                </span>
+</div>
+<!-- Heart Wishlist trigger -->
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface-container-lowest/80 backdrop-blur-md flex items-center justify-center text-on-surface hover:text-error transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+<!-- Gallery Counter -->
+<div class="absolute bottom-3 left-3 bg-inverse-surface/70 backdrop-blur-md px-2 py-0.5 rounded text-inverse-on-surface font-label-sm text-label-sm">
+                1 / 24
+              </div>
+<!-- Metálica Matrícula Badge -->
+<div class="absolute bottom-3 right-3 bg-surface-container-lowest/95 backdrop-blur-md px-2.5 py-0.5 rounded shadow-md flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="font-spec-numerical text-[12px] tracking-widest text-on-surface">PLACA: ABC-842</span>
+</div>
+</div>
+<!-- Content Area -->
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-baseline">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Porsche Exclusive</span>
+<span class="font-label-sm text-label-sm text-outline">Ref: VC-9021</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-snug">911 Carrera S Coupe</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">3.0L Biturbo 450 CV PDK Sport Chrono</p>
+</div>
+<!-- Spec Grid Ribbon -->
+<div class="grid grid-cols-3 gap-2 bg-surface-container-low p-2 rounded-lg">
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">calendar_month</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">2022</span>
+<span class="text-[10px] uppercase text-outline">Modelo</span>
+</div>
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">speed</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">18,400 km</span>
+<span class="text-[10px] uppercase text-outline">Recorrido</span>
+</div>
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">local_gas_station</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">PDK 8v</span>
+<span class="text-[10px] uppercase text-outline">Gasolina</span>
+</div>
+</div>
+<!-- Pricing & CTA -->
+<div class="pt-2 flex flex-col gap-space-sm">
+<div class="flex items-baseline justify-between">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold">$142,900 <span class="text-xs font-normal text-outline">USD</span></span>
+<span class="font-body-sm text-body-sm text-secondary font-semibold">Desde $1,840/mes</span>
+</div>
+<span class="material-symbols-outlined text-secondary-container">verified</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="flex-1 bg-primary text-on-primary py-2.5 rounded-lg font-label-md text-label-md hover:bg-inverse-surface transition-all text-center">
+                    Ver Detalle y Reservar
+                  </button>
+<button class="w-10 h-10 rounded-lg bg-[#25D366]/15 hover:bg-[#25D366]/30 flex items-center justify-center text-[#128C7E] transition-colors" title="Consultar Concierge por WhatsApp">
+<span class="material-symbols-outlined text-xl">chat</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 2: Auto Nuevo 0 km en Stock -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+<div class="relative w-full aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Side profile of a brand-new glossy white BMW M4 Competition Coupe in pristine delivery condition on a dark polished concrete showroom platform, soft studio reflections." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5ksdI74GUQMXOBHwKLKsc-n3hAt0N7la6_VtY1ze298y3YI2u2UZnPA6vkKaSvduH305Z8HOu5yTWZdtg65qdhtBGVLK1n2uxSNi0Tgl0uCfgpWkymfPpYitWH88-6E71xiUZOEnBpc8ZJCsQKvphu1rFh6CQBYqMJ-n8y9OwesRxECPdyvkDAqBKdpJKa7i8Pi6p9jGenN7acFK6r51RT7wtgyP-JrNyfbcduLmEkylzZ2xLbWHt"/>
+<div class="absolute top-3 left-3 flex flex-wrap gap-1.5 items-center">
+<span class="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase bg-emerald-100 text-emerald-900 shadow-xs">NUEVO (0 KM)</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase bg-emerald-50 text-emerald-800 shadow-xs flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                  Entrega Inmediata
+                </span>
+</div>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface-container-lowest/80 backdrop-blur-md flex items-center justify-center text-on-surface hover:text-error transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3 bg-inverse-surface/70 backdrop-blur-md px-2 py-0.5 rounded text-inverse-on-surface font-label-sm text-label-sm">
+                1 / 16
+              </div>
+<div class="absolute bottom-3 right-3 bg-secondary-container/90 backdrop-blur-md px-2 py-0.5 rounded text-on-secondary-container font-label-sm text-label-sm font-bold">
+                Garantía Oficial 3 Años
+              </div>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-baseline">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">BMW M Series</span>
+<span class="font-label-sm text-label-sm text-outline">Ref: BM-3380</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-snug">M4 Competition Coupé</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">510 CV M xDrive Steptronic Carbon Pack</p>
+</div>
+<div class="grid grid-cols-3 gap-2 bg-surface-container-low p-2 rounded-lg">
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">calendar_month</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">2025</span>
+<span class="text-[10px] uppercase text-outline">Nuevo</span>
+</div>
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">speed</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">0 km</span>
+<span class="text-[10px] uppercase text-outline">Estreno</span>
+</div>
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">settings</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">Auto 8v</span>
+<span class="text-[10px] uppercase text-outline">Gasolina</span>
+</div>
+</div>
+<div class="pt-2 flex flex-col gap-space-sm">
+<div class="flex items-baseline justify-between">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold">$118,500 <span class="text-xs font-normal text-outline">USD</span></span>
+<span class="font-body-sm text-body-sm text-secondary font-semibold">Desde $1,490/mes</span>
+</div>
+<span class="material-symbols-outlined text-secondary-container">military_tech</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="flex-1 bg-primary text-on-primary py-2.5 rounded-lg font-label-md text-label-md hover:bg-inverse-surface transition-all text-center">
+                    Ver Detalle y Reservar
+                  </button>
+<button class="w-10 h-10 rounded-lg bg-[#25D366]/15 hover:bg-[#25D366]/30 flex items-center justify-center text-[#128C7E] transition-colors" title="Consultar Concierge por WhatsApp">
+<span class="material-symbols-outlined text-xl">chat</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 3: Híbrido Seminuevo con Matrícula -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+<div class="relative w-full aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Dramatic dynamic studio shot of an elegant deep obsidian black Audi RS e-tron GT electric sports sedan with laser headlamps illuminated and aero rims." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYtsJblsT9dEMeoeY8Icn8kmrf8dU06o1a2zvi6Ei6MALyZnToeUcBiAUFrOsW1YngXhgLWKCSpcP2S1CXYD2Q0rdcYvXmJY3bbBZHm9EU8iCY2pJu5p1BYlNGw0weFmSq8ZARKTs7h55Y6hKi9cqYpokoJvBGxQ6ady1IbAAV3hbqDvRj4sK1Y_eASaLbaYUSs_5ctwTlVS2YJEkhIeG-p_GTC4woDAeuprgiKkXO649fryUKrT3I"/>
+<div class="absolute top-3 left-3 flex flex-wrap gap-1.5 items-center">
+<span class="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase bg-cyan-50 text-cyan-800 shadow-xs">CERTIFICADO</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase bg-emerald-50 text-emerald-800 shadow-xs flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                  Stock Inmediato
+                </span>
+</div>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface-container-lowest/80 backdrop-blur-md flex items-center justify-center text-on-surface hover:text-error transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3 bg-inverse-surface/70 backdrop-blur-md px-2 py-0.5 rounded text-inverse-on-surface font-label-sm text-label-sm">
+                1 / 30
+              </div>
+<div class="absolute bottom-3 right-3 bg-surface-container-lowest/95 backdrop-blur-md px-2.5 py-0.5 rounded shadow-md flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="font-spec-numerical text-[12px] tracking-widest text-on-surface">PLACA: KTR-319</span>
+</div>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-baseline">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Audi Sport EV</span>
+<span class="font-label-sm text-label-sm text-outline">Ref: AU-7140</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-snug">RS e-tron GT Quattro</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">646 CV 100% Eléctrico Batería 93.4 kWh</p>
+</div>
+<div class="grid grid-cols-3 gap-2 bg-surface-container-low p-2 rounded-lg">
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">calendar_month</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">2023</span>
+<span class="text-[10px] uppercase text-outline">Modelo</span>
+</div>
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">speed</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">12,100 km</span>
+<span class="text-[10px] uppercase text-outline">Recorrido</span>
+</div>
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">bolt</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">Eléctrico</span>
+<span class="text-[10px] uppercase text-outline">472 km Aut.</span>
+</div>
+</div>
+<div class="pt-2 flex flex-col gap-space-sm">
+<div class="flex items-baseline justify-between">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold">$109,000 <span class="text-xs font-normal text-outline">USD</span></span>
+<span class="font-body-sm text-body-sm text-secondary font-semibold">Desde $1,380/mes</span>
+</div>
+<span class="material-symbols-outlined text-cyan-600">electric_bolt</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="flex-1 bg-primary text-on-primary py-2.5 rounded-lg font-label-md text-label-md hover:bg-inverse-surface transition-all text-center">
+                    Ver Detalle y Reservar
+                  </button>
+<button class="w-10 h-10 rounded-lg bg-[#25D366]/15 hover:bg-[#25D366]/30 flex items-center justify-center text-[#128C7E] transition-colors" title="Consultar Concierge por WhatsApp">
+<span class="material-symbols-outlined text-xl">chat</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 4: Próximamente Disponible (Ámbar) -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+<div class="relative w-full aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Quarter view of a luxury matte dark green Mercedes-AMG G63 SUV in transit dock facility with warm twilight industrial lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsIeeHg8eH3rBL26ujwsuU4exmofCh9xpO2X6TfTuD2oloH95A2oZ_JEponnqz0LcRbb_6GVTF3qZNjzyeELt2HMWTgm4TCtrF8ru81BXOozUPlmcrbfltPF892UNTli1ZQspZUcWZi5k99OodkUQqz_aV03z8jN652PyItJt1hYAUWqQDaAc0Kwksf-snOCxJH9rKK-Q_6RI7Cog6McJNxwrQDimrgkpAAUlWeQJ0d0xeyKdvrWZ1"/>
+<div class="absolute top-3 left-3 flex flex-wrap gap-1.5 items-center">
+<span class="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase bg-purple-50 text-purple-800 shadow-xs">NUEVO (0 KM)</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase bg-amber-50 text-amber-800 shadow-xs flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-600 animate-ping"></span>
+                  Próximamente (En Tránsito)
+                </span>
+</div>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface-container-lowest/80 backdrop-blur-md flex items-center justify-center text-on-surface hover:text-error transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3 bg-inverse-surface/70 backdrop-blur-md px-2 py-0.5 rounded text-inverse-on-surface font-label-sm text-label-sm">
+                Llega en 6 días
+              </div>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-baseline">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Mercedes-AMG</span>
+<span class="font-label-sm text-label-sm text-outline">Ref: MB-5520</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-snug">AMG G 63 4MATIC</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">585 CV V8 Biturbo Night Package II</p>
+</div>
+<div class="grid grid-cols-3 gap-2 bg-surface-container-low p-2 rounded-lg">
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">calendar_month</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">2025</span>
+<span class="text-[10px] uppercase text-outline">Modelo</span>
+</div>
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">speed</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">0 km</span>
+<span class="text-[10px] uppercase text-outline">Nuevo</span>
+</div>
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">local_gas_station</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">9G-TRONIC</span>
+<span class="text-[10px] uppercase text-outline">V8 Gasolina</span>
+</div>
+</div>
+<div class="pt-2 flex flex-col gap-space-sm">
+<div class="flex items-baseline justify-between">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold">$205,000 <span class="text-xs font-normal text-outline">USD</span></span>
+<span class="font-body-sm text-body-sm text-secondary font-semibold">Reserva con $5,000</span>
+</div>
+<span class="material-symbols-outlined text-secondary">schedule</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="flex-1 bg-secondary text-on-secondary py-2.5 rounded-lg font-label-md text-label-md hover:bg-on-secondary-fixed-variant transition-all text-center shadow-sm">
+                    Pre-ordenar Prioridad
+                  </button>
+<button class="w-10 h-10 rounded-lg bg-[#25D366]/15 hover:bg-[#25D366]/30 flex items-center justify-center text-[#128C7E] transition-colors" title="Consultar Concierge por WhatsApp">
+<span class="material-symbols-outlined text-xl">chat</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 5: Usado Certificado SUV -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+<div class="relative w-full aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Three-quarter front view of a metallic navy blue Range Rover Sport luxury SUV positioned in a bright high-end dealership showroom with floor-to-ceiling glass windows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlts5ywFdLaETx2nxOfiKpcE141VyeEthADs4Axr9JCIPMzo1-NAWAL8T098aPal0M1Af3ThsQQvkzQZVhShrBPgS10Qit45rELrh2unUPhYaLt2VGnQKK_IH_YwS9ajOh0twzYRBwuc7zIz70bP2eBXCA2ZRdl7H96h5xidlrYvY0MgOCDjZlnWaDSK_yyUC2yGb8IsGqNZed4r2dUcHSFlYxOfS5RmGFQw6ok1EBjUweOCtMxCcP"/>
+<div class="absolute top-3 left-3 flex flex-wrap gap-1.5 items-center">
+<span class="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase bg-cyan-50 text-cyan-800 shadow-xs">CERTIFICADO</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase bg-emerald-50 text-emerald-800 shadow-xs flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                  Stock Inmediato
+                </span>
+</div>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface-container-lowest/80 backdrop-blur-md flex items-center justify-center text-on-surface hover:text-error transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3 bg-inverse-surface/70 backdrop-blur-md px-2 py-0.5 rounded text-inverse-on-surface font-label-sm text-label-sm">
+                1 / 19
+              </div>
+<div class="absolute bottom-3 right-3 bg-surface-container-lowest/95 backdrop-blur-md px-2.5 py-0.5 rounded shadow-md flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="font-spec-numerical text-[12px] tracking-widest text-on-surface">PLACA: MZX-410</span>
+</div>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-baseline">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Land Rover</span>
+<span class="font-label-sm text-label-sm text-outline">Ref: RR-1198</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-snug">Range Rover Sport Dynamic</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">P400 3.0L MHEV Tracción Integral AWD</p>
+</div>
+<div class="grid grid-cols-3 gap-2 bg-surface-container-low p-2 rounded-lg">
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">calendar_month</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">2023</span>
+<span class="text-[10px] uppercase text-outline">Modelo</span>
+</div>
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">speed</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">24,500 km</span>
+<span class="text-[10px] uppercase text-outline">Recorrido</span>
+</div>
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">autorenew</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">MHEV</span>
+<span class="text-[10px] uppercase text-outline">Híbrido Lig.</span>
+</div>
+</div>
+<div class="pt-2 flex flex-col gap-space-sm">
+<div class="flex items-baseline justify-between">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold">$89,500 <span class="text-xs font-normal text-outline">USD</span></span>
+<span class="font-body-sm text-body-sm text-secondary font-semibold">Desde $1,140/mes</span>
+</div>
+<span class="material-symbols-outlined text-secondary-container">verified</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="flex-1 bg-primary text-on-primary py-2.5 rounded-lg font-label-md text-label-md hover:bg-inverse-surface transition-all text-center">
+                    Ver Detalle y Reservar
+                  </button>
+<button class="w-10 h-10 rounded-lg bg-[#25D366]/15 hover:bg-[#25D366]/30 flex items-center justify-center text-[#128C7E] transition-colors" title="Consultar Concierge por WhatsApp">
+<span class="material-symbols-outlined text-xl">chat</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- CARD 6: Nuevo Híbrido Executive -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
+<div class="relative w-full aspect-[16/10] overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Side dynamic view of a silver Toyota Land Cruiser Prado VX modern hybrid SUV navigating clean urban boulevard pavement in sunny daylight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm9KjmkVTOxFgNQiKJUywQ2UYJQF0ASXZMOebbuub6BqHVEc7GoPcGtb3ihYcXgzaZXbziLlkokBt0DQ7W7KQ0_5SKUy9LIHEv0uidZZSm_XcRiwA8XcIPeMsFtc5XzDp8Z8_y2byU6_Db1PtogIWUDn4K8mDXeaaLJeJWkTzgM4eWGb0DeiJoD5gNBB_oTpgk_8EJaM1flX2FXGBF2L8Z-CPXk9zHkb1eBNbwJf0DTAHshvJH9Wi7"/>
+<div class="absolute top-3 left-3 flex flex-wrap gap-1.5 items-center">
+<span class="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase bg-emerald-100 text-emerald-900 shadow-xs">NUEVO (0 KM)</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-bold tracking-wide uppercase bg-emerald-50 text-emerald-800 shadow-xs flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                  Stock Inmediato
+                </span>
+</div>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface-container-lowest/80 backdrop-blur-md flex items-center justify-center text-on-surface hover:text-error transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3 bg-inverse-surface/70 backdrop-blur-md px-2 py-0.5 rounded text-inverse-on-surface font-label-sm text-label-sm">
+                1 / 14
+              </div>
+<div class="absolute bottom-3 right-3 bg-secondary-container/90 backdrop-blur-md px-2 py-0.5 rounded text-on-secondary-container font-label-sm text-label-sm font-bold">
+                Edición 2025
+              </div>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between items-baseline">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Toyota Luxury</span>
+<span class="font-label-sm text-label-sm text-outline">Ref: TY-4410</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-snug">Land Cruiser Prado VX</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">i-FORCE MAX Híbrido 2.4L Turbo 326 CV</p>
+</div>
+<div class="grid grid-cols-3 gap-2 bg-surface-container-low p-2 rounded-lg">
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">calendar_month</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">2025</span>
+<span class="text-[10px] uppercase text-outline">Nuevo</span>
+</div>
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">speed</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">0 km</span>
+<span class="text-[10px] uppercase text-outline">Garantía</span>
+</div>
+<div class="flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-base text-outline mb-0.5">bolt</span>
+<span class="font-spec-numerical text-spec-numerical text-on-surface">Híbrido</span>
+<span class="text-[10px] uppercase text-outline">4x4 Lock</span>
+</div>
+</div>
+<div class="pt-2 flex flex-col gap-space-sm">
+<div class="flex items-baseline justify-between">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold">$79,900 <span class="text-xs font-normal text-outline">USD</span></span>
+<span class="font-body-sm text-body-sm text-secondary font-semibold">Desde $990/mes</span>
+</div>
+<span class="material-symbols-outlined text-secondary-container">shield</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="flex-1 bg-primary text-on-primary py-2.5 rounded-lg font-label-md text-label-md hover:bg-inverse-surface transition-all text-center">
+                    Ver Detalle y Reservar
+                  </button>
+<button class="w-10 h-10 rounded-lg bg-[#25D366]/15 hover:bg-[#25D366]/30 flex items-center justify-center text-[#128C7E] transition-colors" title="Consultar Concierge por WhatsApp">
+<span class="material-symbols-outlined text-xl">chat</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination & Results Counter Footer -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md bg-surface-container-lowest p-space-md rounded-xl shadow-sm mt-space-md">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<span>Página <strong>1</strong> de <strong>3</strong></span>
+<span class="text-outline">•</span>
+<span>Inventario total verificado: <strong>42 autos</strong></span>
+</div>
+<!-- Pagination numeric buttons -->
+<nav class="flex items-center gap-1">
+<button class="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined text-lg">chevron_left</span>
+</button>
+<button class="w-9 h-9 rounded-lg flex items-center justify-center bg-primary text-on-primary font-label-md text-label-md font-bold">1</button>
+<button class="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container-low font-label-md text-label-md">2</button>
+<button class="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container-low font-label-md text-label-md">3</button>
+<button class="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-lg">chevron_right</span>
+</button>
+</nav>
+</div>
+<!-- Trust & Guarantee Ribbon -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md mt-space-lg">
+<div class="p-space-md bg-surface-container-low rounded-xl flex items-start gap-space-sm">
+<div class="p-2 bg-surface-container-lowest rounded-lg text-secondary">
+<span class="material-symbols-outlined text-2xl">verified_user</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Certificación 120 Puntos</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Diagnóstico electrónico, compresión de motor y chasis verificado.</p>
+</div>
+</div>
+<div class="p-space-md bg-surface-container-low rounded-xl flex items-start gap-space-sm">
+<div class="p-2 bg-surface-container-lowest rounded-lg text-secondary">
+<span class="material-symbols-outlined text-2xl">contract_edit</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Reserva Segura Online</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Aparta por 7 días con reembolso íntegro si el vehículo no te convence.</p>
+</div>
+</div>
+<div class="p-space-md bg-surface-container-low rounded-xl flex items-start gap-space-sm">
+<div class="p-2 bg-surface-container-lowest rounded-lg text-secondary">
+<span class="material-symbols-outlined text-2xl">local_shipping</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Entrega a Domicilio VIP</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Llevamos la unidad en camión plataforma sellado directo a tu cochera.</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Interactive Filter Behavior -->
+<script>
+    // Condition Filter Buttons
+    const conditionButtons = document.querySelectorAll('.filter-condition-btn');
+    conditionButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        conditionButtons.forEach(b => {
+          b.classList.remove('bg-primary', 'text-on-primary');
+          b.classList.add('text-on-surface-variant');
+        });
+        btn.classList.add('bg-primary', 'text-on-primary');
+        btn.classList.remove('text-on-surface-variant');
+      });
+    });
+
+    // Brand Chips Multi-toggle
+    const brandChips = document.querySelectorAll('.brand-chip');
+    brandChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        if (chip.classList.contains('bg-primary')) {
+          chip.classList.remove('bg-primary', 'text-on-primary');
+          chip.classList.add('bg-surface-container-low', 'text-on-surface');
+        } else {
+          chip.classList.remove('bg-surface-container-low', 'text-on-surface');
+          chip.classList.add('bg-primary', 'text-on-primary');
+        }
+      });
+    });
+
+    // Price Range Slider Display
+    const slider = document.getElementById('priceRangeSlider');
+    const priceDisplay = document.getElementById('priceDisplay');
+    if (slider && priceDisplay) {
+      slider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value).toLocaleString('en-US');
+        priceDisplay.textContent = `$30k - $${val}`;
+      });
+    }
+
+    // Reset Filters Button
+    const resetBtn = document.getElementById('resetFiltersBtn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (slider) slider.value = 250000;
+        if (priceDisplay) priceDisplay.textContent = '$30k - $250,000';
+        brandChips.forEach(chip => {
+          chip.classList.remove('bg-primary', 'text-on-primary');
+          chip.classList.add('bg-surface-container-low', 'text-on-surface');
+        });
+        conditionButtons.forEach((b, idx) => {
+          if (idx === 0) {
+            b.classList.add('bg-primary', 'text-on-primary');
+          } else {
+            b.classList.remove('bg-primary', 'text-on-primary');
+            b.classList.add('text-on-surface-variant');
+          }
+        });
+      });
+    }
+  </script>
+</div></main><footer class="w-full bg-surface-container-lowest shadow-[0_-1px_8px_rgba(0,0,0,0.03)]"><div class="max-w-7xl mx-auto px-gutter py-space-xl flex flex-col gap-space-xl"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-lg"><div class="flex flex-col gap-space-sm"><div class="flex items-center gap-space-xs"><img alt="JDS Vehículos Logo" class="h-7 w-auto object-contain" src="logo.jpg"/><span class="font-headline-sm text-headline-sm text-on-surface">JDS Vehículos</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Excelencia automotriz y exclusividad digital para compradores y coleccionistas exigentes.</p></div><div class="flex flex-col gap-space-xs"><span class="font-label-lg text-label-lg text-on-surface">Showroom Principal</span><p class="font-body-sm text-body-sm text-on-surface-variant">Av. Presidente Masaryk 420, Polanco<br/>Ciudad de México, CP 11560</p><p class="font-body-sm text-body-sm text-on-surface-variant">Lunes a Sábado: 09:00 - 19:00 hrs</p></div><div class="flex flex-col gap-space-xs"><span class="font-label-lg text-label-lg text-on-surface">Atención Concierge</span><div class="flex flex-col gap-space-xs">
+<a href="https://wa.me/573202353168?text=Hola%20JDS%20Veh%C3%ADculos%2C%20quisiera%20asesor%C3%ADa%20personalizada" target="_blank" rel="noopener noreferrer" class="flex items-center gap-space-xs text-on-surface hover:text-[#25D366] transition-colors" title="Abrir WhatsApp">
+<svg class="w-5 h-5 fill-[#25D366] shrink-0" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.585 1.961.934 3.203.934 3.182 0 5.768-2.587 5.768-5.766.001-3.187-2.575-5.821-6.175-5.821zm0-2.172c4.418 0 8 3.582 8 8 0 4.418-3.582 8-8 8-1.42 0-2.753-.372-3.906-1.025l-4.57 1.198 1.221-4.462c-.754-1.229-1.19-2.673-1.19-4.221 0-4.418 3.582-8 8-8zm-1.898 7.379c-.161-.269-.592-.429-.861-.429-.269 0-.538.107-.807.376-.269.269-1.022.999-1.022 2.436 0 1.437 1.049 2.823 1.197 3.023.148.2 2.067 3.156 5.008 4.425.699.302 1.246.483 1.671.618.702.223 1.341.192 1.846.117.564-.084 1.734-.709 1.979-1.393.245-.684.245-1.27.172-1.393-.073-.123-.269-.196-.569-.346-.3-.15-1.734-.856-2.003-.956-.269-.1-.465-.15-.662.15-.196.3-.761.956-.933 1.152-.172.196-.344.221-.643.071-.3-.15-1.267-.467-2.413-1.489-.893-.796-1.496-1.779-1.672-2.079-.176-.3-.019-.462.131-.611.135-.134.3-.349.45-.524.15-.175.2-.299.3-.499.1-.2.05-.374-.025-.524z"/></svg>
+<span class="font-spec-numerical text-spec-numerical">+57 320 235 3168</span>
+</a>
+<a href="https://www.instagram.com/jds_77vehiculos?xtok=MW16OThrNW1iY3Nxbg%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="flex items-center gap-space-xs text-on-surface hover:text-[#E4405F] transition-colors mt-1" title="Instagram @jds_77vehiculos">
+<svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+<span class="font-spec-numerical text-spec-numerical">@jds_77vehiculos</span>
+</a>
+</div><p class="font-body-sm text-body-sm text-on-surface-variant">Línea directa WhatsApp 24/7 y asesoría personalizada</p></div><div class="flex flex-col gap-space-xs"><span class="font-label-lg text-label-lg text-on-surface">Legal y Garantías</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="terminos-condiciones" href="#">Términos del Servicio</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="privacidad" href="#">Aviso de Privacidad</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="certificacion" href="#">Certificación 120 Puntos JDS Vehículos</a></div></div><div class="flex flex-col sm:flex-row items-center justify-between pt-space-md bg-surface-container-lowest text-on-surface-variant font-body-sm text-body-sm gap-space-sm"><p>© 2025 JDS Vehículos S.A. de C.V. Todos los derechos reservados.</p><p class="text-right">Plataforma Digital Certificada</p></div></div></footer></body></html>
