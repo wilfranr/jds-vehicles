@@ -1,6 +1,6 @@
 # F1-07: Correcciones de la revisión de F1-01 y F1-02
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 1
 - **Depende de:** F1-02
 - **Prioridad:** Alta (hacer antes de F1-03; los puntos 1–2 pueden ir en paralelo con F1-03 si no tocan los mismos archivos)
