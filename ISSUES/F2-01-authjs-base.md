@@ -1,6 +1,6 @@
 # F2-01: Auth.js: configuración base, sesiones y helpers de servidor
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 2
 - **Depende de:** F1-07 (DONE)
 - **Prioridad:** Alta (bloquea el resto de la Fase 2)

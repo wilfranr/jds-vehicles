@@ -34,6 +34,8 @@
 7. Metadatos (`title`: "Crear cuenta | JDS Vehículos"), `noindex`, y todo el texto en `site-content.ts`.
 8. **Tests (Vitest):** esquema de validación (casos válidos e inválidos por campo, normalización del teléfono y del correo), función de registro con dependencias simuladas (éxito, duplicado, rol inexistente), `safeNextPath`, y que el usuario creado queda con `passwordHash` bcrypt verificable y rol `CLIENTE`. Una prueba de integración contra la BD de pruebas que cree y borre un usuario temporal.
 
+9. **Mismo coste de hash en el hash ficticio (revisión de F2-01).** `DUMMY_PASSWORD_HASH` en `src/server/auth/verify-credentials.ts` es bcrypt de coste 10 y sirve para igualar el tiempo de respuesta cuando el correo no existe (comprobado: 62 ms en los tres casos). Como el registro guardará hashes de coste **12**, hay que regenerar el hash ficticio con coste 12, de lo contrario un correo inexistente respondería ~4 veces más rápido y permitiría enumerar usuarios por tiempo. Añadir un test que compare el coste (`bcrypt.getRounds`) del hash ficticio con la constante de coste usada al registrar, para que no se desincronicen. Los hashes del seed (coste 10) son solo de demostración.
+
 ## Fuera de alcance
 
 Verificación de correo, recuperación de contraseña (pendiente de decisión del propietario sobre el proveedor de correo), CAPTCHA, limitación de intentos (F2-04), registro de ADMIN/ASESOR (los crea un administrador en la Fase 4).
