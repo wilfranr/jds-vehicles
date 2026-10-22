@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { VehicleGallery } from './VehicleGallery';
 import { ReserveCta } from './ReserveCta';
+import { parseVehicleId } from '@/app/(public)/vehiculos/[id]/page';
 import { Disponibilidad } from '@prisma/client';
 
 describe('VehicleGallery', () => {
@@ -42,7 +43,7 @@ describe('VehicleGallery', () => {
 });
 
 describe('ReserveCta', () => {
-  it('renderiza CTA de preventa cuando disponibilidad es PROXIMAMENTE', () => {
+  it('renderiza CTA de preventa cuando disponibilidad es PROXIMAMENTE e incluye botón secundario', () => {
     render(
       <ReserveCta
         vehicleId={1}
@@ -56,9 +57,10 @@ describe('ReserveCta', () => {
 
     expect(screen.getByText(/Vehículo en preparación \(Preventa\)/i)).toBeInTheDocument();
     expect(screen.getByText('Preguntar por este vehículo')).toBeInTheDocument();
+    expect(screen.getByText('Escribir por WhatsApp')).toBeInTheDocument();
   });
 
-  it('renderiza mensaje de reserva cuando disponibilidad es RESERVADO', () => {
+  it('renderiza mensaje de reserva cuando disponibilidad es RESERVADO e incluye botón secundario', () => {
     render(
       <ReserveCta
         vehicleId={2}
@@ -72,6 +74,7 @@ describe('ReserveCta', () => {
 
     expect(screen.getByText(/Este vehículo se encuentra reservado/i)).toBeInTheDocument();
     expect(screen.getByText('Consultar alternativas por WhatsApp')).toBeInTheDocument();
+    expect(screen.getByText('Escribir por WhatsApp')).toBeInTheDocument();
   });
 
   it('renderiza botón principal de reserva cuando disponibilidad es DISPONIBLE', () => {
@@ -86,7 +89,39 @@ describe('ReserveCta', () => {
       />
     );
 
-    expect(screen.getByText('Consultar reserva por WhatsApp')).toBeInTheDocument();
+    expect(screen.getByText('Consultar disponibilidad por WhatsApp')).toBeInTheDocument();
     expect(screen.getByText('Escribir por WhatsApp')).toBeInTheDocument();
+  });
+});
+
+describe('parseVehicleId (Validación de ID en /vehiculos/[id])', () => {
+  it('acepta enteros positivos válidos en rango', () => {
+    expect(parseVehicleId('1')).toBe(1);
+    expect(parseVehicleId('42')).toBe(42);
+    expect(parseVehicleId('4294967295')).toBe(4294967295);
+  });
+
+  it('rechaza decimales y flotantes para evitar contenido duplicado (ej. 1.5)', () => {
+    expect(parseVehicleId('1.5')).toBeNull();
+    expect(parseVehicleId('2.0')).toBeNull();
+  });
+
+  it('rechaza notación exponencial científica (ej. 1e3)', () => {
+    expect(parseVehicleId('1e3')).toBeNull();
+    expect(parseVehicleId('1E3')).toBeNull();
+  });
+
+  it('rechaza cero, negativos y cadenas no numéricas', () => {
+    expect(parseVehicleId('0')).toBeNull();
+    expect(parseVehicleId('-1')).toBeNull();
+    expect(parseVehicleId('abc')).toBeNull();
+    expect(parseVehicleId('')).toBeNull();
+    expect(parseVehicleId(' ')).toBeNull();
+    expect(parseVehicleId('01')).toBeNull();
+  });
+
+  it('rechaza números fuera de rango UNSIGNED INT (> 4294967295 y overflow de 64 bits)', () => {
+    expect(parseVehicleId('4294967296')).toBeNull();
+    expect(parseVehicleId('99999999999999999999')).toBeNull();
   });
 });

@@ -2,7 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ChevronRight, ArrowLeft, ShieldCheck } from 'lucide-react';
+import { ChevronRight, ArrowLeft } from 'lucide-react';
 import { getVehicleById, getSimilarVehicles } from '@/server/catalog/queries';
 import { getDealerConfig } from '@/server/config';
 import { StatusBadge } from '@/components/ui/StatusBadge';
@@ -11,17 +11,37 @@ import { VehicleGallery } from '@/components/catalog/VehicleGallery';
 import { ReserveCta } from '@/components/catalog/ReserveCta';
 import { SpecBadge } from '@/components/catalog/SpecBadge';
 import { formatCOP } from '@/lib/format';
+import { siteContent } from '@/lib/site-content';
 import { Condicion, Disponibilidad } from '@prisma/client';
 
 interface VehicleDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
+const MAX_UNSIGNED_INT = 4294967295;
+
+/**
+ * Valida de forma estricta que un string represente un identificador entero positivo
+ * dentro del rango UNSIGNED INT de MySQL (1 .. 4294967295).
+ * Descarta valores no numéricos, flotantes (ej. "1.5"), exponenciales (ej. "1e3"),
+ * enteros negativos, cero y números fuera de rango.
+ */
+export function parseVehicleId(rawId: string): number | null {
+  if (!/^[1-9]\d{0,9}$/.test(rawId)) {
+    return null;
+  }
+  const parsed = Number(rawId);
+  if (!Number.isSafeInteger(parsed) || parsed > MAX_UNSIGNED_INT) {
+    return null;
+  }
+  return parsed;
+}
+
 export async function generateMetadata({ params }: VehicleDetailPageProps): Promise<Metadata> {
   const { id } = await params;
-  const numId = Number(id);
+  const numId = parseVehicleId(id);
 
-  if (Number.isNaN(numId) || numId <= 0) {
+  if (!numId) {
     return { title: 'Vehículo no encontrado | JDS Vehículos' };
   }
 
@@ -46,10 +66,10 @@ export async function generateMetadata({ params }: VehicleDetailPageProps): Prom
 
 export default async function VehicleDetailPage({ params }: VehicleDetailPageProps) {
   const { id } = await params;
-  const numId = Number(id);
+  const numId = parseVehicleId(id);
 
-  // ID no numérico o inválido produce 404
-  if (Number.isNaN(numId) || numId <= 0) {
+  // ID no numérico, con decimales, fuera de rango o inválido produce 404
+  if (!numId) {
     notFound();
   }
 
@@ -80,11 +100,11 @@ export default async function VehicleDetailPage({ params }: VehicleDetailPagePro
           className="text-on-surface-variant flex flex-wrap items-center gap-1.5"
         >
           <Link href="/" className="hover:text-on-surface transition-colors">
-            Inicio
+            {siteContent.vehicleDetail.breadcrumbHome}
           </Link>
           <ChevronRight className="h-3.5 w-3.5" />
           <Link href="/catalogo" className="hover:text-on-surface transition-colors">
-            Catálogo
+            {siteContent.vehicleDetail.breadcrumbCatalog}
           </Link>
           <ChevronRight className="h-3.5 w-3.5" />
           <span className="text-on-surface max-w-[200px] truncate font-semibold sm:max-w-none">
@@ -97,7 +117,7 @@ export default async function VehicleDetailPage({ params }: VehicleDetailPagePro
           className="text-secondary font-label-md inline-flex shrink-0 items-center gap-1.5 text-sm hover:underline"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Volver al catálogo</span>
+          <span>{siteContent.vehicleDetail.backToCatalog}</span>
         </Link>
       </div>
 
@@ -119,7 +139,7 @@ export default async function VehicleDetailPage({ params }: VehicleDetailPagePro
               id="descripcion-heading"
               className="font-headline-sm text-on-surface mb-3 text-xl font-bold"
             >
-              Descripción del Vehículo
+              {siteContent.vehicleDetail.descriptionHeading}
             </h2>
             {vehicle.descripcion ? (
               <div className="font-body-md text-on-surface-variant text-base leading-relaxed whitespace-pre-line">
@@ -127,23 +147,9 @@ export default async function VehicleDetailPage({ params }: VehicleDetailPagePro
               </div>
             ) : (
               <p className="font-body-md text-on-surface-variant text-sm italic">
-                Sin descripción adicional registrada para esta unidad.
+                {siteContent.vehicleDetail.noDescription}
               </p>
             )}
-
-            {/* Garantía y Peritaje */}
-            <div className="border-outline-variant/20 mt-6 flex items-start gap-3 border-t pt-6">
-              <ShieldCheck className="text-secondary mt-0.5 h-6 w-6 shrink-0" />
-              <div>
-                <h3 className="font-label-lg text-on-surface text-sm font-bold">
-                  Inspección y Peritaje JDS
-                </h3>
-                <p className="font-body-sm text-on-surface-variant mt-0.5 text-xs">
-                  Esta unidad cuenta con verificación de procedencia jurídica, validación de
-                  kilometraje y certificación mecánica en taller especializado.
-                </p>
-              </div>
-            </div>
           </section>
         </div>
 
@@ -170,7 +176,7 @@ export default async function VehicleDetailPage({ params }: VehicleDetailPagePro
             {/* Precio */}
             <div className="border-outline-variant/20 flex flex-col border-y py-3">
               <span className="font-body-sm text-on-surface-variant text-xs">
-                Precio de contado
+                {siteContent.vehicleDetail.priceLabel}
               </span>
               <span className="font-headline-xl text-on-surface text-3xl font-extrabold tracking-tight tabular-nums sm:text-4xl">
                 {formatCOP(vehicle.precio)}
@@ -221,17 +227,17 @@ export default async function VehicleDetailPage({ params }: VehicleDetailPagePro
                 id="similares-heading"
                 className="font-headline-lg text-on-surface text-2xl font-bold"
               >
-                Vehículos Similares
+                {siteContent.vehicleDetail.similarHeading}
               </h2>
               <p className="font-body-sm text-on-surface-variant mt-1 text-sm">
-                Otras opciones de la misma marca o en un rango de precio semejante.
+                {siteContent.vehicleDetail.similarSubtitle}
               </p>
             </div>
             <Link
               href="/catalogo"
               className="font-label-md text-secondary hidden items-center gap-1 text-sm hover:underline sm:inline-flex"
             >
-              <span>Ver catálogo completo</span>
+              <span>{siteContent.vehicleDetail.viewAllCatalog}</span>
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>

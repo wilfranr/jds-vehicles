@@ -39,4 +39,27 @@ export const siteContent = {
       'https://www.instagram.com/jds_77vehiculos?xtok=MW16OThrNW1iY3Nxbg%3D%3D&utm_source=qr',
     instagramHandle: '@jds_77vehiculos',
   },
+  // Contenido de la página de detalle de vehículo (/vehiculos/[id])
+  vehicleDetail: {
+    backToCatalog: 'Volver al catálogo',
+    breadcrumbHome: 'Inicio',
+    breadcrumbCatalog: 'Catálogo',
+    descriptionHeading: 'Descripción del Vehículo',
+    noDescription: 'Sin descripción adicional registrada para esta unidad.',
+    priceLabel: 'Precio de contado',
+    similarHeading: 'Vehículos Similares',
+    similarSubtitle: 'Otras opciones de la misma marca o en un rango de precio semejante.',
+    viewAllCatalog: 'Ver catálogo completo',
+    reserveAvailableCta: 'Consultar disponibilidad por WhatsApp',
+    writeWhatsAppCta: 'Escribir por WhatsApp',
+    reservedTitle: 'Este vehículo se encuentra reservado',
+    reservedDescription:
+      'Un cliente ha apartado esta unidad. Puedes escribirnos para recibir asesoría sobre vehículos similares o ser notificado si se libera.',
+    reservedCta: 'Consultar alternativas por WhatsApp',
+    preorderTitle: 'Vehículo en preparación (Preventa)',
+    preorderDescription:
+      'Esta unidad está completando su proceso de alistamiento y peritaje pericial.',
+    preorderCta: 'Preguntar por este vehículo',
+    // TODO(owner): bloque de inspección/certificación o peritaje por unidad pendiente de definición y aprobación comercial oficial
+  },
 } as const;
