@@ -1,6 +1,6 @@
 # F2-04: Protección de rutas y limitación de intentos
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 2
 - **Depende de:** F2-01
 - **Prioridad:** Alta (puede hacerse en paralelo con F2-02)

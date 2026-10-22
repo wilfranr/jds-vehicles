@@ -30,6 +30,8 @@ Con la sesión ya disponible (F2-01) y el registro (F2-02), falta la entrada y s
 
 7. **Páginas por defecto de Auth.js (revisión de F2-01).** `GET /api/auth/signin` responde hoy con la página genérica de Auth.js, sin la marca del sitio, y los fallos de login redirigen allí (`/api/auth/signin?error=CredentialsSignin`). Configurar `pages: { signIn: '/login', error: '/login' }` en `src/auth.ts` para que los errores vuelvan a `/login?error=...` (mostrando el mensaje genérico `auth.invalidCredentials`) y que no quede una segunda pantalla de inicio de sesión sin marca ni límites de intentos.
 
+8. **Integrar el limitador en la acción de login (pendiente de F2-04).** `src/server/security/limiters.ts` ya está en `main` pero no conectado. En la acción de login, con `ip = getClientIp(await headers())`: `checkLoginAllowed(email, ip)` **antes** de verificar la contraseña (un par bloqueado se rechaza aunque la clave sea correcta; escribir `login_blocked` y mostrar «Demasiados intentos. Inténtalo de nuevo en unos minutos», texto en `site-content.ts`); tras un fallo, `recordLoginFailure` + `login_failed`; tras un éxito, `recordLoginSuccess`. Probar el orden con dependencias inyectadas y con reloj simulado, y añadir a los criterios que el sexto intento fallido del mismo correo+IP sea bloqueado.
+
 ## Fuera de alcance
 
 Recuperación de contraseña, "recordarme", páginas `/mi-cuenta` (F2-05), protección de rutas por `proxy.ts` (F2-04).
