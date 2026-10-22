@@ -1,5 +1,7 @@
 # JDS Vehículos
 
+[![CI Pipeline](https://github.com/wilfranr/jds-vehicles/actions/workflows/ci.yml/badge.svg)](https://github.com/wilfranr/jds-vehicles/actions/workflows/ci.yml)
+
 Plataforma digital para concesionario de vehículos con catálogo público, filtros avanzados, cotizador/reserva y panel administrativo.
 
 ## Stack Tecnológico
@@ -91,3 +93,6 @@ Adicionalmente, se cuenta con hooks de Git configurados con **Husky** y **lint-s
 ## Gestión del Proyecto
 
 El desarrollo se gestiona a través del backlog de tareas ubicado en la carpeta [ISSUES/](ISSUES/README.md). Consulta dicho archivo para conocer el flujo de trabajo, convenciones y el estado de cada fase.
+
+> [!NOTE]
+> El pipeline de despliegue continuo (CD) hacia el servidor en Oracle Cloud vía SSH será implementado en la **Fase 6** del proyecto.

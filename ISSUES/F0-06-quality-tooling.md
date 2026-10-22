@@ -1,6 +1,6 @@
 # F0-06: ESLint, Prettier, typecheck y Vitest
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 0
 - **Depende de:** F0-02
 - **Prioridad:** Media

@@ -1,6 +1,6 @@
 # F0-07: Pipeline de CI mínimo
 
-- **Estado:** TODO
+- **Estado:** REVIEW
 - **Fase:** 0
 - **Depende de:** F0-04, F0-06
 - **Prioridad:** Baja
@@ -26,9 +26,9 @@ Despliegue, publicación de imágenes Docker, análisis de seguridad (Dependabot
 
 ## Criterios de aceptación
 
-- [ ] El workflow es válido (verificar con `actionlint` si está disponible, o revisión manual de sintaxis YAML).
-- [ ] Los comandos del workflow ejecutados en local, en el mismo orden, pasan.
-- [ ] No contiene secretos ni rutas absolutas locales.
+- [x] El workflow es válido (verificar con `actionlint` si está disponible, o revisión manual de sintaxis YAML).
+- [x] Los comandos del workflow ejecutados en local, en el mismo orden, pasan.
+- [x] No contiene secretos ni rutas absolutas locales.
 
 ## Verificación
 
@@ -36,3 +36,27 @@ Despliegue, publicación de imágenes Docker, análisis de seguridad (Dependabot
 pnpm install --frozen-lockfile && pnpm prisma generate && pnpm prisma migrate deploy
 pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build
 ```
+
+## Notas de entrega
+
+- **Qué se hizo:**
+  1. Configuración de `.github/workflows/ci.yml` ejecutándose en `push` a `main` y en `pull_request`, con cancelación de tareas obsoletas con `concurrency`.
+  2. Detección automática y consistente de la versión de Node desde `.nvmrc` y caché nativa de `pnpm`.
+  3. Contenedor de servicio MySQL 8.0 con healthcheck activo (`mysqladmin ping`).
+  4. Pasos completos de validación en orden idéntico a las especificaciones:
+     - `pnpm install --frozen-lockfile`
+     - `pnpm prisma generate`
+     - `pnpm prisma migrate deploy`
+     - `pnpm format:check`
+     - `pnpm lint`
+     - `pnpm typecheck`
+     - `pnpm test`
+     - `pnpm build`
+  5. Adición del remoto oficial `git@github.com:wilfranr/jds-vehicles.git` e incorporación del badge de estado de CI en `README.md`.
+  6. Inclusión de nota en `README.md` especificando que el despliegue en servidor Oracle (SSH) se abordará en la Fase 6.
+  7. Validación de sintaxis YAML sin secretos ni rutas absolutas locales.
+  8. Ejecución local idéntica y exitosa de todos los pasos del workflow.
+- **Desviaciones:** Ninguna.
+- **Comandos de verificación ejecutados con éxito:**
+  - `pnpm install --frozen-lockfile && pnpm prisma generate && pnpm prisma migrate deploy`
+  - `pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build`
