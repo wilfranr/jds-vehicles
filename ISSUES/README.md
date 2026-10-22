@@ -58,7 +58,7 @@ Orden sugerido: F0-01 → F0-02 → (F0-03, F0-04, F0-06 en paralelo) → F0-05 
 
 | ID                                     | Título                                          | Depende de   | Estado |
 | :------------------------------------- | :---------------------------------------------- | :----------- | :----- |
-| [F1-01](F1-01-layout-base.md)          | Layout base: header, footer y botón de WhatsApp | F0-08        | TODO   |
+| [F1-01](F1-01-layout-base.md)          | Layout base: header, footer y botón de WhatsApp | F0-08        | DONE   |
 | [F1-02](F1-02-capa-datos-catalogo.md)  | Capa de datos del catálogo                      | F0-08        | TODO   |
 | [F1-03](F1-03-listado-catalogo.md)     | Portada y listado de catálogo con filtros       | F1-01, F1-02 | TODO   |
 | [F1-04](F1-04-detalle-vehiculo.md)     | Detalle de vehículo con galería                 | F1-02, F1-03 | TODO   |

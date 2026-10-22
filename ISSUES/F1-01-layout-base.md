@@ -1,6 +1,6 @@
 # F1-01: Layout base: header, footer y botón flotante de WhatsApp
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 1
 - **Depende de:** F0-08
 - **Prioridad:** Alta
