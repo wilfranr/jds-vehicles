@@ -1,6 +1,6 @@
 # F0-08: Cierre de Fase 0 (ajustes de revisión)
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 0
 - **Depende de:** F0-07
 - **Prioridad:** Alta (bloquea la Fase 1)
