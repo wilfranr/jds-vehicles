@@ -50,7 +50,7 @@ No ampliar el alcance: si surge trabajo extra, anótalo en `Notas de entrega` pa
 | [F0-05](F0-05-seed-script.md)            | Script de seed independiente                     | F0-04        | DONE   |
 | [F0-06](F0-06-quality-tooling.md)        | ESLint, Prettier, typecheck y Vitest             | F0-02        | DONE   |
 | [F0-07](F0-07-ci-pipeline.md)            | Pipeline de CI mínimo                            | F0-04, F0-06 | DONE   |
-| [F0-08](F0-08-cierre-fase0.md)           | Cierre de Fase 0 (ajustes de revisión)           | F0-07        | TODO   |
+| [F0-08](F0-08-cierre-fase0.md)           | Cierre de Fase 0 (ajustes de revisión)           | F0-07        | DONE   |
 
 Orden sugerido: F0-01 → F0-02 → (F0-03, F0-04, F0-06 en paralelo) → F0-05 → F0-07 → F0-08.
 
