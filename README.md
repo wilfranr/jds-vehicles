@@ -69,7 +69,7 @@ _Nota: La estructura del código fuente (`src/`, `prisma/`, etc.) se creará en 
    pnpm db:seed
    ```
 
-   _Nota: En desarrollo, `pnpm db:seed` siembra datos de referencia (roles y configuración) más datos de demostración (usuarios, marcas, modelos y vehículos con fotos). En producción (`NODE_ENV=production`), solo siembra datos de referencia a menos que se invoque con la bandera `--demo` (`pnpm tsx prisma/seed.ts --demo`)._
+   _Nota: En desarrollo, `pnpm db:seed` siembra datos de referencia (roles y configuración) más datos de demostración (usuarios, marcas, modelos y vehículos con fotos). En producción (`NODE_ENV=production`), solo siembra datos de referencia a menos que se invoque con la bandera `--demo` (`pnpm db:seed --demo`), en cuyo caso se exige definir `SEED_ADMIN_PASSWORD` y `SEED_CLIENT_PASSWORD` para evitar contraseñas por defecto._
 
 6. **Iniciar servidor de desarrollo:**
    ```bash

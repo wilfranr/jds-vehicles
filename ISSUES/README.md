@@ -25,10 +25,11 @@ Backlog de trabajo gestionado por el **orquestador**. Cada issue es autocontenid
 
 1. Toma un issue cuyo estado sea `TODO` y cuyas dependencias estén en `DONE`.
 2. Cambia su `Estado` a `IN PROGRESS` en el archivo.
-3. Trabaja en una rama `issue/<ID>-<slug>` (ej. `issue/F0-02-scaffold-nextjs`).
+3. Trabaja en una rama `issue/<ID>-<slug>` (ej. `issue/F0-02-scaffold-nextjs`) y abre un pull request hacia `main`. **No se hace commit directo a `main`.**
 4. Cumple **todos** los criterios de aceptación y ejecuta los comandos de verificación.
-5. Cambia `Estado` a `REVIEW`, y añade al final una sección `## Notas de entrega` con: qué se hizo, desviaciones respecto al issue y comandos para verificar.
-6. El orquestador revisa y marca `DONE`.
+5. Cambia `Estado` a `REVIEW` (**nunca a `DONE`**), y añade al final una sección `## Notas de entrega` con: qué se hizo, desviaciones respecto al issue y comandos para verificar.
+6. Solo el orquestador revisa, aprueba y marca `DONE`; el merge a `main` se hace después de esa revisión.
+7. Antes de escribir código con Next.js, leer `AGENTS.md` y la documentación local en `node_modules/next/dist/docs/`.
 
 No ampliar el alcance: si surge trabajo extra, anótalo en `Notas de entrega` para que el orquestador cree un issue nuevo.
 
@@ -49,9 +50,29 @@ No ampliar el alcance: si surge trabajo extra, anótalo en `Notas de entrega` pa
 | [F0-05](F0-05-seed-script.md)            | Script de seed independiente                     | F0-04        | DONE   |
 | [F0-06](F0-06-quality-tooling.md)        | ESLint, Prettier, typecheck y Vitest             | F0-02        | DONE   |
 | [F0-07](F0-07-ci-pipeline.md)            | Pipeline de CI mínimo                            | F0-04, F0-06 | DONE   |
+| [F0-08](F0-08-cierre-fase0.md)           | Cierre de Fase 0 (ajustes de revisión)           | F0-07        | TODO   |
 
-Orden sugerido: F0-01 → F0-02 → (F0-03, F0-04, F0-06 en paralelo) → F0-05 → F0-07.
+Orden sugerido: F0-01 → F0-02 → (F0-03, F0-04, F0-06 en paralelo) → F0-05 → F0-07 → F0-08.
+
+### Fase 1: Catálogo público
+
+| ID                                     | Título                                          | Depende de   | Estado |
+| :------------------------------------- | :---------------------------------------------- | :----------- | :----- |
+| [F1-01](F1-01-layout-base.md)          | Layout base: header, footer y botón de WhatsApp | F0-08        | TODO   |
+| [F1-02](F1-02-capa-datos-catalogo.md)  | Capa de datos del catálogo                      | F0-08        | TODO   |
+| [F1-03](F1-03-listado-catalogo.md)     | Portada y listado de catálogo con filtros       | F1-01, F1-02 | TODO   |
+| [F1-04](F1-04-detalle-vehiculo.md)     | Detalle de vehículo con galería                 | F1-02, F1-03 | TODO   |
+| [F1-05](F1-05-paginas-informativas.md) | Próximamente, Cómo funciona y Contacto          | F1-01, F1-03 | TODO   |
+| [F1-06](F1-06-seo-calidad-fase1.md)    | SEO básico, errores y pruebas de cierre         | F1-03–F1-05  | TODO   |
+
+Orden sugerido: F0-08 → (F1-01 ∥ F1-02) → F1-03 → (F1-04 ∥ F1-05) → F1-06.
+
+### Decisiones pendientes del propietario
+
+- **Cifras de marca** ("42 vehículos", "100 % garantía", "48 h", "inspección de 120 puntos"): se usan provisionalmente tal como están en el prototipo, centralizadas en `src/lib/site-content.ts`. Confirmar o reemplazar antes de publicar (Fase 6).
+- **Almacenamiento de fotos** (disco del servidor Oracle vs. servicio externo): se decide antes de la Fase 4. En la Fase 1 las fotos se muestran desde URL.
+- Dirección, horario y mapa del concesionario: no se muestran hasta que existan.
 
 ### Fases siguientes
 
-Se crearán cuando la Fase 0 esté en `DONE`.
+Se crearán cuando la Fase 1 esté en `DONE`.
