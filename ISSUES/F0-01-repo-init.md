@@ -1,6 +1,6 @@
 # F0-01: Inicializar repositorio, README y `.env.example`
 
-- **Estado:** IN PROGRESS
+- **Estado:** REVIEW
 - **Fase:** 0
 - **Depende de:** —
 - **Prioridad:** Alta (bloquea todo lo demás)
@@ -30,11 +30,11 @@ El directorio del proyecto no es un repositorio git y no tiene README ni gestió
 Instalar dependencias, crear el proyecto Next.js o tocar el contenido de los documentos más allá de corregir enlaces.
 
 ## Criterios de aceptación
-- [ ] `git status` limpio y `git log` muestra al menos 2 commits (inicial + reorganización).
-- [ ] Ningún archivo original se perdió (verificar con `git ls-files`).
-- [ ] `.env` está ignorado; `.env.example` está versionado.
-- [ ] `README.md` explica qué es el proyecto y cómo navegar la documentación.
-- [ ] Los enlaces internos de los `.md` funcionan tras mover los archivos.
+- [x] `git status` limpio y `git log` muestra al menos 2 commits (inicial + reorganización).
+- [x] Ningún archivo original se perdió (verificar con `git ls-files`).
+- [x] `.env` está ignorado; `.env.example` está versionado.
+- [x] `README.md` explica qué es el proyecto y cómo navegar la documentación.
+- [x] Los enlaces internos de los `.md` funcionan tras mover los archivos.
 
 ## Verificación
 ```bash
@@ -46,3 +46,22 @@ git check-ignore -v .env
 
 ## Notas
 Mensajes de commit en español, formato `tipo: descripción` (feat, fix, chore, docs).
+
+## Notas de entrega
+- **Qué se hizo:**
+  1. Inicialización del repositorio git en la rama `main` y creación de rama `issue/F0-01-repo-init`.
+  2. Commit inicial preservando el 100% de los archivos originales.
+  3. Reorganización de artefactos con `git mv`:
+     - `docs/DOCUMENTACION.md`, `docs/DESIGN.md`
+     - `docs/prototype/` (`code.html`, `screen.png`, `logo.jpg`, `stitch_concesionario_digital_autoreserve.zip`)
+     - `docs/legacy/` (`database.sql`, `database_modelo.xlsx`)
+  4. Corrección de referencias en `docs/DOCUMENTACION.md` y `ISSUES/README.md`.
+  5. Creación de `.gitignore` completo para Node/Next.js (ignorando `.env*` excepto `.env.example`, `node_modules`, `.next`, `coverage`, `/uploads`, logs, etc.).
+  6. Creación de `.env.example` con variables base requeridas y comentarios explicativos.
+  7. Creación de `README.md` en la raíz con descripción, stack, requisitos previos, estructura de carpetas, pasos locales con marcadores `TODO(F0-0x)` y enlace a `ISSUES/README.md`.
+- **Desviaciones:** Ninguna.
+- **Comandos de verificación ejecutados con éxito:**
+  - `git status`
+  - `git log --oneline`
+  - `git ls-files | sort`
+  - `git check-ignore -v .env`
