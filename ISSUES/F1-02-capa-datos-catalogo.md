@@ -1,6 +1,6 @@
 # F1-02: Capa de datos del catálogo
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 1
 - **Depende de:** F0-08
 - **Prioridad:** Alta (bloquea F1-03, F1-04, F1-05)
