@@ -103,6 +103,7 @@ jobs:
       AUTH_SECRET: 'ci_pipeline_dummy_secret_for_nextjs_build_at_least_32_characters'
       NEXT_PUBLIC_SITE_URL: 'http://localhost:3100'
       NEXT_PUBLIC_WHATSAPP_NUMBER: '573202353168'
+      AUTH_TRUST_HOST: 'true'
       CI: true
 
     steps:

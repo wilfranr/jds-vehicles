@@ -72,7 +72,7 @@ Orden sugerido: F0-08 → (F1-01 ∥ F1-02) → F1-03 → (F1-04 ∥ F1-05) → 
 
 | ID                                        | Título                                          | Depende de          | Estado |
 | :---------------------------------------- | :---------------------------------------------- | :------------------ | :----- |
-| [F2-01](F2-01-authjs-base.md)             | Auth.js: configuración base, sesiones y helpers | F1-07               | TODO   |
+| [F2-01](F2-01-authjs-base.md)             | Auth.js: configuración base, sesiones y helpers | F1-07               | REVIEW |
 | [F2-02](F2-02-registro.md)                | Registro de clientes                            | F2-01               | TODO   |
 | [F2-03](F2-03-login-logout-ui.md)         | Login, cierre de sesión y menú de usuario       | F2-01, F2-02, F1-06 | TODO   |
 | [F2-04](F2-04-seguridad-rutas-limites.md) | Protección de rutas y limitación de intentos    | F2-01               | TODO   |
