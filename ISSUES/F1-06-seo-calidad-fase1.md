@@ -21,6 +21,11 @@ Cierre de la Fase 1: visibilidad en buscadores, páginas de error coherentes con
 8. Pasada de Lighthouse (móvil) en `/`, `/catalogo` y `/vehiculos/1`: registrar en las notas de entrega puntuaciones de rendimiento, accesibilidad, mejores prácticas y SEO. Meta: accesibilidad ≥ 95, SEO ≥ 95, rendimiento ≥ 85 en las 3. Si no se alcanza, anotar la causa.
 9. Actualizar el `README.md` con la lista de rutas públicas y cómo correr e2e.
 
+10. **Pendientes de la revisión de F1-03:**
+    - `getFeaturedVehicles` (`src/server/catalog/queries.ts`) documenta una vida de caché ≤ 60 s pero no llama a `cacheLife`, así que dura los 15 min por defecto. Añadir `cacheLife('seconds')` (o el perfil equivalente que indique la documentación local de Next) y comprobar en el resumen de `pnpm build` que `/` ya no indica 15 m.
+    - `getFilterOptions` incluye modelos cuyos únicos vehículos son `PROXIMAMENTE` (p. ej. Hilux en el selector de modelo del catálogo), y al elegirlos el listado sale vacío. Limitar las opciones a vehículos `DISPONIBLE`/`RESERVADO`.
+    - El menú del header (F1-01) parte los textos en dos líneas a 1280 px ("Catálogo / Inventario", "Cómo Funciona"); ajustar para que quepan en una línea.
+
 ## Fuera de alcance
 
 CSP estricta, analítica, cookies/consentimiento, internacionalización.
