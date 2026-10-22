@@ -48,7 +48,10 @@ _Nota: La estructura del código fuente (`src/`, `prisma/`, etc.) se creará en 
 
    ```bash
    cp .env.example .env
+   openssl rand -base64 32   # pegar el resultado en AUTH_SECRET
    ```
+
+   `AUTH_SECRET` firma las sesiones de Auth.js y es obligatoria en producción (el servidor se niega a arrancar sin ella). Detrás de un proxy inverso define también `AUTH_TRUST_HOST=true`. Las sesiones son JWT en cookie `HttpOnly` + `SameSite=Lax` (`Secure` en producción), duran como máximo 7 días y se renuevan cada 24 h de actividad.
 
 3. **Instalar dependencias:**
 

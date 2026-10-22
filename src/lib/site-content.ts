@@ -53,6 +53,10 @@ export const siteContent = {
     locale: 'es_CO',
     notFoundVehicleTitle: 'Vehículo no encontrado',
   },
+  // Autenticación (mensajes genéricos: no distinguen correo inexistente, contraseña errónea ni usuario inactivo)
+  auth: {
+    invalidCredentials: 'Correo o contraseña incorrectos.',
+  },
   // Páginas de error globales
   errorPages: {
     notFoundTitle: 'Página no encontrada',
