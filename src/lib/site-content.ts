@@ -43,11 +43,10 @@ export const siteContent = {
   proximamente: {
     title: 'Próximamente Disponibles | JDS Vehículos',
     heading: 'Próximamente en Inventario',
-    subtitle:
-      'Vehículos en alistamiento, peritaje o transporte previo a su ingreso al catálogo oficial.',
-    emptyTitle: 'Pronto tendremos novedades en alistamiento',
+    subtitle: 'Vehículos que están por ingresar a nuestro inventario.',
+    emptyTitle: 'Pronto tendremos novedades en inventario',
     emptyDescription:
-      'Actualmente no hay vehículos en preparación. Escríbenos por WhatsApp y te avisaremos tan pronto ingrese una unidad de tu interés.',
+      'Actualmente no hay vehículos por ingresar. Escríbenos por WhatsApp y te avisaremos tan pronto ingrese una unidad de tu interés.',
     emptyCtaText: 'Consultar por WhatsApp',
     emptyWhatsAppMessage:
       'Hola JDS Vehículos, me gustaría saber qué próximos vehículos ingresarán al inventario.',
@@ -56,14 +55,13 @@ export const siteContent = {
   comoFunciona: {
     title: 'Cómo Funciona | JDS Vehículos',
     heading: 'Cómo Comprar en JDS Vehículos',
-    subtitle:
-      'Un proceso transparente, ágil y seguro diseñado para que adquieras tu próximo vehículo con total confianza.',
+    subtitle: 'Así reservas tu vehículo en JDS Vehículos, paso a paso.',
     steps: [
       {
         number: '01',
         title: 'Explora y Elige',
         description:
-          'Recorre nuestro catálogo digital con fotos reales, especificaciones detalladas y precio de contado sin sorpresas.',
+          'Recorre nuestro catálogo digital con las especificaciones y precio de cada vehículo.',
       },
       {
         number: '02',
@@ -75,19 +73,19 @@ export const siteContent = {
         number: '03',
         title: 'Aparta tu Vehículo',
         description:
-          'Reserva en línea: el vehículo queda apartado temporalmente y generas un código de reserva único para tu solicitud.',
+          'Reserva en línea: el vehículo queda apartado temporalmente y recibes un código único para tu solicitud.',
       },
       {
         number: '04',
         title: 'Continúa por WhatsApp',
         description:
-          'Un asesor comercial de JDS te contactará directamente vía WhatsApp con el código de reserva para coordinar detalles y peritaje presencial.',
+          'Se abre la conversación de WhatsApp con un asesor comercial llevando el código de reserva en el mensaje.',
       },
       {
         number: '05',
-        title: 'Cierre y Traspaso Seguro',
+        title: 'Cierre del Negocio',
         description:
-          'El pago, trámites legales y traspaso se coordinan de forma presencial y segura directamente con el concesionario.',
+          'El pago, trámites y traspaso se coordinan directamente con el concesionario, fuera de la plataforma.',
       },
     ],
     faqs: [
@@ -104,9 +102,8 @@ export const siteContent = {
       },
       {
         question: '¿Tiene algún costo reservar en la plataforma web?',
-        // TODO(owner): confirmar política de cobro/anticipo de reserva antes de producción
-        answer:
-          'En la plataforma web generas tu solicitud y código de reserva. Los acuerdos comerciales o anticipos se coordinan de manera directa y personalizada con el concesionario.',
+        // TODO(owner): confirmar política comercial de reserva antes de producción
+        answer: 'Los detalles del proceso comercial los confirma tu asesor por WhatsApp.',
       },
       {
         question: '¿Qué ocurre si decido no continuar con la compra?',
@@ -124,14 +121,13 @@ export const siteContent = {
     title: 'Contacto | JDS Vehículos',
     heading: 'Canales de Atención Directa',
     subtitle:
-      'Estamos listos para asesorarte en la compra o venta de tu vehículo a través de nuestros canales oficiales.',
+      'Estamos listos para asesorarte en la compra de tu vehículo a través de nuestros canales oficiales.',
     whatsappTitle: 'Atención por WhatsApp',
     whatsappDescription:
-      'Nuestra vía principal de comunicación comercial. Te atendemos de manera personalizada para consultas de inventario, reservas y citas.',
+      'Nuestra vía principal de comunicación comercial. Te atendemos de manera personalizada para consultas de inventario y reservas.',
     whatsappButtonText: 'Escribir a un asesor',
     instagramTitle: 'Síguenos en Instagram',
-    instagramDescription:
-      'Entérate antes que nadie de los nuevos ingresos, fotos exclusivas y entregas en nuestro canal de Instagram.',
+    instagramDescription: 'Síguenos en Instagram para ver novedades.',
     instagramButtonText: 'Ver perfil oficial',
     // TODO(owner): agregar datos de dirección física, horario de atención y mapa embebido una vez suministrados por el concesionario.
   },
