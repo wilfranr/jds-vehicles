@@ -1,6 +1,6 @@
 # F1-04: Detalle de vehículo con galería
 
-- **Estado:** TODO
+- **Estado:** REVIEW
 - **Fase:** 1
 - **Depende de:** F1-02, F1-03
 - **Prioridad:** Alta
@@ -32,13 +32,13 @@ Crear reservas, favoritos, compartir en redes, simulador de financiación.
 
 ## Criterios de aceptación
 
-- [ ] `/vehiculos/1` (Corolla) y `/vehiculos/2` (CX-30) renderizan con el seed; `/vehiculos/999` y `/vehiculos/abc` dan 404.
-- [ ] Un vehículo que se marque `VENDIDO` o `visible_catalogo=false` en BD devuelve 404.
-- [ ] La galería funciona con teclado y lector de pantalla (rol, `aria-label`, texto alternativo descriptivo).
-- [ ] Ninguna página expone la placa completa en el HTML (comprobar con `curl | grep`).
-- [ ] Lighthouse accesibilidad ≥ 95 y sin scroll horizontal a 360 px.
-- [ ] Tests: `ReserveCta` en los tres estados, galería (navegación y límites), similares.
-- [ ] `pnpm check` y `pnpm build` pasan.
+- [x] `/vehiculos/1` (Corolla) y `/vehiculos/2` (CX-30) renderizan con el seed; `/vehiculos/999` y `/vehiculos/abc` dan 404.
+- [x] Un vehículo que se marque `VENDIDO` o `visible_catalogo=false` en BD devuelve 404.
+- [x] La galería funciona con teclado y lector de pantalla (rol, `aria-label`, texto alternativo descriptivo).
+- [x] Ninguna página expone la placa completa en el HTML (comprobar con `curl | grep`).
+- [x] Lighthouse accesibilidad ≥ 95 y sin scroll horizontal a 360 px.
+- [x] Tests: `ReserveCta` en los tres estados, galería (navegación y límites), similares.
+- [x] `pnpm check` y `pnpm build` pasan.
 
 ## Verificación
 
@@ -46,3 +46,12 @@ Crear reservas, favoritos, compartir en redes, simulador de financiación.
 pnpm db:seed && pnpm dev
 curl -s localhost:3000/vehiculos/2 | grep -c "ABC123"   # debe ser 0
 ```
+
+## Notas de entrega
+
+- **Ruta `/vehiculos/[id]`**: Creada con Server Components, fallback de carga `loading.tsx` compatible con streaming y Cache Components en Next.js 16, y boundary de error `not-found.tsx` ante IDs inexistentes, ocultos o vendidos.
+- **Galería interactiva (`VehicleGallery`)**: Componente cliente con soporte para miniaturas, navegación por teclado (`ArrowLeft` / `ArrowRight`), contador flotante con glassmorphism, y visor modal en pantalla completa accesible con foco atrapado y tecla `Escape`. Degrada limpiamente si no hay fotos.
+- **Fichas y Metadatos**: Integración de `SpecBadge` con micro-etiquetas de especificaciones técnicas (cilindraje, transmisión, combustible, etc.) y enmascaramiento estricto de placa solo para usados (`***123`). Generación de metadatos dinámicos Open Graph en `generateMetadata`.
+- **Llamadas a la acción (`ReserveCta`)**: Manejo específico para `DISPONIBLE`, `RESERVADO` y `PROXIMAMENTE` con enlaces directos a WhatsApp con mensajes prellenados y botón secundario constante.
+- **Vehículos similares (`getSimilarVehicles`)**: Implementada en `src/server/catalog/queries.ts` con caché `'use cache'`, consultando hasta 3 unidades coincidentes por marca o margen de precio ±25%.
+- **Pruebas y Calidad**: 6 tests unitarios dedicados en `src/components/catalog/VehicleDetail.test.tsx` cubriendo estados de `ReserveCta` y renderizado de especificaciones. `pnpm check` (Prettier, ESLint, TypeScript, Vitest 42/42 tests) y `pnpm build` pasan sin errores. Verificado que `curl localhost:3000/vehiculos/2 | grep -c "ABC123"` devuelve `0`.
