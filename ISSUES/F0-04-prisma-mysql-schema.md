@@ -1,6 +1,6 @@
 # F0-04: MySQL local (Docker) + Prisma + migración base
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 0
 - **Depende de:** F0-02
 - **Prioridad:** Alta

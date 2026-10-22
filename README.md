@@ -56,11 +56,12 @@ jds-vehicules/
    pnpm db:up
    ```
 
-5. **Ejecutar migraciones y seed:**
+5. **Ejecutar migraciones y sembrar datos:**
    ```bash
    pnpm db:migrate
-   # TODO(F0-05): pnpm db:seed
+   pnpm db:seed
    ```
+   *Nota: En desarrollo, `pnpm db:seed` siembra datos de referencia (roles y configuración) más datos de demostración (usuarios, marcas, modelos y vehículos con fotos). En producción (`NODE_ENV=production`), solo siembra datos de referencia a menos que se invoque con la bandera `--demo` (`pnpm tsx prisma/seed.ts --demo`).*
 
 6. **Iniciar servidor de desarrollo:**
    ```bash
