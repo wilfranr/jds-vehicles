@@ -1,6 +1,6 @@
 # F2-04: Protección de rutas y limitación de intentos
 
-- **Estado:** TODO
+- **Estado:** REVIEW
 - **Fase:** 2
 - **Depende de:** F2-01
 - **Prioridad:** Alta (puede hacerse en paralelo con F2-02)
@@ -33,13 +33,13 @@ CAPTCHA, bloqueo permanente de cuentas, Redis, WAF, doble factor.
 
 ## Criterios de aceptación
 
-- [ ] Sin sesión, `/mi-cuenta` redirige a `/login?next=%2Fmi-cuenta` (con `curl -i` se ve el 307/302).
-- [ ] Con sesión de `CLIENTE`, `/admin` no es accesible; con `ADMIN` sí podrá serlo cuando exista (comprobado por el test de `decideAccess`).
-- [ ] Tras 5 intentos fallidos de login con el mismo par correo+IP, el sexto es bloqueado aunque se use la contraseña correcta, y se desbloquea al pasar la ventana (test con reloj simulado).
-- [ ] El limitador no crece sin límite (test con 100 000 claves distintas).
-- [ ] Los registros de seguridad no contienen contraseñas ni correos completos.
-- [ ] El proxy no se ejecuta en `/_next/**`, imágenes ni `/api/auth/**` (comprobar el `matcher`).
-- [ ] `pnpm check` y `pnpm build` pasan; CI en verde.
+- [x] Sin sesión, `/mi-cuenta` redirige a `/login?next=%2Fmi-cuenta` (con `curl -i` se ve el 307/302).
+- [x] Con sesión de `CLIENTE`, `/admin` no es accesible; con `ADMIN` sí podrá serlo cuando exista (comprobado por el test de `decideAccess`).
+- [x] Tras 5 intentos fallidos de login con el mismo par correo+IP, el sexto es bloqueado aunque se use la contraseña correcta, y se desbloquea al pasar la ventana (test con reloj simulado).
+- [x] El limitador no crece sin límite (test con 100 000 claves distintas).
+- [x] Los registros de seguridad no contienen contraseñas ni correos completos.
+- [x] El proxy no se ejecuta en `/_next/**`, imágenes ni `/api/auth/**` (comprobar el `matcher`).
+- [x] `pnpm check` y `pnpm build` pasan; CI en verde. _(CI pendiente de verse en el PR.)_
 
 ## Verificación
 
@@ -52,3 +52,41 @@ for i in 1 2 3 4 5 6; do curl -s -o /dev/null -w "%{http_code}\n" -X POST ... ; 
 ## Recordatorio de proceso
 
 Rama `issue/F2-04-seguridad-rutas-limites` + PR; al terminar, estado `REVIEW`. **No fusionar ni marcar `DONE`.**
+
+## Notas de entrega
+
+### Qué se hizo
+
+- **`src/proxy.ts`** (convención de Next 16): decodifica el JWT con `getToken` (sin BD) y aplica `decideAccess`. `matcher: ['/mi-cuenta/:path*', '/admin/:path*']`, así que no se ejecuta sobre `/_next/**`, imágenes, archivos públicos ni `/api/auth/**`. Sin sesión → 307 a `/login?next=<ruta>`; `CLIENTE` en `/admin` → 404 (reescritura a una ruta inexistente + evento `forbidden_access`). El comentario del archivo documenta que no es la única barrera y la regla de `getFreshUser()` para operaciones sensibles (punto 6).
+- **`src/server/security/access.ts`**: `decideAccess(pathname, rol) → allow | redirectLogin | notFound` (pura, probada, incluido el caso de rol obsoleto vs. rol fresco).
+- **`rate-limit.ts`**: `createRateLimiter({ limit, windowMs, maxEntries })` con `check` / `hit` / `reset` (ventana deslizante, limpieza periódica y tope de claves; 100 000 claves distintas no superan el tope). Cabecera de documentación con la limitación de proceso único y cómo sustituirlo por BD.
+- **`limiters.ts`**: políticas listas para usar: login 5 fallos por correo+IP y 20 por IP en 15 min (`checkLoginAllowed`, `recordLoginFailure`, `recordLoginSuccess` —solo reinicia el par—) y registro 5 por IP por hora (`checkRegisterAllowed`, `recordRegisterAttempt`). `retryAfterSeconds` en el resultado.
+- **`client-ip.ts`**: `X-Forwarded-For` solo con `TRUST_PROXY=true`; con N proxies (`TRUST_PROXY_HOPS`, por defecto 1) se toma la N-ésima entrada desde la derecha (las anteriores las controla el cliente); IP validada por formato; sin proxy confiable, valor fijo `unknown`.
+- **`audit.ts`**: `logSecurityEvent` (una línea JSON, `console.warn`) y `maskEmail` (`a***@dominio.com`).
+- Cabeceras de seguridad: ya existían desde F1-06; no se duplicaron.
+- `README.md`: checklist de despliegue (`AUTH_SECRET`, `AUTH_TRUST_HOST`, `TRUST_PROXY`, `TRUST_PROXY_HOPS`); `.env.example` actualizado.
+- Tests nuevos (30): limitador (ventanas, bloqueo, desbloqueo con reloj simulado, claves independientes, tope y limpieza), políticas de login, IP con y sin proxy, enmascarado y formato del log, `decideAccess` y `matcher`, y `requireUser`/`requireRole` sin sesión o con rol insuficiente (la comprobación dentro de la acción, sin depender del proxy).
+
+### Pendiente: integración del limitador
+
+**No integrado** en login ni registro: en `main` no existe ninguna de las dos acciones (F2-03 sin empezar; F2-02 está en el PR #18). El PR que primero encuentre ambos puntos de entrada debe:
+
+1. En la acción de login: `checkLoginAllowed(email, ip)` antes de verificar; si no está permitido, `logSecurityEvent({ type: 'login_blocked', ... })` y el mensaje genérico «Demasiados intentos. Inténtalo de nuevo en unos minutos» (texto en `site-content.ts`); tras fallo `recordLoginFailure` + `login_failed`; tras éxito `recordLoginSuccess`.
+2. En `registerAction` (F2-02): `checkRegisterAllowed(ip)` + `recordRegisterAttempt(ip)` + `register_blocked`.
+   La IP sale de `getClientIp((await headers()))`. El orquestador debe crear el seguimiento en F2-03 (y/o F2-02) si falta alguno.
+
+### Verificación realizada (`pnpm start`, `AUTH_TRUST_HOST=true`)
+
+```bash
+curl -si localhost:3150/mi-cuenta            # 307, location: /login?next=%2Fmi-cuenta
+curl -si "localhost:3150/admin/vehiculos?x=1" # 307, location: /login?next=%2Fadmin%2Fvehiculos%3Fx%3D1
+# sesión de CLIENTE (carlos.gomez@example.com, seed):
+curl -si -b jar localhost:3150/admin/x        # 404 y en el log: {"channel":"security","type":"forbidden_access","userId":2,"ip":"unknown","detail":"/admin/x"}
+```
+
+`/logo.jpg` y `/api/auth/session` siguen respondiendo 200 (el proxy no se ejecuta en ellos). Con sesión, `/mi-cuenta` devuelve 404 porque la página aún no existe (F2-05). No se pudo comprobar por `curl` que `ADMIN` entra en `/admin` (tampoco existe); lo cubre el test de `decideAccess`.
+
+### Notas
+
+- Sin `TRUST_PROXY=true` (p. ej. en desarrollo) todos los clientes comparten el cupo `unknown`: es seguro pero restrictivo; en producción detrás del proxy debe activarse.
+- Si `.next` queda de otra rama, `pnpm typecheck` puede fallar con tipos obsoletos de `.next/types`; `pnpm build` lo regenera.
