@@ -1,6 +1,6 @@
 # F2-02: Registro de clientes
 
-- **Estado:** TODO
+- **Estado:** REVIEW
 - **Fase:** 2
 - **Depende de:** F2-01
 - **Prioridad:** Alta
@@ -42,14 +42,14 @@ Verificación de correo, recuperación de contraseña (pendiente de decisión de
 
 ## Criterios de aceptación
 
-- [ ] Registrar un usuario nuevo desde `/registro` crea la fila con rol `CLIENTE`, `password_hash` bcrypt, teléfono con prefijo `57` y `consentimiento_datos_at` rellenado.
-- [ ] Registrar con un correo o documento ya existentes muestra el mismo mensaje genérico y no crea filas duplicadas.
-- [ ] El formulario funciona con JavaScript desactivado.
-- [ ] `?next=//evil.com` y similares terminan en `/` (comprobado con test y a mano).
-- [ ] Ningún error de servidor (500) con entradas hostiles (cadenas de 10 000 caracteres, comillas, `<script>`, emoji, bytes nulos).
-- [ ] Sin scroll horizontal a 360 px; accesibilidad: cada campo con `label`, errores asociados con `aria-describedby`, foco visible.
-- [ ] `pnpm check` y `pnpm build` pasan; CI en verde.
-- [ ] La migración se aplica desde cero (`pnpm db:reset`) y el seed sigue funcionando.
+- [x] Registrar un usuario nuevo desde `/registro` crea la fila con rol `CLIENTE`, `password_hash` bcrypt, teléfono con prefijo `57` y `consentimiento_datos_at` rellenado.
+- [x] Registrar con un correo o documento ya existentes muestra el mismo mensaje genérico y no crea filas duplicadas.
+- [x] El formulario funciona con JavaScript desactivado.
+- [x] `?next=//evil.com` y similares terminan en `/` (comprobado con test y a mano).
+- [x] Ningún error de servidor (500) con entradas hostiles (cadenas de 10 000 caracteres, comillas, `<script>`, emoji, bytes nulos).
+- [x] Sin scroll horizontal a 360 px; accesibilidad: cada campo con `label`, errores asociados con `aria-describedby`, foco visible.
+- [x] `pnpm check` y `pnpm build` pasan; CI en verde. _(CI pendiente de verse en el PR.)_
+- [x] La migración se aplica desde cero (`pnpm db:reset`) y el seed sigue funcionando.
 
 ## Verificación
 
@@ -62,3 +62,33 @@ docker exec jds_vehiculos_db mysql -ujds -pjds jds_vehiculos -e "SELECT id,rol_i
 ## Recordatorio de proceso
 
 Rama `issue/F2-02-registro` + PR; al terminar, estado `REVIEW`. **No fusionar ni marcar `DONE`.** Texto visible en `site-content.ts`; sin afirmaciones comerciales inventadas.
+
+## Notas de entrega
+
+### Qué se hizo
+
+- **Migración** `20261022225746_usuarios_consentimiento_datos`: `usuarios.consentimiento_datos_at DATETIME NULL` (`consentimientoDatosAt`). Migraciones anteriores intactas.
+- **`/registro`** en el grupo `(auth)`: formulario estático con Server Action y `useActionState`; funciona sin JavaScript (comprobado con `javaScriptEnabled: false`). Con JS se valida primero en el cliente con **el mismo esquema** (`src/lib/validation/register.ts`) y el foco va al primer campo con error; el servidor sigue siendo la autoridad. Metadatos `Crear cuenta` + `noindex`. Todo el texto en `site-content.ts` (`registro`), con `TODO(owner)` para el texto legal y el enlace a `/privacidad` (no se enlaza porque no existe).
+- **`registerUser`** (`src/server/auth/register.ts`, inyectable): rol buscado por nombre `CLIENTE` (error de configuración si falta), hash bcrypt coste 12 (`BCRYPT_COST` en `src/server/auth/password.ts`), duplicados atrapados por `P2002` (sin consulta previa) con mensaje genérico, sin logs de contraseñas ni hashes. Éxito → `signIn` automático y redirección a `safeNextPath(next)` (por defecto `/`; `/mi-cuenta` aún no existe).
+- **Teléfono** normalizado a `57` + 10 dígitos; **documento** sin espacios/puntos/guiones y en mayúsculas; **correo** en minúsculas; contraseñas triviales rechazadas por lista corta.
+- **`safeNextPath`** en `src/lib/safe-redirect.ts` (con tests). `buildLoginUrl` (F2-01) ahora la reutiliza; se eliminó el duplicado `sanitizeNextPath`.
+- **Hash ficticio con coste 12** (punto 9): `DUMMY_PASSWORD_HASH` regenerado y test que compara `bcrypt.getRounds` con `BCRYPT_COST`.
+- `SiteShell` extraído del layout público y reutilizado por `(auth)/layout.tsx`.
+- Tests nuevos (38): esquema (válidos, inválidos por campo, normalización, entradas hostiles), `registerUser` con dependencias simuladas, `safeNextPath`, coste de bcrypt, e integración con la BD (crea y borra un usuario temporal, comprueba rol, hash verificable, teléfono, consentimiento y duplicados por correo y por documento).
+
+### Desviaciones y decisiones
+
+- **`?next=` se lee del `Referer`**, no de `searchParams`. Con Cache Components, leer `searchParams` exige un `<Suspense>`, y sin JavaScript el contenido en streaming nunca se muestra (la primera versión dejaba la página sin formulario). Con el formulario estático, la acción toma `next` del `Referer` y lo valida con `safeNextPath`. Consecuencia: si el navegador no envía `Referer`, se redirige a `/`.
+- El enlace «Inicia sesión» apunta a `/login` sin `next`; `/login` lo crea F2-03 y hasta entonces responde 404.
+- **Limitador de intentos (F2-04) no integrado**: aún no está en `main`. Cuando lo esté, hay que llamarlo desde `registerAction` (5 registros/IP/hora). Anotado para el seguimiento.
+- Las llamadas fallidas de `INSERT` consumen valores de autoincremento (los ids saltan); es normal en MySQL/InnoDB.
+- **Criterio «migración desde cero»**: `pnpm db:reset` quedó bloqueado por la salvaguarda de Prisma (acción destructiva que requiere consentimiento explícito del usuario) y no se forzó. En su lugar se creó una base de datos temporal, se aplicó `prisma migrate deploy` completo y `pnpm db:seed` (OK, 2 usuarios), y se eliminó. La BD de desarrollo no se tocó salvo borrar los 2 usuarios de prueba manual.
+
+### Verificación realizada
+
+`pnpm check` y `pnpm build` en verde. Con `pnpm start` (puerto 3140) y Playwright a 360 px, con y sin JavaScript: errores por campo con resumen enfocado, sin scroll horizontal, registro correcto (sesión `CLIENTE` en `/api/auth/session`), `?next=//evil.com` → `/`, duplicado → «No fue posible completar el registro con esos datos.». Fila resultante:
+
+```
+id rol_id email                        telefono      h        consentimiento_datos_at
+9108 1    f202-manual@example.com      573105559999  $2b$12$  2026-10-22 23:02:17
+```

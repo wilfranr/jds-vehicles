@@ -13,10 +13,10 @@ const credentialsSchema = z.object({
 });
 
 /**
- * Hash bcrypt (coste 10) de una contraseña aleatoria descartada. Se compara contra él cuando
+ * Hash bcrypt (coste `BCRYPT_COST`, 12) de una contraseña aleatoria descartada. Se compara contra él cuando
  * el usuario no existe para igualar el tiempo de respuesta y evitar enumerar correos.
  */
-export const DUMMY_PASSWORD_HASH = '$2b$10$jqjahToDDFppUgO4tCXG.OHZCr0ZK9kanJIv0IQ7F0FYqa5HbFJ6a';
+export const DUMMY_PASSWORD_HASH = '$2b$12$mdz679zlQ7mjrNqv/mA8Q.BRLj75xvxv1b9KdbpTmGO1urUXnliYO';
 
 /** Registro mínimo que necesita la verificación (subconjunto de `User` con su rol). */
 export interface CredentialsUserRecord {

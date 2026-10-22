@@ -57,6 +57,62 @@ export const siteContent = {
   auth: {
     invalidCredentials: 'Correo o contraseña incorrectos.',
   },
+  // Contenido de /registro
+  registro: {
+    title: 'Crear cuenta',
+    heading: 'Crear cuenta',
+    subtitle: 'Regístrate para poder reservar vehículos y hacer seguimiento a tus solicitudes.',
+    submit: 'Crear cuenta',
+    submitting: 'Creando cuenta…',
+    haveAccount: '¿Ya tienes cuenta?',
+    loginLink: 'Inicia sesión',
+    optionalSuffix: '(opcional)',
+    sections: { personal: 'Datos personales', account: 'Datos de acceso', location: 'Ubicación' },
+    labels: {
+      nombre: 'Nombres',
+      apellido: 'Apellidos',
+      tipoDocumento: 'Tipo de documento',
+      documento: 'Número de documento',
+      email: 'Correo electrónico',
+      telefono: 'Celular',
+      password: 'Contraseña',
+      confirmPassword: 'Confirmar contraseña',
+      ciudad: 'Ciudad',
+      direccion: 'Dirección',
+    },
+    hints: {
+      documento: 'Sin puntos, espacios ni guiones.',
+      telefono: 'Celular colombiano de 10 dígitos; se usa para contactarte por WhatsApp.',
+      password: 'Entre 10 y 72 caracteres, con al menos una letra y un número.',
+    },
+    documentTypes: [
+      { value: 'CC', label: 'Cédula de ciudadanía' },
+      { value: 'CE', label: 'Cédula de extranjería' },
+      { value: 'NIT', label: 'NIT' },
+      { value: 'PASAPORTE', label: 'Pasaporte' },
+    ],
+    // TODO(owner): texto legal definitivo del tratamiento de datos personales (Ley 1581 de 2012, confirmar con asesoría legal)
+    // y enlace a /privacidad cuando exista la página.
+    consentimiento: 'Autorizo el tratamiento de mis datos personales.',
+    errorSummary: 'Revisa los campos marcados.',
+    errors: {
+      nombre: 'Ingresa tus nombres (entre 2 y 100 caracteres).',
+      apellido: 'Ingresa tus apellidos (entre 2 y 100 caracteres).',
+      tipoDocumento: 'Selecciona un tipo de documento.',
+      documento: 'Ingresa un documento de 5 a 30 caracteres, solo letras y números.',
+      email: 'Ingresa un correo electrónico válido.',
+      telefono: 'Ingresa un celular colombiano de 10 dígitos que empiece por 3.',
+      passwordLength: 'La contraseña debe tener entre 10 y 72 caracteres.',
+      passwordComposition: 'La contraseña debe incluir al menos una letra y un número.',
+      passwordCommon: 'Esa contraseña es demasiado común. Elige otra.',
+      passwordMismatch: 'Las contraseñas no coinciden.',
+      ciudad: 'La ciudad no puede superar 100 caracteres.',
+      direccion: 'La dirección no puede superar 255 caracteres.',
+      consentimiento: 'Debes autorizar el tratamiento de tus datos para crear la cuenta.',
+      duplicate: 'No fue posible completar el registro con esos datos.',
+      config: 'No fue posible completar el registro en este momento. Inténtalo más tarde.',
+    },
+  },
   // Páginas de error globales
   errorPages: {
     notFoundTitle: 'Página no encontrada',
