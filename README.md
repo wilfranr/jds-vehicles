@@ -108,6 +108,17 @@ Adicionalmente, se cuenta con hooks de Git configurados con **Husky** y **lint-s
 | `/robots.txt`     | Reglas para buscadores (excluye `/api` y `/_design`)        |
 | `/api/health`     | Comprobación de salud (no indexada)                         |
 
+## Checklist de Despliegue (producción, detrás de proxy inverso)
+
+Variables de entorno obligatorias o recomendadas (ver `.env.example`):
+
+- `AUTH_SECRET`: obligatoria; el servidor no arranca sin ella (`openssl rand -base64 32`).
+- `AUTH_TRUST_HOST=true`: obligatoria detrás del proxy inverso; sin ella Auth.js responde 500 `UntrustedHost`.
+- `TRUST_PROXY=true` y `TRUST_PROXY_HOPS=<n>`: para que la limitación de intentos use la IP real del cliente (`X-Forwarded-For`). El proxy debe **añadir** la IP del cliente a esa cabecera, no confiar en la que envíe el cliente.
+- `NEXT_PUBLIC_SITE_URL`, `DATABASE_URL`.
+
+Notas de seguridad: la limitación de intentos es **en memoria** y solo es válida con un único proceso de Node; con varias instancias debe sustituirse por una implementación con la base de datos (ver `src/server/security/rate-limit.ts`). El proxy de Next (`src/proxy.ts`) es solo la primera barrera: las páginas y acciones privadas vuelven a comprobar sesión y rol, y las operaciones sensibles usan `getFreshUser()`.
+
 ## Gestión del Proyecto
 
 El desarrollo se gestiona a través del backlog de tareas ubicado en la carpeta [ISSUES/](ISSUES/README.md). Consulta dicho archivo para conocer el flujo de trabajo, convenciones y el estado de cada fase.
