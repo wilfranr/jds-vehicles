@@ -3,7 +3,7 @@
  * Modificar estos valores permite actualizar el contenido editorial sin alterar componentes.
  */
 
-// TODO(owner): cifras provisionales, confirmar con el negocio antes del lanzamiento en producción (Fase 6).
+// TODO(owner): cifras y afirmaciones provisionales, confirmar con el negocio antes del lanzamiento en producción (Fase 6).
 export const trustMetrics = [
   { value: '42', label: 'Vehículos Curados' },
   { value: '100%', label: 'Garantía Mecánica' },
@@ -12,11 +12,9 @@ export const trustMetrics = [
 
 export const siteContent = {
   businessName: 'JDS Vehículos',
-  shortDescription:
-    'Excelencia automotriz y exclusividad digital para compradores y coleccionistas exigentes.',
-  platformBadge: 'Plataforma Digital Certificada',
-  legalName: 'JDS Vehículos S.A. de C.V.',
-  heroTag: 'Showroom Certificado JDS Vehículos 2025',
+  shortDescription: 'Concesionario de vehículos nuevos y seminuevos.',
+  // TODO(owner): afirmaciones de certificación provisionales
+  heroTag: 'Showroom Certificado JDS Vehículos',
   heroTitle: 'Encuentra tu próximo auto nuevo o seminuevo certificado',
   heroSubtitle:
     'Inspección pericial de 120 puntos, historial de propiedad verificado y entrega de llave en mano garantizada.',
@@ -28,14 +26,8 @@ export const siteContent = {
     { label: 'Cómo Funciona', href: '/como-funciona' },
     { label: 'Contacto', href: '/contacto' },
   ],
-  footerLinks: [
-    { label: 'Términos del Servicio', href: '/terminos-condiciones' },
-    { label: 'Aviso de Privacidad', href: '/privacidad' },
-    {
-      label: 'Certificación 120 Puntos JDS Vehículos',
-      href: '/certificacion',
-    },
-  ],
+  // TODO(owner): reponer enlaces legales cuando existan las páginas correspondientes (/terminos-condiciones, /privacidad, /certificacion)
+  footerLinks: [] as const as { label: string; href: string }[],
   defaultFallbackSocials: {
     whatsappNumber: '573202353168',
     whatsappDisplay: '+57 320 235 3168',

@@ -92,30 +92,31 @@ export function SiteFooter({ whatsappNumber, instagramUrl }: SiteFooterProps) {
             </p>
           </div>
 
-          {/* 4. Legal y Garantías */}
-          <div className="gap-space-xs flex flex-col">
-            <span className="font-label-lg text-label-lg text-on-surface">Legal y Garantías</span>
-            <ul className="gap-space-xs m-0 flex list-none flex-col p-0">
-              {siteContent.footerLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface focus-visible:ring-primary rounded transition-colors focus-visible:ring-2 focus-visible:outline-none"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* 4. Legal y Garantías (solo si hay enlaces definidos) */}
+          {siteContent.footerLinks.length > 0 && (
+            <div className="gap-space-xs flex flex-col">
+              <span className="font-label-lg text-label-lg text-on-surface">Legal y Garantías</span>
+              <ul className="gap-space-xs m-0 flex list-none flex-col p-0">
+                {siteContent.footerLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface focus-visible:ring-primary rounded transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Barra inferior de Copyright */}
         <div className="pt-space-md border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant font-body-sm text-body-sm gap-space-sm flex flex-col items-center justify-between border-t sm:flex-row">
           <p>
-            © {CURRENT_YEAR} {siteContent.legalName} Todos los derechos reservados.
+            © {CURRENT_YEAR} {siteContent.businessName}. Todos los derechos reservados.
           </p>
-          <p className="text-right">{siteContent.platformBadge}</p>
         </div>
       </div>
     </footer>

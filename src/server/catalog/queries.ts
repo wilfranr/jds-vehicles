@@ -44,7 +44,7 @@ export async function listVehicles(
 
   // Condiciones base de seguridad de negocio:
   // 1. Siempre visible_catalogo = true
-  // 2. Nunca VENDIDO
+  // 2. Nunca VENDIDO (incluso si se intenta forzar por parámetro)
   const where: Prisma.VehiculoWhereInput = {
     visibleCatalogo: true,
     disponibilidad: {
@@ -53,7 +53,7 @@ export async function listVehicles(
   };
 
   // Filtrado por disponibilidad explícita (ej. PROXIMAMENTE o DISPONIBLE)
-  if (filters.disponibilidad) {
+  if (filters.disponibilidad && filters.disponibilidad !== Disponibilidad.VENDIDO) {
     where.disponibilidad = filters.disponibilidad;
   }
 

@@ -8,37 +8,55 @@ export interface DealerConfig {
 }
 
 /**
- * Obtiene la configuración pública de contacto y redes del concesionario.
- * Utiliza caché a través de Cache Components ('use cache' y cacheTag)
- * y recurre a la variable de entorno NEXT_PUBLIC_WHATSAPP_NUMBER o al valor
- * por defecto de siteContent si la base de datos no está disponible.
+ * Consulta la base de datos para obtener las claves de configuración del concesionario.
+ * Utiliza Cache Components ('use cache' y cacheTag) para que solo las lecturas exitosas
+ * queden en caché. Si la base de datos falla, la excepción se lanza sin atrapar, evitando
+ * que Next.js persista datos de error en la caché.
  */
-export async function getDealerConfig(): Promise<DealerConfig> {
+async function fetchDealerConfigFromDb(): Promise<{
+  whatsappNumber: string | undefined;
+  instagramUrl: string | undefined;
+}> {
   'use cache';
   cacheTag('dealer-config');
 
+  const configs = await prisma.configuracionConcesionario.findMany({
+    where: {
+      clave: {
+        in: ['whatsapp_numero', 'instagram_url'],
+      },
+    },
+  });
+
+  const configMap = new Map(configs.map((c) => [c.clave, c.valor]));
+
+  return {
+    whatsappNumber: configMap.get('whatsapp_numero'),
+    instagramUrl: configMap.get('instagram_url'),
+  };
+}
+
+/**
+ * Obtiene la configuración pública de contacto y redes del concesionario.
+ * Llama a la función cacheada `fetchDealerConfigFromDb()`.
+ * Si la base de datos está caída o falla, captura el error y devuelve los valores
+ * de respaldo de forma transitoria SIN cachear el estado de error.
+ */
+export async function getDealerConfig(): Promise<DealerConfig> {
   const fallbackNumber =
     process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || siteContent.defaultFallbackSocials.whatsappNumber;
   const fallbackInstagram = siteContent.defaultFallbackSocials.instagramUrl;
 
   try {
-    const configs = await prisma.configuracionConcesionario.findMany({
-      where: {
-        clave: {
-          in: ['whatsapp_numero', 'instagram_url'],
-        },
-      },
-    });
-
-    const configMap = new Map(configs.map((c) => [c.clave, c.valor]));
+    const dbConfig = await fetchDealerConfigFromDb();
 
     return {
-      whatsappNumber: configMap.get('whatsapp_numero') || fallbackNumber,
-      instagramUrl: configMap.get('instagram_url') || fallbackInstagram,
+      whatsappNumber: dbConfig.whatsappNumber || fallbackNumber,
+      instagramUrl: dbConfig.instagramUrl || fallbackInstagram,
     };
   } catch (error) {
     console.warn(
-      '⚠️ No se pudo conectar a la base de datos para cargar configuracionConcesionario. Usando valores de respaldo.',
+      '⚠️ No se pudo conectar a la base de datos para cargar configuracionConcesionario. Usando valores de respaldo transitorios (no cacheados).',
       error
     );
     return {

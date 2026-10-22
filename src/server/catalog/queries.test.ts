@@ -1,23 +1,121 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { listVehicles, getVehicleById, getFilterOptions } from './queries';
 import { parseCatalogFilters } from './filters';
-import { Disponibilidad } from '@prisma/client';
+import { Disponibilidad, Condicion, Transmision, Combustible, Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 
+const TEST_COLOR_MARKER = '__test_marker_f107__';
+
 describe('Capa de datos del catálogo (queries)', () => {
+  let modeloIdParaPruebas: number;
+  let testVehiculoVendidoId: number;
+  let testVehiculoOcultoId: number;
+  let testVehiculoReservadoId: number;
+
   beforeAll(async () => {
     // Verificar que la BD está disponible
     await prisma.$queryRawUnsafe('SELECT 1');
+
+    // Obtener un modelo válido
+    const modelo = await prisma.modelo.findFirst({
+      where: { activo: true },
+    });
+    if (!modelo) {
+      throw new Error('No se encontró ningún modelo en la BD para ejecutar las pruebas.');
+    }
+    modeloIdParaPruebas = modelo.id;
+
+    // Crear 1 vehículo VENDIDO
+    const vehiculoVendido = await prisma.vehiculo.create({
+      data: {
+        modeloId: modeloIdParaPruebas,
+        anio: 2022,
+        color: TEST_COLOR_MARKER,
+        condicion: Condicion.USADO,
+        placa: 'VEN999',
+        precio: new Prisma.Decimal(120000000),
+        kilometraje: 15000,
+        transmision: Transmision.AUTOMATICA,
+        combustible: Combustible.GASOLINA,
+        disponibilidad: Disponibilidad.VENDIDO,
+        visibleCatalogo: true,
+      },
+    });
+    testVehiculoVendidoId = vehiculoVendido.id;
+
+    // Crear 1 vehículo con visibleCatalogo = false (oculto)
+    const vehiculoOculto = await prisma.vehiculo.create({
+      data: {
+        modeloId: modeloIdParaPruebas,
+        anio: 2023,
+        color: TEST_COLOR_MARKER,
+        condicion: Condicion.NUEVO,
+        precio: new Prisma.Decimal(180000000),
+        kilometraje: 0,
+        transmision: Transmision.AUTOMATICA,
+        combustible: Combustible.HIBRIDO,
+        disponibilidad: Disponibilidad.DISPONIBLE,
+        visibleCatalogo: false,
+      },
+    });
+    testVehiculoOcultoId = vehiculoOculto.id;
+
+    // Crear 1 vehículo RESERVADO (este sí debe ser listado)
+    const vehiculoReservado = await prisma.vehiculo.create({
+      data: {
+        modeloId: modeloIdParaPruebas,
+        anio: 2021,
+        color: TEST_COLOR_MARKER,
+        condicion: Condicion.USADO,
+        placa: 'RES777',
+        precio: new Prisma.Decimal(95000000),
+        kilometraje: 32000,
+        transmision: Transmision.MANUAL,
+        combustible: Combustible.GASOLINA,
+        disponibilidad: Disponibilidad.RESERVADO,
+        visibleCatalogo: true,
+      },
+    });
+    testVehiculoReservadoId = vehiculoReservado.id;
+  });
+
+  afterAll(async () => {
+    // Limpieza de datos de prueba
+    await prisma.vehiculo.deleteMany({
+      where: {
+        id: {
+          in: [testVehiculoVendidoId, testVehiculoOcultoId, testVehiculoReservadoId].filter(
+            Boolean
+          ),
+        },
+      },
+    });
   });
 
   describe('listVehicles', () => {
-    it('nunca devuelve vehículos con estado VENDIDO ni ocultos', async () => {
-      const result = await listVehicles(parseCatalogFilters());
+    it('demuestra estrictamente que vehículos VENDIDOS y ocultos nunca aparecen, pero RESERVADOS sí', async () => {
+      // Filtrar usando el color marcador único de prueba
+      const result = await listVehicles(parseCatalogFilters({ color: TEST_COLOR_MARKER }));
 
-      expect(result.items.length).toBeGreaterThan(0);
-      for (const item of result.items) {
-        expect(item.disponibilidad).not.toBe(Disponibilidad.VENDIDO);
-      }
+      const ids = result.items.map((i) => i.id);
+      expect(ids).not.toContain(testVehiculoVendidoId);
+      expect(ids).not.toContain(testVehiculoOcultoId);
+      expect(ids).toContain(testVehiculoReservadoId);
+    });
+
+    it('ignora intentos de forzar disponibilidad=VENDIDO desde los filtros y nunca muestra el vendido', async () => {
+      const parsedFilters = parseCatalogFilters({
+        color: TEST_COLOR_MARKER,
+        disponibilidad: 'VENDIDO',
+      });
+      // El parser de filtros descarta 'VENDIDO' como disponibilidad válida del catálogo público
+      expect(parsedFilters.disponibilidad).toBeUndefined();
+
+      const result = await listVehicles(parsedFilters);
+      const ids = result.items.map((i) => i.id);
+      expect(ids).not.toContain(testVehiculoVendidoId);
+      expect(ids).not.toContain(testVehiculoOcultoId);
+      expect(ids).toContain(testVehiculoReservadoId);
     });
 
     it('los objetos devueltos son estrictamente serializables como JSON', async () => {
@@ -51,35 +149,32 @@ describe('Capa de datos del catálogo (queries)', () => {
   });
 
   describe('getVehicleById', () => {
-    it('retorna el detalle completo y serializable de un vehículo visible', async () => {
-      const list = await listVehicles(parseCatalogFilters());
-      expect(list.items.length).toBeGreaterThan(0);
-      const firstId = list.items[0]!.id;
-
-      const detail = await getVehicleById(firstId);
-      expect(detail).not.toBeNull();
-      expect(detail?.id).toBe(firstId);
-
-      // Comprobar serialización limpia
-      const serialized = JSON.stringify(detail);
-      const parsed = JSON.parse(serialized);
-      expect(parsed).toEqual(detail);
-
-      // Comprobar que no hay Date ni Decimal crudo
-      expect(typeof detail?.createdAt).toBe('string');
-      expect(typeof detail?.precio).toBe('number');
+    it('retorna null para un vehículo con disponibilidad VENDIDO', async () => {
+      const detail = await getVehicleById(testVehiculoVendidoId);
+      expect(detail).toBeNull();
     });
 
-    it('enmascara la placa mostrando solo los últimos 3 caracteres para autos usados', async () => {
-      const list = await listVehicles(parseCatalogFilters({ condicion: 'USADO' }));
-      if (list.items.length > 0) {
-        const usedId = list.items[0]!.id;
-        const detail = await getVehicleById(usedId);
-        if (detail?.placaEnmascarada) {
-          expect(detail.placaEnmascarada.startsWith('***')).toBe(true);
-          expect(detail.placaEnmascarada.length).toBeLessThanOrEqual(6);
-        }
-      }
+    it('retorna null para un vehículo con visibleCatalogo = false', async () => {
+      const detail = await getVehicleById(testVehiculoOcultoId);
+      expect(detail).toBeNull();
+    });
+
+    it('retorna el detalle completo y enmascara la placa (nunca viaja completa en el JSON)', async () => {
+      const detail = await getVehicleById(testVehiculoReservadoId);
+      expect(detail).not.toBeNull();
+      expect(detail?.id).toBe(testVehiculoReservadoId);
+      expect(detail?.placaEnmascarada).toBe('***777');
+
+      const jsonString = JSON.stringify(detail);
+      // La placa real 'RES777' nunca debe existir en el JSON
+      expect(jsonString).not.toContain('RES777');
+      expect(jsonString).toContain('***777');
+
+      // Comprobar serialización limpia
+      const parsed = JSON.parse(jsonString);
+      expect(parsed).toEqual(detail);
+      expect(typeof detail?.createdAt).toBe('string');
+      expect(typeof detail?.precio).toBe('number');
     });
 
     it('retorna null si el vehículo no existe', async () => {
