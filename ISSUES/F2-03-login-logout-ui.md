@@ -28,6 +28,8 @@ Con la sesión ya disponible (F2-01) y el registro (F2-02), falta la entrada y s
 5. Textos en `site-content.ts`. Iconos con `lucide-react`.
 6. **Tests:** formulario de login (render, error genérico), menú de usuario con y sin sesión (componentes con la sesión inyectada), `ReserveCta` con y sin sesión.
 
+7. **Páginas por defecto de Auth.js (revisión de F2-01).** `GET /api/auth/signin` responde hoy con la página genérica de Auth.js, sin la marca del sitio, y los fallos de login redirigen allí (`/api/auth/signin?error=CredentialsSignin`). Configurar `pages: { signIn: '/login', error: '/login' }` en `src/auth.ts` para que los errores vuelvan a `/login?error=...` (mostrando el mensaje genérico `auth.invalidCredentials`) y que no quede una segunda pantalla de inicio de sesión sin marca ni límites de intentos.
+
 ## Fuera de alcance
 
 Recuperación de contraseña, "recordarme", páginas `/mi-cuenta` (F2-05), protección de rutas por `proxy.ts` (F2-04).

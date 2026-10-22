@@ -24,6 +24,9 @@ Tras F2-01 hay sesiones y helpers, pero nada impide que se fuerce una contraseñ
 4. **Cabeceras adicionales:** si F1-06 aún no definió las cabeceras de seguridad básicas en `next.config.ts`, añadirlas aquí (`X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`/`frame-ancestors`, `Permissions-Policy`); si ya existen, no duplicar. Sin una CSP estricta (se decide en la Fase 5).
 5. **Tests:** el limitador (ventanas, bloqueo, desbloqueo, límite de entradas, claves distintas independientes), la extracción de IP con y sin `TRUST_PROXY`, el enmascarado de correo, y las reglas del proxy como función pura (`decideAccess(pathname, session) → allow | redirectLogin | notFound`).
 
+6. **Sesiones JWT y usuarios desactivados (revisión de F2-01).** El JWT dura hasta 7 días y no se revoca: si se desactiva a un usuario o se le cambia el rol, su token sigue siendo válido hasta que expire. Por eso el proxy solo puede usarse como primera barrera, y toda acción sensible (cambio de contraseña, reservas en la Fase 3, panel en la Fase 4) debe usar `getFreshUser()` de `src/server/auth/index.ts`, que consulta la BD. Documentar esta regla en un comentario en `proxy.ts` y añadir un test de que `decideAccess` no concede acceso por un rol obsoleto cuando se le pasa un rol fresco distinto.
+7. **Despliegue:** en producción Auth.js exige `AUTH_TRUST_HOST=true` detrás del proxy inverso (sin él responde 500 `UntrustedHost`). Añadirlo al checklist de despliegue en `README.md` junto con `AUTH_SECRET`; se usará en la Fase 6.
+
 ## Fuera de alcance
 
 CAPTCHA, bloqueo permanente de cuentas, Redis, WAF, doble factor.
