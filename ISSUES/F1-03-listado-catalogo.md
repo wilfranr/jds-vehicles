@@ -62,4 +62,20 @@ pnpm db:seed && pnpm dev
 6. Se implementó `/catalogo` en `src/app/(public)/catalogo/page.tsx` con manejo de redirección para páginas fuera de rango y metadata SEO.
 7. Se actualizó la portada `/` en `src/app/(public)/page.tsx` integrando el hero institucional, búsqueda rápida GET hacia el catálogo, métricas centralizadas de `trustMetrics` y rejilla de hasta 6 vehículos destacados disponibles.
 8. Se añadieron pruebas unitarias de componentes en `VehicleCard.test.tsx` y `CatalogFilters.test.tsx`.
-9. Toda la suite de calidad `pnpm check` (35 tests unitarios) y `pnpm build` pasa al 100%. Verificado con `curl` que los filtros y estados vacíos responden con código HTTP 200 y el contenido esperado.
+9. Toda la suite de calidad `pnpm check` (36 tests unitarios) y `pnpm build` pasa al 100%. Verificado con `curl` que los filtros y estados vacíos responden con código HTTP 200 y el contenido esperado.
+
+### Correcciones aplicadas de la revisión (PR #8)
+
+1. **Corrección de disponibilidad en catálogo principal**:
+   - `listVehicles` en `src/server/catalog/queries.ts` ahora filtra por defecto exclusivamente `in: [DISPONIBLE, RESERVADO]`. El estado `PROXIMAMENTE` solo aparece si se pasa explícitamente en `filters.disponibilidad` (usado por `/proximamente` en F1-05).
+   - `VENDIDO` queda permanentemente excluido incluso ante intentos de forzarlo por parámetro.
+   - Se ampliaron las pruebas unitarias en `src/server/catalog/queries.test.ts` validando que sin filtro no aparece `PROXIMAMENTE`, con `disponibilidad=PROXIMAMENTE` sí aparece, y con `disponibilidad=VENDIDO` es ignorado.
+2. **Ajuste de estrategia de caché en consultas**:
+   - Se removió la directiva de caché de función (`'use cache'`) sobre `listVehicles` con parámetros arbitrarios y de texto libre para evitar claves infinitas y obsolescencia de hasta 15 minutos en estados de vehículos (reservado/vendido).
+   - Se creó la función auxiliar dedicada `getFeaturedVehicles(limit)` en `queries.ts`, cacheada con la etiqueta `'catalog-vehicles'` para los destacados de la portada (`/`), lista para ser invalidada con `revalidateTag('catalog-vehicles')` en mutaciones de inventario posteriores (Fases 3 y 4).
+3. **Eliminación y centralización de textos comerciales**:
+   - Se removieron de `src/app/(public)/page.tsx` las 3 tarjetas de valor hardcodeadas ("Peritaje Certificado", "Entrega Inmediata", "Respaldo JDS") y los textos no contemplados en el diseño.
+   - Se centralizaron subtítulos neutros en `src/lib/site-content.ts` (`catalogSubtitle: 'Explora nuestro inventario de vehículos nuevos y seminuevos.'`, `featuredSectionSubtitle: 'Explora los vehículos disponibles para entrega inmediata.'`), documentados con `TODO(owner)` para confirmación con el negocio.
+4. **Ajuste visual de precio y botón en `VehicleCard`**:
+   - Se aplicó `whitespace-nowrap` al precio y al botón "Ver detalles".
+   - Se envolvió la fila en `flex-wrap sm:flex-nowrap items-end` con tamaño de texto responsivo (`text-lg sm:text-xl lg:text-lg xl:text-xl font-bold tracking-tight`) garantizando que nunca se rompa en dos líneas el precio ni el botón ante la presencia de la barra lateral en resoluciones ≥ 1024 px y 1280 px.

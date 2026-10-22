@@ -6,11 +6,11 @@ import { VehicleCard } from '@/components/catalog/VehicleCard';
 import { CatalogFilters } from '@/components/catalog/CatalogFilters';
 import { Pagination } from '@/components/catalog/Pagination';
 import { EmptyState } from '@/components/catalog/EmptyState';
+import { siteContent } from '@/lib/site-content';
 
 export const metadata = {
   title: 'Catálogo de Vehículos | JDS Vehículos',
-  description:
-    'Explora nuestro inventario de vehículos certificados nuevos y seminuevos con garantía y peritaje verificado.',
+  description: siteContent.catalogSubtitle,
 };
 
 interface CatalogoPageProps {
@@ -51,10 +51,10 @@ export default async function CatalogoPage({ searchParams }: CatalogoPageProps) 
       {/* Encabezado del catálogo */}
       <div className="mb-8">
         <h1 className="font-headline-xl text-on-surface text-3xl font-bold tracking-tight md:text-4xl">
-          Catálogo / Inventario
+          {siteContent.catalogTitle}
         </h1>
         <p className="font-body-lg text-on-surface-variant mt-1 text-base">
-          Vehículos inspeccionados y certificados listos para entrega.
+          {siteContent.catalogSubtitle}
         </p>
       </div>
 

@@ -108,17 +108,17 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
         </div>
 
         {/* Zona inferior: Precio y Acción */}
-        <div className="flex items-center justify-between gap-2 pt-1">
+        <div className="flex flex-wrap items-end justify-between gap-2 pt-1 sm:flex-nowrap">
           <div className="flex flex-col">
             <span className="font-body-sm text-on-surface-variant text-xs">Precio</span>
-            <span className="font-headline-md text-headline-md text-on-surface font-bold tracking-tight tabular-nums">
+            <span className="font-headline-md text-on-surface text-lg font-bold tracking-tight whitespace-nowrap tabular-nums sm:text-xl lg:text-lg xl:text-xl">
               {formatCOP(vehicle.precio)}
             </span>
           </div>
 
           <Link
             href={`/vehiculos/${vehicle.id}`}
-            className={`font-label-md text-label-md focus-visible:ring-primary flex items-center justify-center rounded-lg px-4 py-2 transition-colors focus-visible:ring-2 focus-visible:outline-none ${
+            className={`font-label-md text-label-md focus-visible:ring-primary flex shrink-0 items-center justify-center rounded-lg px-3.5 py-2 whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none ${
               isReservado
                 ? 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
                 : 'bg-primary text-on-primary hover:bg-neutral-800'

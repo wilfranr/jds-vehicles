@@ -1,11 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
-import { Search, ArrowRight, ShieldCheck, Clock, Award } from 'lucide-react';
+import { Search, ArrowRight } from 'lucide-react';
 import { siteContent, trustMetrics } from '@/lib/site-content';
-import { listVehicles } from '@/server/catalog/queries';
-import { parseCatalogFilters } from '@/server/catalog/filters';
+import { getFeaturedVehicles } from '@/server/catalog/queries';
 import { VehicleCard } from '@/components/catalog/VehicleCard';
-import { Disponibilidad } from '@prisma/client';
 
 export const metadata = {
   title: 'JDS Vehículos | Autos Nuevos y Seminuevos Certificados',
@@ -14,15 +12,8 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  // Obtener hasta 6 vehículos disponibles destacados (los más recientes)
-  const featured = await listVehicles(
-    parseCatalogFilters({
-      orden: 'recientes',
-      disponibilidad: Disponibilidad.DISPONIBLE,
-    })
-  );
-
-  const featuredVehicles = featured.items.slice(0, 6);
+  // Obtener hasta 6 vehículos disponibles destacados (los más recientes) con caché optimizada
+  const featuredVehicles = await getFeaturedVehicles(6);
 
   return (
     <div className="flex w-full flex-col">
@@ -102,10 +93,10 @@ export default async function HomePage() {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h2 className="font-headline-xl text-on-surface text-2xl font-bold tracking-tight sm:text-3xl">
-              Vehículos Disponibles Recientes
+              {siteContent.featuredSectionTitle}
             </h2>
             <p className="font-body-md text-on-surface-variant mt-1 text-sm">
-              Selección inmediata con peritaje e historial validado.
+              {siteContent.featuredSectionSubtitle}
             </p>
           </div>
           <Link
@@ -139,43 +130,6 @@ export default async function HomePage() {
             <span>Ver todo el inventario</span>
             <ArrowRight className="h-4 w-4" />
           </Link>
-        </div>
-      </section>
-
-      {/* Propuesta de Valor / Garantías */}
-      <section className="bg-surface-container-low py-space-xl border-outline-variant/20 border-t">
-        <div className="px-gutter gap-space-lg mx-auto grid max-w-7xl grid-cols-1 md:grid-cols-3">
-          <div className="bg-surface-container-lowest border-outline-variant/20 flex items-start gap-3 rounded-xl border p-4 shadow-sm">
-            <ShieldCheck className="text-secondary mt-0.5 h-8 w-8 shrink-0" />
-            <div>
-              <h3 className="font-label-lg text-on-surface text-base font-bold">
-                Peritaje Certificado
-              </h3>
-              <p className="font-body-sm text-on-surface-variant mt-1 text-xs">
-                Inspección mecánica y estructural para garantizar transparencia total.
-              </p>
-            </div>
-          </div>
-          <div className="bg-surface-container-lowest border-outline-variant/20 flex items-start gap-3 rounded-xl border p-4 shadow-sm">
-            <Clock className="text-secondary mt-0.5 h-8 w-8 shrink-0" />
-            <div>
-              <h3 className="font-label-lg text-on-surface text-base font-bold">
-                Entrega Inmediata
-              </h3>
-              <p className="font-body-sm text-on-surface-variant mt-1 text-xs">
-                Trámites ágiles y disponibilidad en stock para entrega en tiempo récord.
-              </p>
-            </div>
-          </div>
-          <div className="bg-surface-container-lowest border-outline-variant/20 flex items-start gap-3 rounded-xl border p-4 shadow-sm">
-            <Award className="text-secondary mt-0.5 h-8 w-8 shrink-0" />
-            <div>
-              <h3 className="font-label-lg text-on-surface text-base font-bold">Respaldo JDS</h3>
-              <p className="font-body-sm text-on-surface-variant mt-1 text-xs">
-                Acompañamiento personalizado en cada paso del proceso de compra.
-              </p>
-            </div>
-          </div>
         </div>
       </section>
     </div>
