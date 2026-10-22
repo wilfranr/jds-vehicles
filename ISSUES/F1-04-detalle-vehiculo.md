@@ -1,6 +1,6 @@
 # F1-04: Detalle de vehículo con galería
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 1
 - **Depende de:** F1-02, F1-03
 - **Prioridad:** Alta
