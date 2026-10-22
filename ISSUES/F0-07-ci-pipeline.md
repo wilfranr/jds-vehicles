@@ -1,6 +1,6 @@
 # F0-07: Pipeline de CI mínimo
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 0
 - **Depende de:** F0-04, F0-06
 - **Prioridad:** Baja

@@ -40,15 +40,15 @@ No ampliar el alcance: si surge trabajo extra, anótalo en `Notas de entrega` pa
 
 ### Fase 0: Cimientos
 
-| ID                                       | Título                                           | Depende de   | Estado      |
-| :--------------------------------------- | :----------------------------------------------- | :----------- | :---------- |
-| [F0-01](F0-01-repo-init.md)              | Inicializar repositorio, README y `.env.example` | —            | DONE        |
-| [F0-02](F0-02-scaffold-nextjs.md)        | Scaffold Next.js + TypeScript + estructura       | F0-01        | DONE        |
-| [F0-03](F0-03-tailwind-design-tokens.md) | Tailwind: tokens de diseño y fuente              | F0-02        | DONE        |
-| [F0-04](F0-04-prisma-mysql-schema.md)    | MySQL local (Docker) + Prisma + migración base   | F0-02        | DONE        |
-| [F0-05](F0-05-seed-script.md)            | Script de seed independiente                     | F0-04        | DONE        |
-| [F0-06](F0-06-quality-tooling.md)        | ESLint, Prettier, typecheck y Vitest             | F0-02        | DONE        |
-| [F0-07](F0-07-ci-pipeline.md)            | Pipeline de CI mínimo                            | F0-04, F0-06 | IN PROGRESS |
+| ID                                       | Título                                           | Depende de   | Estado |
+| :--------------------------------------- | :----------------------------------------------- | :----------- | :----- |
+| [F0-01](F0-01-repo-init.md)              | Inicializar repositorio, README y `.env.example` | —            | DONE   |
+| [F0-02](F0-02-scaffold-nextjs.md)        | Scaffold Next.js + TypeScript + estructura       | F0-01        | DONE   |
+| [F0-03](F0-03-tailwind-design-tokens.md) | Tailwind: tokens de diseño y fuente              | F0-02        | DONE   |
+| [F0-04](F0-04-prisma-mysql-schema.md)    | MySQL local (Docker) + Prisma + migración base   | F0-02        | DONE   |
+| [F0-05](F0-05-seed-script.md)            | Script de seed independiente                     | F0-04        | DONE   |
+| [F0-06](F0-06-quality-tooling.md)        | ESLint, Prettier, typecheck y Vitest             | F0-02        | DONE   |
+| [F0-07](F0-07-ci-pipeline.md)            | Pipeline de CI mínimo                            | F0-04, F0-06 | DONE   |
 
 Orden sugerido: F0-01 → F0-02 → (F0-03, F0-04, F0-06 en paralelo) → F0-05 → F0-07.
 
