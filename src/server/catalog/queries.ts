@@ -393,3 +393,72 @@ export async function getFilterOptions(): Promise<CatalogFilterOptions> {
     anioMax: yearStats._max.anio ?? new Date().getFullYear(),
   };
 }
+
+/**
+ * Obtiene hasta 3 vehículos similares al actual:
+ * Misma marca o rango de precio ±25%, excluyendo el actual.
+ * Siempre visibleCatalogo = true y no VENDIDO.
+ */
+export async function getSimilarVehicles(currentVehicle: {
+  id: number;
+  marcaId: number;
+  precio: number;
+}): Promise<VehicleCardData[]> {
+  'use cache';
+  cacheTag('catalog-vehicles');
+
+  const minPrice = new Prisma.Decimal(Math.max(0, currentVehicle.precio * 0.75));
+  const maxPrice = new Prisma.Decimal(currentVehicle.precio * 1.25);
+
+  const records = await prisma.vehiculo.findMany({
+    where: {
+      id: { not: currentVehicle.id },
+      visibleCatalogo: true,
+      disponibilidad: {
+        not: Disponibilidad.VENDIDO,
+      },
+      OR: [
+        { modelo: { marcaId: currentVehicle.marcaId } },
+        { precio: { gte: minPrice, lte: maxPrice } },
+      ],
+    },
+    take: 3,
+    orderBy: { id: 'desc' },
+    include: {
+      modelo: {
+        include: {
+          marca: true,
+        },
+      },
+      fotos: {
+        orderBy: [{ esPrincipal: 'desc' }, { ordenPresentacion: 'asc' }],
+        select: {
+          urlFoto: true,
+          esPrincipal: true,
+        },
+      },
+    },
+  });
+
+  return records.map((v) => {
+    const mainPhoto = v.fotos.find((f) => f.esPrincipal) || v.fotos[0];
+    return {
+      id: v.id,
+      marcaId: v.modelo.marcaId,
+      marcaNombre: v.modelo.marca.nombre,
+      modeloId: v.modeloId,
+      modeloNombre: v.modelo.nombre,
+      anio: v.anio,
+      condicion: v.condicion,
+      precio: Number(v.precio),
+      kilometraje: v.kilometraje,
+      transmision: v.transmision,
+      combustible: v.combustible,
+      cilindraje: v.cilindraje,
+      color: v.color,
+      disponibilidad: v.disponibilidad,
+      fotoPrincipalUrl: mainPhoto ? mainPhoto.urlFoto : null,
+      totalFotos: v.fotos.length,
+    };
+  });
+}
