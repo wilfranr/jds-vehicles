@@ -1,6 +1,6 @@
 # F2-02: Registro de clientes
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 2
 - **Depende de:** F2-01
 - **Prioridad:** Alta

@@ -27,6 +27,8 @@ La autenticación es una zona de riesgo: una regresión aquí abre o cierra el a
    - Confirmar que `README.md` documenta: variables de autenticación, cómo crear usuarios de prueba y cómo correr los e2e.
 5. Actualizar `README.md` con la lista de rutas de autenticación y de cuenta.
 
+6. **Variantes de ruta del proxy.** `/admin` aún no existe, así que las pruebas de F2-04 no pueden distinguir si el proxy intercepta `/%61dmin/x`, `/admin%2fx` o `/ADMIN/x` o si simplemente no hay página. Cuando exista `/admin` (Fase 4) hay que repetir esa comprobación; hasta entonces dejar un test marcado `test.fixme` que documente las rutas a verificar, y recordar que cada página de `/admin` debe llamar a `requireRole()` además del proxy.
+
 ## Fuera de alcance
 
 Pruebas de carga, pruebas de penetración, pruebas del panel de administración (Fase 4).

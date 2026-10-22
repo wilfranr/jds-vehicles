@@ -70,16 +70,17 @@ Orden sugerido: F0-08 → (F1-01 ∥ F1-02) → F1-03 → (F1-04 ∥ F1-05) → 
 
 ### Fase 2: Autenticación
 
-| ID                                        | Título                                          | Depende de          | Estado |
-| :---------------------------------------- | :---------------------------------------------- | :------------------ | :----- |
-| [F2-01](F2-01-authjs-base.md)             | Auth.js: configuración base, sesiones y helpers | F1-07               | DONE   |
-| [F2-02](F2-02-registro.md)                | Registro de clientes                            | F2-01               | REVIEW |
-| [F2-03](F2-03-login-logout-ui.md)         | Login, cierre de sesión y menú de usuario       | F2-01, F2-02, F1-06 | TODO   |
-| [F2-04](F2-04-seguridad-rutas-limites.md) | Protección de rutas y limitación de intentos    | F2-01               | REVIEW |
-| [F2-05](F2-05-mi-cuenta.md)               | Mi cuenta (perfil y cambio de contraseña)       | F2-03, F2-04        | TODO   |
-| [F2-06](F2-06-e2e-auth.md)                | Pruebas e2e de autenticación y cierre de Fase 2 | F2-05, F1-06        | TODO   |
+| ID                                        | Título                                           | Depende de          | Estado |
+| :---------------------------------------- | :----------------------------------------------- | :------------------ | :----- |
+| [F2-01](F2-01-authjs-base.md)             | Auth.js: configuración base, sesiones y helpers  | F1-07               | DONE   |
+| [F2-02](F2-02-registro.md)                | Registro de clientes                             | F2-01               | DONE   |
+| [F2-03](F2-03-login-logout-ui.md)         | Login, cierre de sesión y menú de usuario        | F2-01, F2-02, F1-06 | TODO   |
+| [F2-04](F2-04-seguridad-rutas-limites.md) | Protección de rutas y limitación de intentos     | F2-01               | DONE   |
+| [F2-05](F2-05-mi-cuenta.md)               | Mi cuenta (perfil y cambio de contraseña)        | F2-03, F2-04        | TODO   |
+| [F2-06](F2-06-e2e-auth.md)                | Pruebas e2e de autenticación y cierre de Fase 2  | F2-05, F1-06        | TODO   |
+| [F2-07](F2-07-limitador-registro.md)      | Integrar el limitador de intentos en el registro | F2-02, F2-04        | TODO   |
 
-Orden sugerido: F2-01 → (F2-02 ∥ F2-04) → F2-03 (tras fusionar F1-06) → F2-05 → F2-06 (tras fusionar F1-06).
+Orden sugerido: F2-01 → (F2-02 ∥ F2-04) → (F2-03 ∥ F2-07) → F2-05 → F2-06.
 F1-06 y las issues F2-01, F2-02 y F2-04 se pueden trabajar en paralelo: no comparten archivos relevantes.
 
 ### Reglas de contenido (vinculantes)
