@@ -1,6 +1,6 @@
 # F0-01: Inicializar repositorio, README y `.env.example`
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 0
 - **Depende de:** —
 - **Prioridad:** Alta (bloquea todo lo demás)

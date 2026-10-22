@@ -17,6 +17,7 @@ dist/
 coverage/
 *.lcov
 .nyc_output/
+*.tsbuildinfo
 
 # Logs
 *.log

@@ -48,7 +48,7 @@ jds-vehicules/
 
 3. **Instalar dependencias:**
    ```bash
-   # TODO(F0-02): pnpm install
+   pnpm install
    ```
 
 4. **Iniciar base de datos con Docker:**
@@ -63,7 +63,7 @@ jds-vehicules/
 
 6. **Iniciar servidor de desarrollo:**
    ```bash
-   # TODO(F0-02): pnpm dev
+   pnpm dev
    ```
 
 ## Gestión del Proyecto
