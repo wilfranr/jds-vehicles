@@ -1,6 +1,6 @@
 # F1-06: SEO básico, errores y pruebas de cierre de la Fase 1
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 1
 - **Depende de:** F1-03, F1-04, F1-05
 - **Prioridad:** Media
