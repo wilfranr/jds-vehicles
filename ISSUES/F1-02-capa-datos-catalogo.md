@@ -1,6 +1,6 @@
 # F1-02: Capa de datos del catálogo
 
-- **Estado:** TODO
+- **Estado:** REVIEW
 - **Fase:** 1
 - **Depende de:** F0-08
 - **Prioridad:** Alta (bloquea F1-03, F1-04, F1-05)
@@ -35,11 +35,11 @@ Interfaz, SEO, creación/edición de vehículos (Fase 4).
 
 ## Criterios de aceptación
 
-- [ ] Ningún valor de `searchParams` arbitrario produce un error 500 (probar con fuzz sencillo en tests).
-- [ ] Ningún vehículo `VENDIDO` ni oculto sale por ninguna función.
-- [ ] Los DTOs son JSON-serializables (test que haga `JSON.parse(JSON.stringify(x))` y compare).
-- [ ] La placa nunca viaja completa.
-- [ ] `pnpm check` y `pnpm build` pasan; CI en verde.
+- [x] Ningún valor de `searchParams` arbitrario produce un error 500 (probar con fuzz sencillo en tests).
+- [x] Ningún vehículo `VENDIDO` ni oculto sale por ninguna función.
+- [x] Los DTOs son JSON-serializables (test que haga `JSON.parse(JSON.stringify(x))` y compare).
+- [x] La placa nunca viaja completa.
+- [x] `pnpm check` y `pnpm build` pasan; CI en verde.
 
 ## Verificación
 
@@ -47,3 +47,19 @@ Interfaz, SEO, creación/edición de vehículos (Fase 4).
 pnpm test
 pnpm db:seed && pnpm test src/server/catalog
 ```
+
+## Notas de entrega
+
+### Qué se hizo
+
+1. Se añadieron las dependencias `zod` y `server-only`.
+2. Se definieron los DTOs y tipos del catálogo en `src/types/catalog.ts` asegurando tipos primitivos serializables (`number` para precios y `string` ISO para fechas).
+3. Se implementó `src/server/catalog/filters.ts` con normalización estricta y tolerante a fallos: swap automático cuando `min > max` (en precios y años), acotación de búsqueda a 80 caracteres, `pagina >= 1` y fallback seguro a `'recientes'`.
+4. Se implementó `src/server/catalog/queries.ts` marcado con `import 'server-only'`:
+   - `listVehicles`: Paginación con `pageSize = 12`, reglas de negocio estrictas (`visibleCatalogo = true`, exclusión de `VENDIDO`), búsqueda multi-campo sin exponer placas, y ordenamiento según filtros.
+   - `getVehicleById`: Retorna `VehicleDetailData` serializable, enmascara la placa mostrando únicamente los últimos 3 dígitos (`***123`) para usados, y devuelve `null` si está vendido o no existe.
+   - `getFilterOptions`: Consulta agregada para poblar filtros con marcas, modelos activos, colores y rangos numéricos mínimos y máximos; cacheada con `'use cache'` y `cacheTag('catalog-filter-options')`.
+5. Se configuraron mocks para `server-only` y `next/cache` en `vitest.setup.ts` para pruebas unitarias.
+6. Se crearon pruebas exhaustivas en `filters.test.ts` y `queries.test.ts` cubriendo tolerancia a fuzzing, serialización JSON limpia, respeto al enmascaramiento de placa y descarte de unidades vendidas.
+7. Se actualizó el workflow de GitHub Actions (`ci.yml`) ejecutando `pnpm db:seed` para garantizar datos durante las pruebas en CI.
+8. `pnpm check` (format, lint, typecheck, tests) y `pnpm build` pasan al 100%.

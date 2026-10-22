@@ -62,6 +62,9 @@ jobs:
       - name: Run Prisma migrations deploy
         run: pnpm prisma migrate deploy
 
+      - name: Seed database with test/demo data
+        run: pnpm db:seed
+
       - name: Check code formatting (Prettier)
         run: pnpm format:check
 
