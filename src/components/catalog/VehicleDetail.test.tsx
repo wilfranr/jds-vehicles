@@ -55,7 +55,7 @@ describe('ReserveCta', () => {
       />
     );
 
-    expect(screen.getByText(/Vehículo en preparación \(Preventa\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Próxima llegada \(Preventa\)/i)).toBeInTheDocument();
     expect(screen.getByText('Preguntar por este vehículo')).toBeInTheDocument();
     expect(screen.getByText('Escribir por WhatsApp')).toBeInTheDocument();
   });

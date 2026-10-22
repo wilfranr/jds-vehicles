@@ -1,6 +1,6 @@
 # F1-05: Próximamente disponibles, Cómo funciona y Contacto
 
-- **Estado:** TODO
+- **Estado:** REVIEW
 - **Fase:** 1
 - **Depende de:** F1-01, F1-02, F1-03
 - **Prioridad:** Media
@@ -30,12 +30,20 @@ Formulario de contacto, mapa embebido, blog, página de preguntas frecuentes sep
 
 ## Criterios de aceptación
 
-- [ ] `/proximamente` muestra el Hilux del seed; si se cambia su disponibilidad a `DISPONIBLE`, deja de aparecer ahí.
-- [ ] Los textos editables viven en `site-content.ts`.
-- [ ] No hay afirmaciones de negocio inventadas fuera de las provisionales ya existentes; lo desconocido está marcado con `TODO(owner)` en el código y no se muestra en pantalla.
-- [ ] Accesibilidad ≥ 95 y sin scroll horizontal a 360 px.
-- [ ] `pnpm check` y `pnpm build` pasan.
+- [x] `/proximamente` muestra el Hilux del seed; si se cambia su disponibilidad a `DISPONIBLE`, deja de aparecer ahí.
+- [x] Los textos editables viven en `site-content.ts`.
+- [x] No hay afirmaciones de negocio inventadas fuera de las provisionales ya existentes; lo desconocido está marcado con `TODO(owner)` en el código y no se muestra en pantalla.
+- [x] Accesibilidad ≥ 95 y sin scroll horizontal a 360 px.
+- [x] `pnpm check` y `pnpm build` pasan.
 
 ## Verificación
 
 `pnpm dev` y recorrer `/proximamente`, `/como-funciona`, `/contacto` en móvil y escritorio.
+
+## Notas de entrega
+
+- **`/proximamente`**: Creada con Server Components, fallback de streaming `loading.tsx` y consulta `listVehicles({ disponibilidad: PROXIMAMENTE })`. Muestra el Hilux del seed con su badge de preventa y cuenta con estado vacío amable con CTA a WhatsApp en caso de ausencia de unidades por ingresar. Ajustado el texto a "Vehículos que están por ingresar a nuestro inventario" según definición de `PROXIMAMENTE` en `docs/DOCUMENTACION.md`.
+- **`/como-funciona`**: Pasos numerados del 01 al 05 explicando el flujo de compra y reserva alineado estrictamente con `docs/DOCUMENTACION.md` (§1.3 y §1.4). Apertura de WhatsApp con código de reserva en el mensaje, cierre fuera de la plataforma con el concesionario y texto descriptivo neutro. Sección de FAQs con acordeón semántico y accesible `<details>`/`<summary>`, confirmando condiciones comerciales directamente con el asesor por WhatsApp.
+- **`/contacto`**: Información oficial consumiendo `getDealerConfig()`. Tarjeta de WhatsApp con CTA directo (`wa.me`) y tarjeta de Instagram enlazando al perfil verificado. Texto limitado exclusivamente a la asesoría en compra de vehículos e inventario/reservas. Bloques no definidos (dirección física, horarios y mapa) están marcados con `TODO(owner)` y no se exponen al usuario.
+- **Centralización**: Todo el contenido textual y editorial de las 3 páginas vive en `siteContent` dentro de `src/lib/site-content.ts`.
+- **Verificación**: `pnpm format`, `pnpm check` (Prettier, ESLint, TypeScript, Vitest 36/36 tests) y `pnpm build` pasan con cero errores. Rutas verificadas con el servidor en producción.
