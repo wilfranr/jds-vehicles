@@ -181,7 +181,7 @@ erDiagram
    ```
 
 2. **Ejecutar el Script**:
-   - En DBeaver, haz clic en el menú **Archivo** > **Abrir archivo...** y selecciona [`database.sql`](file:///home/yoseth/Dev/jds-vehicules/database.sql).
+   - En DBeaver, haz clic en el menú **Archivo** > **Abrir archivo...** y selecciona [`database.sql`](legacy/database.sql).
    - Asegúrate de tener seleccionada la base de datos `jds_vehiculos` en el selector superior.
    - Presiona `Alt + X` (Ejecutar script SQL) o el botón **Execute SQL Script**.
 

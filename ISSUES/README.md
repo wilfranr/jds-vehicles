@@ -15,10 +15,10 @@ Backlog de trabajo gestionado por el **orquestador**. Cada issue es autocontenid
 | Idioma | UI y contenido en español; código (identificadores) en inglés salvo nombres de tablas/columnas, que se conservan en español como en `database.sql` |
 
 ## Documentos de referencia
-- `DOCUMENTACION.md`: reglas de negocio, ERD, diccionario de datos.
-- `database.sql`: esquema original MySQL (fuente de verdad del modelo).
-- `DESIGN.md`: sistema de diseño "Velocita Motors" (colores, tipografía, componentes).
-- `code.html` + `screen.png`: prototipo visual (Tailwind por CDN, contenido de ejemplo).
+- `docs/DOCUMENTACION.md`: reglas de negocio, ERD, diccionario de datos.
+- `docs/legacy/database.sql`: esquema original MySQL (fuente de verdad del modelo).
+- `docs/DESIGN.md`: sistema de diseño "Velocita Motors" (colores, tipografía, componentes).
+- `docs/prototype/code.html` + `docs/prototype/screen.png`: prototipo visual (Tailwind por CDN, contenido de ejemplo).
 
 ## Flujo de trabajo para el agente desarrollador
 1. Toma un issue cuyo estado sea `TODO` y cuyas dependencias estén en `DONE`.
