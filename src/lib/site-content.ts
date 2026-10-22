@@ -13,11 +13,15 @@ export const trustMetrics = [
 export const siteContent = {
   businessName: 'JDS Vehículos',
   shortDescription: 'Concesionario de vehículos nuevos y seminuevos.',
-  // TODO(owner): afirmaciones de certificación provisionales
+  // TODO(owner): afirmaciones de certificación y métricas provisionales del prototipo, confirmar con el negocio
   heroTag: 'Showroom Certificado JDS Vehículos',
   heroTitle: 'Encuentra tu próximo auto nuevo o seminuevo certificado',
   heroSubtitle:
     'Inspección pericial de 120 puntos, historial de propiedad verificado y entrega de llave en mano garantizada.',
+  catalogTitle: 'Catálogo / Inventario',
+  catalogSubtitle: 'Explora nuestro inventario de vehículos nuevos y seminuevos.',
+  featuredSectionTitle: 'Vehículos Disponibles Recientes',
+  featuredSectionSubtitle: 'Explora los vehículos disponibles para entrega inmediata.',
   defaultWhatsAppMessage:
     'Hola JDS Vehículos, quisiera recibir asesoría personalizada sobre su inventario.',
   navLinks: [

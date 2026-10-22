@@ -1,6 +1,6 @@
 # F1-03: Portada y listado de catálogo con filtros
 
-- **Estado:** TODO
+- **Estado:** REVIEW
 - **Fase:** 1
 - **Depende de:** F1-01, F1-02
 - **Prioridad:** Alta
@@ -34,14 +34,14 @@ Página de detalle (F1-04), "próximamente" (F1-05), favoritos, comparador.
 
 ## Criterios de aceptación
 
-- [ ] Con el seed demo: `/catalogo` lista los vehículos; filtrar por `condicion=USADO` deja solo el CX-30; `precioMin` mayor que todos muestra el estado vacío.
-- [ ] Un filtro inválido en la URL no rompe la página.
-- [ ] Funciona con JavaScript desactivado (filtros y paginación).
-- [ ] Sin scroll horizontal a 360 px; rejilla 1/2/3 columnas según ancho.
-- [ ] CLS bajo: imágenes con dimensiones reservadas (Lighthouse CLS < 0.1 en `/catalogo`).
-- [ ] Accesibilidad Lighthouse ≥ 95; filtros operables por teclado.
-- [ ] Tests de componente para `VehicleCard` (estados nuevo, usado, reservado, sin foto) y `CatalogFilters` (chips activos).
-- [ ] `pnpm check` y `pnpm build` pasan.
+- [x] Con el seed demo: `/catalogo` lista los vehículos; filtrar por `condicion=USADO` deja solo el CX-30; `precioMin` mayor que todos muestra el estado vacío.
+- [x] Un filtro inválido en la URL no rompe la página.
+- [x] Funciona con JavaScript desactivado (filtros y paginación).
+- [x] Sin scroll horizontal a 360 px; rejilla 1/2/3 columnas según ancho.
+- [x] CLS bajo: imágenes con dimensiones reservadas (Lighthouse CLS < 0.1 en `/catalogo`).
+- [x] Accesibilidad Lighthouse ≥ 95; filtros operables por teclado.
+- [x] Tests de componente para `VehicleCard` (estados nuevo, usado, reservado, sin foto) y `CatalogFilters` (chips activos).
+- [x] `pnpm check` y `pnpm build` pasan.
 
 ## Verificación
 
@@ -49,3 +49,33 @@ Página de detalle (F1-04), "próximamente" (F1-05), favoritos, comparador.
 pnpm db:seed && pnpm dev
 # probar: /, /catalogo, /catalogo?condicion=USADO, /catalogo?precioMin=999999999999, /catalogo?pagina=-1&orden=zzz
 ```
+
+## Notas de entrega
+
+### Qué se hizo
+
+1. Se configuró `images.remotePatterns` en `next.config.ts` permitiendo `images.unsplash.com` (para imágenes demo).
+2. Se implementó `src/components/catalog/VehicleCard.tsx` (servidor) con ratio 16:10, `next/image`, `StatusBadge` prioritario, cinta de 3 especificaciones técnicas, precio formateado en COP con cifras tabulares y enlace a `/vehiculos/[id]`.
+3. Se creó `src/components/catalog/CatalogFilters.tsx` soportando formularios estándar GET (funciona sin JS), chips de filtros activos con enlace para removerlos individualmente o "Limpiar todo", y cajón desplegable accesible en móvil (`lg:hidden`).
+4. Se implementó `src/components/catalog/Pagination.tsx` accesible (`aria-label`, `aria-current`, `aria-disabled`), preservando todos los filtros en las URLs.
+5. Se crearon los componentes de estado: `EmptyState.tsx`, `loading.tsx` (con skeleton cards) y `error.tsx` (con botón de reintento).
+6. Se implementó `/catalogo` en `src/app/(public)/catalogo/page.tsx` con manejo de redirección para páginas fuera de rango y metadata SEO.
+7. Se actualizó la portada `/` en `src/app/(public)/page.tsx` integrando el hero institucional, búsqueda rápida GET hacia el catálogo, métricas centralizadas de `trustMetrics` y rejilla de hasta 6 vehículos destacados disponibles.
+8. Se añadieron pruebas unitarias de componentes en `VehicleCard.test.tsx` y `CatalogFilters.test.tsx`.
+9. Toda la suite de calidad `pnpm check` (36 tests unitarios) y `pnpm build` pasa al 100%. Verificado con `curl` que los filtros y estados vacíos responden con código HTTP 200 y el contenido esperado.
+
+### Correcciones aplicadas de la revisión (PR #8)
+
+1. **Corrección de disponibilidad en catálogo principal**:
+   - `listVehicles` en `src/server/catalog/queries.ts` ahora filtra por defecto exclusivamente `in: [DISPONIBLE, RESERVADO]`. El estado `PROXIMAMENTE` solo aparece si se pasa explícitamente en `filters.disponibilidad` (usado por `/proximamente` en F1-05).
+   - `VENDIDO` queda permanentemente excluido incluso ante intentos de forzarlo por parámetro.
+   - Se ampliaron las pruebas unitarias en `src/server/catalog/queries.test.ts` validando que sin filtro no aparece `PROXIMAMENTE`, con `disponibilidad=PROXIMAMENTE` sí aparece, y con `disponibilidad=VENDIDO` es ignorado.
+2. **Ajuste de estrategia de caché en consultas**:
+   - Se removió la directiva de caché de función (`'use cache'`) sobre `listVehicles` con parámetros arbitrarios y de texto libre para evitar claves infinitas y obsolescencia de hasta 15 minutos en estados de vehículos (reservado/vendido).
+   - Se creó la función auxiliar dedicada `getFeaturedVehicles(limit)` en `queries.ts`, cacheada con la etiqueta `'catalog-vehicles'` para los destacados de la portada (`/`), lista para ser invalidada con `revalidateTag('catalog-vehicles')` en mutaciones de inventario posteriores (Fases 3 y 4).
+3. **Eliminación y centralización de textos comerciales**:
+   - Se removieron de `src/app/(public)/page.tsx` las 3 tarjetas de valor hardcodeadas ("Peritaje Certificado", "Entrega Inmediata", "Respaldo JDS") y los textos no contemplados en el diseño.
+   - Se centralizaron subtítulos neutros en `src/lib/site-content.ts` (`catalogSubtitle: 'Explora nuestro inventario de vehículos nuevos y seminuevos.'`, `featuredSectionSubtitle: 'Explora los vehículos disponibles para entrega inmediata.'`), documentados con `TODO(owner)` para confirmación con el negocio.
+4. **Ajuste visual de precio y botón en `VehicleCard`**:
+   - Se aplicó `whitespace-nowrap` al precio y al botón "Ver detalles".
+   - Se envolvió la fila en `flex-wrap sm:flex-nowrap items-end` con tamaño de texto responsivo (`text-lg sm:text-xl lg:text-lg xl:text-xl font-bold tracking-tight`) garantizando que nunca se rompa en dos líneas el precio ni el botón ante la presencia de la barra lateral en resoluciones ≥ 1024 px y 1280 px.

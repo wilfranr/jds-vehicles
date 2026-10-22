@@ -11,6 +11,7 @@ describe('Capa de datos del catálogo (queries)', () => {
   let testVehiculoVendidoId: number;
   let testVehiculoOcultoId: number;
   let testVehiculoReservadoId: number;
+  let testVehiculoProximamenteId: number;
 
   beforeAll(async () => {
     // Verificar que la BD está disponible
@@ -77,6 +78,23 @@ describe('Capa de datos del catálogo (queries)', () => {
       },
     });
     testVehiculoReservadoId = vehiculoReservado.id;
+
+    // Crear 1 vehículo PROXIMAMENTE (solo debe salir cuando se filtre explícitamente por PROXIMAMENTE)
+    const vehiculoProximamente = await prisma.vehiculo.create({
+      data: {
+        modeloId: modeloIdParaPruebas,
+        anio: 2025,
+        color: TEST_COLOR_MARKER,
+        condicion: Condicion.NUEVO,
+        precio: new Prisma.Decimal(210000000),
+        kilometraje: 0,
+        transmision: Transmision.AUTOMATICA,
+        combustible: Combustible.HIBRIDO,
+        disponibilidad: Disponibilidad.PROXIMAMENTE,
+        visibleCatalogo: true,
+      },
+    });
+    testVehiculoProximamenteId = vehiculoProximamente.id;
   });
 
   afterAll(async () => {
@@ -84,23 +102,41 @@ describe('Capa de datos del catálogo (queries)', () => {
     await prisma.vehiculo.deleteMany({
       where: {
         id: {
-          in: [testVehiculoVendidoId, testVehiculoOcultoId, testVehiculoReservadoId].filter(
-            Boolean
-          ),
+          in: [
+            testVehiculoVendidoId,
+            testVehiculoOcultoId,
+            testVehiculoReservadoId,
+            testVehiculoProximamenteId,
+          ].filter(Boolean),
         },
       },
     });
   });
 
   describe('listVehicles', () => {
-    it('demuestra estrictamente que vehículos VENDIDOS y ocultos nunca aparecen, pero RESERVADOS sí', async () => {
+    it('demuestra estrictamente que sin filtro solo lista DISPONIBLE y RESERVADO (PROXIMAMENTE, VENDIDO y ocultos quedan excluidos)', async () => {
       // Filtrar usando el color marcador único de prueba
       const result = await listVehicles(parseCatalogFilters({ color: TEST_COLOR_MARKER }));
 
       const ids = result.items.map((i) => i.id);
       expect(ids).not.toContain(testVehiculoVendidoId);
       expect(ids).not.toContain(testVehiculoOcultoId);
+      expect(ids).not.toContain(testVehiculoProximamenteId);
       expect(ids).toContain(testVehiculoReservadoId);
+    });
+
+    it('incluye PROXIMAMENTE únicamente si se filtra explícitamente por disponibilidad=PROXIMAMENTE', async () => {
+      const result = await listVehicles(
+        parseCatalogFilters({
+          color: TEST_COLOR_MARKER,
+          disponibilidad: 'PROXIMAMENTE',
+        })
+      );
+
+      const ids = result.items.map((i) => i.id);
+      expect(ids).toContain(testVehiculoProximamenteId);
+      expect(ids).not.toContain(testVehiculoReservadoId);
+      expect(ids).not.toContain(testVehiculoVendidoId);
     });
 
     it('ignora intentos de forzar disponibilidad=VENDIDO desde los filtros y nunca muestra el vendido', async () => {
@@ -115,6 +151,7 @@ describe('Capa de datos del catálogo (queries)', () => {
       const ids = result.items.map((i) => i.id);
       expect(ids).not.toContain(testVehiculoVendidoId);
       expect(ids).not.toContain(testVehiculoOcultoId);
+      expect(ids).not.toContain(testVehiculoProximamenteId);
       expect(ids).toContain(testVehiculoReservadoId);
     });
 

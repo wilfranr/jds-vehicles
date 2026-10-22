@@ -29,12 +29,15 @@ function maskPlate(placa: string | null, condicion: Condicion): string | null {
  * Reglas clave:
  * - Siempre `visibleCatalogo: true`
  * - Nunca incluye vehículos con estado `VENDIDO`
- * - Por defecto incluye `DISPONIBLE` y `RESERVADO`. Si se especifica disponibilidad en filtros (ej. PROXIMAMENTE), filtra por ella.
+ * - Por defecto incluye únicamente `DISPONIBLE` y `RESERVADO`.
+ *   El estado `PROXIMAMENTE` solo se incluye si se solicita explícitamente en filters.disponibilidad (ej. /proximamente).
  * - Evita N+1 incluyendo las fotos necesarias en una sola consulta.
  *
  * Estrategia de caché:
- * Las consultas parametrizadas pueden ser dinámicas. En Fase 4, las mutaciones invalidarán
- * la etiqueta 'catalog-vehicles' mediante revalidateTag('catalog-vehicles').
+ * Como el catálogo permite combinaciones arbitrarias de filtros por query string (incluyendo texto libre 'q'),
+ * no se aplica caché de función indiscriminada a listVehicles para evitar polución de claves y datos obsoletos
+ * ante reservas o ventas. Las llamadas específicas (como los destacados de la portada) pueden implementar
+ * funciones auxiliares cacheadas con tiempos cortos (ej. getFeaturedVehicles).
  */
 export async function listVehicles(
   filters: NormalizedCatalogFilters
@@ -44,18 +47,20 @@ export async function listVehicles(
 
   // Condiciones base de seguridad de negocio:
   // 1. Siempre visible_catalogo = true
-  // 2. Nunca VENDIDO (incluso si se intenta forzar por parámetro)
-  const where: Prisma.VehiculoWhereInput = {
-    visibleCatalogo: true,
-    disponibilidad: {
-      not: Disponibilidad.VENDIDO,
-    },
+  // 2. Por defecto incluye SOLO DISPONIBLE y RESERVADO (PROXIMAMENTE solo si se pide explícitamente)
+  // 3. VENDIDO nunca aparece (incluso si se intenta forzar por parámetro)
+  let disponibilidadFilter: Prisma.EnumDisponibilidadFilter | Disponibilidad = {
+    in: [Disponibilidad.DISPONIBLE, Disponibilidad.RESERVADO],
   };
 
-  // Filtrado por disponibilidad explícita (ej. PROXIMAMENTE o DISPONIBLE)
   if (filters.disponibilidad && filters.disponibilidad !== Disponibilidad.VENDIDO) {
-    where.disponibilidad = filters.disponibilidad;
+    disponibilidadFilter = filters.disponibilidad;
   }
+
+  const where: Prisma.VehiculoWhereInput = {
+    visibleCatalogo: true,
+    disponibilidad: disponibilidadFilter,
+  };
 
   // Búsqueda textual 'q' (marca, modelo, color - la placa NO se busca por privacidad)
   if (filters.q) {
@@ -183,6 +188,64 @@ export async function listVehicles(
     pageSize: PAGE_SIZE,
     pageCount: Math.ceil(total / PAGE_SIZE) || 1,
   };
+}
+
+/**
+ * Obtiene los vehículos destacados para la portada (home):
+ * Devuelve hasta `limit` vehículos con disponibilidad DISPONIBLE, ordenados por los más recientes.
+ *
+ * Estrategia de caché:
+ * Utiliza 'use cache' con tiempo de vida corto (cacheLife 'seconds', max 60s) y la etiqueta 'catalog-vehicles'.
+ * Se invalidará mediante revalidateTag('catalog-vehicles') desde mutaciones de inventario en Fases 3 y 4.
+ */
+export async function getFeaturedVehicles(limit = 6): Promise<VehicleCardData[]> {
+  'use cache';
+  cacheTag('catalog-vehicles');
+
+  const records = await prisma.vehiculo.findMany({
+    where: {
+      visibleCatalogo: true,
+      disponibilidad: Disponibilidad.DISPONIBLE,
+    },
+    take: limit,
+    orderBy: { id: 'desc' },
+    include: {
+      modelo: {
+        include: {
+          marca: true,
+        },
+      },
+      fotos: {
+        orderBy: [{ esPrincipal: 'desc' }, { ordenPresentacion: 'asc' }],
+        select: {
+          urlFoto: true,
+          esPrincipal: true,
+        },
+      },
+    },
+  });
+
+  return records.map((v) => {
+    const mainPhoto = v.fotos.find((f) => f.esPrincipal) || v.fotos[0];
+    return {
+      id: v.id,
+      marcaId: v.modelo.marcaId,
+      marcaNombre: v.modelo.marca.nombre,
+      modeloId: v.modeloId,
+      modeloNombre: v.modelo.nombre,
+      anio: v.anio,
+      condicion: v.condicion,
+      precio: Number(v.precio),
+      kilometraje: v.kilometraje,
+      transmision: v.transmision,
+      combustible: v.combustible,
+      cilindraje: v.cilindraje,
+      color: v.color,
+      disponibilidad: v.disponibilidad,
+      fotoPrincipalUrl: mainPhoto ? mainPhoto.urlFoto : null,
+      totalFotos: v.fotos.length,
+    };
+  });
 }
 
 /**
