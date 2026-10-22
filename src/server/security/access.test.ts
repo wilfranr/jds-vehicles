@@ -4,9 +4,14 @@ import { config } from '@/proxy';
 
 describe('decideAccess', () => {
   it('rutas públicas siempre permitidas', () => {
-    for (const path of ['/', '/catalogo', '/vehiculos/1', '/login']) {
+    for (const path of ['/', '/catalogo', '/vehiculos/1', '/login/x', '/registro']) {
       expect(decideAccess(path, null)).toBe('allow');
     }
+  });
+
+  it('/login permite a anónimos y redirige a quien ya tiene sesión', () => {
+    expect(decideAccess('/login', null)).toBe('allow');
+    expect(decideAccess('/login', 'CLIENTE')).toBe('redirectAuthenticated');
   });
 
   it('/mi-cuenta exige sesión', () => {
@@ -38,7 +43,7 @@ describe('decideAccess', () => {
 describe('matcher del proxy', () => {
   it('solo cubre rutas privadas (ni /_next, ni imágenes, ni /api/auth)', () => {
     const matchers = config.matcher as string[];
-    expect(matchers).toEqual(['/mi-cuenta/:path*', '/admin/:path*']);
+    expect(matchers).toEqual(['/login', '/mi-cuenta/:path*', '/admin/:path*']);
     for (const excluded of ['/_next/', '/_next/image', '/api/auth', '/logo.jpg', '/favicon.ico']) {
       expect(matchers.some((m) => excluded.startsWith(m.split('/:')[0] ?? '###'))).toBe(false);
     }

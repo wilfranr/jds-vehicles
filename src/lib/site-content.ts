@@ -56,6 +56,31 @@ export const siteContent = {
   // Autenticación (mensajes genéricos: no distinguen correo inexistente, contraseña errónea ni usuario inactivo)
   auth: {
     invalidCredentials: 'Correo o contraseña incorrectos.',
+    tooManyAttempts: 'Demasiados intentos. Inténtalo de nuevo en unos minutos.',
+  },
+  // Contenido de /login
+  login: {
+    title: 'Iniciar sesión',
+    heading: 'Iniciar sesión',
+    subtitle: 'Ingresa con tu correo y contraseña para reservar y consultar tus solicitudes.',
+    submit: 'Iniciar sesión',
+    submitting: 'Ingresando…',
+    labels: { email: 'Correo electrónico', password: 'Contraseña' },
+    noAccount: '¿Aún no tienes cuenta?',
+    registerLink: 'Crea una',
+  },
+  // Cuenta de usuario en el header y los menús
+  account: {
+    login: 'Iniciar sesión',
+    register: 'Crear cuenta',
+    menuLabel: 'Menú de cuenta',
+    loading: 'Cargando cuenta',
+    myAccount: 'Mi cuenta',
+    myReservations: 'Mis reservas',
+    adminPanel: 'Panel del concesionario',
+    logout: 'Cerrar sesión',
+    // TODO(F4): poner en true cuando exista la ruta /admin (panel del concesionario).
+    showAdminPanelLink: false,
   },
   // Contenido de /registro
   registro: {
@@ -230,6 +255,7 @@ export const siteContent = {
     similarSubtitle: 'Otras opciones de la misma marca o en un rango de precio semejante.',
     viewAllCatalog: 'Ver catálogo completo',
     reserveAvailableCta: 'Consultar disponibilidad por WhatsApp',
+    loginToReserveCta: 'Inicia sesión para reservar',
     writeWhatsAppCta: 'Escribir por WhatsApp',
     reservedTitle: 'Este vehículo se encuentra reservado',
     reservedDescription:

@@ -1,7 +1,9 @@
 import React from 'react';
+import Link from 'next/link';
 import { WhatsAppIcon } from '@/components/ui/BrandIcons';
 import { buildWhatsAppUrl } from '@/lib/whatsapp';
 import { siteContent } from '@/lib/site-content';
+import { buildLoginUrl } from '@/server/auth/next-path';
 import { Disponibilidad } from '@prisma/client';
 
 interface ReserveCtaProps {
@@ -11,6 +13,8 @@ interface ReserveCtaProps {
   anio: number;
   disponibilidad: Disponibilidad;
   whatsappNumber: string;
+  /** Si hay sesión iniciada; sin ella el botón principal lleva a iniciar sesión. */
+  isAuthenticated?: boolean;
 }
 
 /**
@@ -25,6 +29,7 @@ export function ReserveCta({
   anio,
   disponibilidad,
   whatsappNumber,
+  isAuthenticated = false,
 }: ReserveCtaProps) {
   // Construir mensaje específico por vehículo para WhatsApp
   const vehicleLabel = `${marca} ${modelo} ${anio} (Ref: #${vehicleId})`;
@@ -113,22 +118,32 @@ export function ReserveCta({
   }
 
   // DISPONIBLE
-  // TODO(F3): Cuando exista autenticación (Fase 2) y el flujo de reserva (Fase 3),
-  // el botón principal llevará a `/login?next=/vehiculos/${vehicleId}` o a la Server Action de reserva.
+  // Sin sesión: el botón principal lleva a iniciar sesión y volver aquí.
+  // TODO(F3): con sesión, cuando exista el flujo de reserva real, el botón principal será la Server Action
+  // de reserva. Mientras tanto se mantiene la consulta por WhatsApp (no se muestra un botón "Reservar" sin efecto).
   const consultMessage = `Hola JDS Vehículos, estoy interesado en reservar el vehículo ${vehicleLabel}. ¿Cómo podemos coordinar?`;
   const whatsappUrl = buildWhatsAppUrl(whatsappNumber, consultMessage);
 
   return (
     <div className="flex flex-col gap-2.5">
       {/* Botón principal de Reserva / Consulta */}
-      <a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="bg-secondary text-on-secondary font-label-lg hover:bg-on-secondary-fixed-variant focus-visible:ring-secondary flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-base font-bold shadow-md transition-all focus-visible:ring-2 focus-visible:outline-none active:scale-[0.99]"
-      >
-        <span>{siteContent.vehicleDetail.reserveAvailableCta}</span>
-      </a>
+      {isAuthenticated ? (
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-secondary text-on-secondary font-label-lg hover:bg-on-secondary-fixed-variant focus-visible:ring-secondary flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-base font-bold shadow-md transition-all focus-visible:ring-2 focus-visible:outline-none active:scale-[0.99]"
+        >
+          <span>{siteContent.vehicleDetail.reserveAvailableCta}</span>
+        </a>
+      ) : (
+        <Link
+          href={buildLoginUrl(`/vehiculos/${vehicleId}`)}
+          className="bg-secondary text-on-secondary font-label-lg hover:bg-on-secondary-fixed-variant focus-visible:ring-secondary flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-base font-bold shadow-md transition-all focus-visible:ring-2 focus-visible:outline-none active:scale-[0.99]"
+        >
+          <span>{siteContent.vehicleDetail.loginToReserveCta}</span>
+        </Link>
+      )}
 
       {/* Botón secundario directo de WhatsApp */}
       <a
