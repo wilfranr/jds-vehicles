@@ -9,7 +9,7 @@ import { EmptyState } from '@/components/catalog/EmptyState';
 import { siteContent } from '@/lib/site-content';
 
 export const metadata = {
-  title: 'Catálogo de Vehículos | JDS Vehículos',
+  title: siteContent.catalogMetaTitle,
   description: siteContent.catalogSubtitle,
 };
 
@@ -68,6 +68,7 @@ export default async function CatalogoPage({ searchParams }: CatalogoPageProps) 
             <EmptyState />
           ) : (
             <>
+              <h2 className="sr-only">{siteContent.catalogResultsHeading}</h2>
               {/* Rejilla responsive: 1 col móvil, 2 cols tablet, 3 cols escritorio */}
               <div className="gap-space-lg grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
                 {catalogResult.items.map((vehicle) => (

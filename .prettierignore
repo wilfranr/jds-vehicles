@@ -7,3 +7,5 @@ coverage/
 pnpm-lock.yaml
 prisma/migrations/
 docs/prototype/
+/test-results
+/playwright-report

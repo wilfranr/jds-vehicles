@@ -52,16 +52,16 @@
 
   /* Status Semantic Palette & Brand WhatsApp */
   --color-whatsapp: #25d366;
-  --color-status-nuevo: #059669;
+  --color-status-nuevo: #047857;
   --color-status-nuevo-bg: #ecfdf5;
   --color-status-nuevo-border: #a7f3d0;
-  --color-status-seminuevo: #0891b2;
+  --color-status-seminuevo: #0e7490;
   --color-status-seminuevo-bg: #ecfeff;
   --color-status-seminuevo-border: #a5f3fc;
-  --color-status-reservado: #d97706;
+  --color-status-reservado: #b45309;
   --color-status-reservado-bg: #fffbeb;
   --color-status-reservado-border: #fde68a;
-  --color-status-vendido: #64748b;
+  --color-status-vendido: #475569;
   --color-status-vendido-bg: #f1f5f9;
   --color-status-vendido-border: #cbd5e1;
   --color-status-proximamente: #7c3aed;

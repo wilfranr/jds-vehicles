@@ -1,14 +1,15 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Search, ArrowRight } from 'lucide-react';
 import { siteContent, trustMetrics } from '@/lib/site-content';
 import { getFeaturedVehicles } from '@/server/catalog/queries';
 import { VehicleCard } from '@/components/catalog/VehicleCard';
 
-export const metadata = {
-  title: 'JDS Vehículos | Autos Nuevos y Seminuevos Certificados',
-  description:
-    'Encuentra tu próximo auto nuevo o seminuevo certificado en JDS Vehículos. Inspección pericial de 120 puntos y entrega garantizada.',
+export const metadata: Metadata = {
+  title: { absolute: siteContent.seo.homeTitle },
+  description: siteContent.seo.homeDescription,
+  alternates: { canonical: '/' },
 };
 
 export default async function HomePage() {
@@ -116,8 +117,8 @@ export default async function HomePage() {
           </div>
         ) : (
           <div className="gap-space-lg grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-            {featuredVehicles.map((vehicle) => (
-              <VehicleCard key={vehicle.id} vehicle={vehicle} />
+            {featuredVehicles.map((vehicle, index) => (
+              <VehicleCard key={vehicle.id} vehicle={vehicle} priority={index === 0} />
             ))}
           </div>
         )}

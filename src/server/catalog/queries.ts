@@ -9,7 +9,7 @@ import {
   type CatalogFilterOptions,
 } from '@/types/catalog';
 import { type NormalizedCatalogFilters } from './filters';
-import { cacheTag } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 
 const PAGE_SIZE = 12;
 
@@ -195,11 +195,13 @@ export async function listVehicles(
  * Devuelve hasta `limit` vehículos con disponibilidad DISPONIBLE, ordenados por los más recientes.
  *
  * Estrategia de caché:
- * Utiliza 'use cache' con tiempo de vida corto (cacheLife 'seconds', max 60s) y la etiqueta 'catalog-vehicles'.
+ * Utiliza 'use cache' con tiempo de vida corto (revalidación cada 60 s) y la etiqueta 'catalog-vehicles'.
+ * Se usa un perfil a medida en lugar de 'seconds': su `expire` de 1 min excluiría la portada del prerenderizado.
  * Se invalidará mediante revalidateTag('catalog-vehicles') desde mutaciones de inventario en Fases 3 y 4.
  */
 export async function getFeaturedVehicles(limit = 6): Promise<VehicleCardData[]> {
   'use cache';
+  cacheLife({ stale: 300, revalidate: 60, expire: 600 });
   cacheTag('catalog-vehicles');
 
   const records = await prisma.vehiculo.findMany({
@@ -320,16 +322,19 @@ export async function getVehicleById(id: number): Promise<VehicleDetailData | nu
  * Marcas con sus modelos con vehículos visibles, colores distintos,
  * y rango de precios y años presentes en el inventario activo.
  *
+ * Solo considera vehículos DISPONIBLE o RESERVADO, los mismos que muestra el listado por defecto.
  * Se cachea usando 'use cache' con la etiqueta 'catalog-filter-options'.
  */
 export async function getFilterOptions(): Promise<CatalogFilterOptions> {
   'use cache';
+  cacheLife({ stale: 300, revalidate: 60, expire: 600 });
   cacheTag('catalog-filter-options');
 
+  // Solo opciones que devuelven resultados en el listado por defecto (sin PROXIMAMENTE ni VENDIDO).
   const visibleWhere: Prisma.VehiculoWhereInput = {
     visibleCatalogo: true,
     disponibilidad: {
-      not: Disponibilidad.VENDIDO,
+      in: [Disponibilidad.DISPONIBLE, Disponibilidad.RESERVADO],
     },
   };
 
@@ -460,5 +465,24 @@ export async function getSimilarVehicles(currentVehicle: {
       fotoPrincipalUrl: mainPhoto ? mainPhoto.urlFoto : null,
       totalFotos: v.fotos.length,
     };
+  });
+}
+
+/**
+ * Lista los vehículos que deben aparecer en el sitemap: visibles en catálogo y no vendidos
+ * (los mismos criterios que `getVehicleById`, así que ninguna URL listada responde "no encontrado").
+ */
+export async function getSitemapVehicles(): Promise<{ id: number; updatedAt: Date }[]> {
+  'use cache';
+  cacheLife({ stale: 300, revalidate: 3600, expire: 86400 });
+  cacheTag('catalog-vehicles');
+
+  return prisma.vehiculo.findMany({
+    where: {
+      visibleCatalogo: true,
+      disponibilidad: { not: Disponibilidad.VENDIDO },
+    },
+    select: { id: true, updatedAt: true },
+    orderBy: { id: 'desc' },
   });
 }

@@ -7,6 +7,7 @@ vi.mock('server-only', () => ({}));
 // Mock next/cache para entornos de pruebas unitarias
 vi.mock('next/cache', () => ({
   cacheTag: vi.fn(),
+  cacheLife: vi.fn(),
   revalidateTag: vi.fn(),
   revalidatePath: vi.fn(),
 }));

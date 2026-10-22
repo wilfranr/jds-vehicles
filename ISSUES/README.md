@@ -63,7 +63,7 @@ Orden sugerido: F0-01 → F0-02 → (F0-03, F0-04, F0-06 en paralelo) → F0-05 
 | [F1-03](F1-03-listado-catalogo.md)      | Portada y listado de catálogo con filtros       | F1-01, F1-02 | DONE   |
 | [F1-04](F1-04-detalle-vehiculo.md)      | Detalle de vehículo con galería                 | F1-02, F1-03 | DONE   |
 | [F1-05](F1-05-paginas-informativas.md)  | Próximamente, Cómo funciona y Contacto          | F1-01, F1-03 | DONE   |
-| [F1-06](F1-06-seo-calidad-fase1.md)     | SEO básico, errores y pruebas de cierre         | F1-03–F1-05  | TODO   |
+| [F1-06](F1-06-seo-calidad-fase1.md)     | SEO básico, errores y pruebas de cierre         | F1-03–F1-05  | REVIEW |
 | [F1-07](F1-07-correcciones-revision.md) | Correcciones de la revisión de F1-01 y F1-02    | F1-02        | DONE   |
 
 Orden sugerido: F0-08 → (F1-01 ∥ F1-02) → F1-03 → (F1-04 ∥ F1-05) → F1-06.

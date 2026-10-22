@@ -33,3 +33,8 @@ Thumbs.db
 
 # User uploads / local storage
 /uploads
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/

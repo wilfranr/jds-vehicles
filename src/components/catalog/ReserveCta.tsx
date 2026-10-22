@@ -50,7 +50,7 @@ export function ReserveCta({
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-label-lg flex w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] px-4 py-3 text-sm text-white shadow-sm transition-all hover:bg-[#20bd5a] focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:outline-none"
+            className="font-label-lg flex w-full items-center justify-center gap-2 rounded-lg bg-[#0e7c42] px-4 py-3 text-sm text-white shadow-sm transition-all hover:bg-[#0b6a38] focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:outline-none"
           >
             <WhatsAppIcon className="h-5 w-5 shrink-0 fill-white" />
             <span>{siteContent.vehicleDetail.reservedCta}</span>
@@ -91,7 +91,7 @@ export function ReserveCta({
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-label-lg flex w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] px-4 py-3 text-sm text-white shadow-sm transition-all hover:bg-[#20bd5a] focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:outline-none"
+            className="font-label-lg flex w-full items-center justify-center gap-2 rounded-lg bg-[#0e7c42] px-4 py-3 text-sm text-white shadow-sm transition-all hover:bg-[#0b6a38] focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:outline-none"
           >
             <WhatsAppIcon className="h-5 w-5 shrink-0 fill-white" />
             <span>{siteContent.vehicleDetail.preorderCta}</span>
@@ -135,7 +135,7 @@ export function ReserveCta({
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="font-label-md flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#20bd5a] focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:outline-none"
+        className="font-label-md flex w-full items-center justify-center gap-2 rounded-xl bg-[#0e7c42] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#0b6a38] focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:outline-none"
       >
         <WhatsAppIcon className="h-4 w-4 shrink-0 fill-white" />
         <span>{siteContent.vehicleDetail.writeWhatsAppCta}</span>

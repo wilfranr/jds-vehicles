@@ -86,9 +86,24 @@ El proyecto cuenta con herramientas estandarizadas de calidad de código y prueb
 - `pnpm typecheck`: Valida tipos en modo estricto (`tsc --noEmit`).
 - `pnpm test`: Corre las pruebas unitarias y de componentes con Vitest.
 - `pnpm test:watch`: Ejecuta las pruebas en modo observador.
+- `pnpm e2e`: Corre las pruebas de recorrido con Playwright (Chromium). Requiere BD sembrada y `pnpm build` previo; levanta `pnpm start` en el puerto 3100 (`E2E_PORT`) o usa un servidor existente con `E2E_BASE_URL`. La primera vez: `pnpm exec playwright install chromium`.
 - `pnpm check`: Ejecuta toda la suite de calidad en secuencia (`format:check`, `lint`, `typecheck` y `test`).
 
 Adicionalmente, se cuenta con hooks de Git configurados con **Husky** y **lint-staged** que formatean automáticamente los archivos preparados para commit y bloquean commits si existen errores de ESLint.
+
+## Rutas Públicas
+
+| Ruta              | Descripción                                                 |
+| :---------------- | :---------------------------------------------------------- |
+| `/`               | Portada con vehículos destacados                            |
+| `/catalogo`       | Catálogo con filtros y paginación por query string          |
+| `/vehiculos/[id]` | Detalle del vehículo con galería, datos estructurados y CTA |
+| `/proximamente`   | Vehículos por ingresar al inventario                        |
+| `/como-funciona`  | Proceso de compra y preguntas frecuentes                    |
+| `/contacto`       | Canales de atención                                         |
+| `/sitemap.xml`    | Sitemap (páginas públicas y vehículos visibles no vendidos) |
+| `/robots.txt`     | Reglas para buscadores (excluye `/api` y `/_design`)        |
+| `/api/health`     | Comprobación de salud (no indexada)                         |
 
 ## Gestión del Proyecto
 

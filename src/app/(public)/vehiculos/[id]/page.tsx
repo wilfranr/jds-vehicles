@@ -12,6 +12,8 @@ import { ReserveCta } from '@/components/catalog/ReserveCta';
 import { SpecBadge } from '@/components/catalog/SpecBadge';
 import { formatCOP } from '@/lib/format';
 import { siteContent } from '@/lib/site-content';
+import { buildVehicleJsonLd, serializeJsonLd } from '@/lib/structured-data';
+import { getSiteUrl } from '@/lib/site-url';
 import { Condicion, Disponibilidad } from '@prisma/client';
 
 interface VehicleDetailPageProps {
@@ -42,20 +44,22 @@ export async function generateMetadata({ params }: VehicleDetailPageProps): Prom
   const numId = parseVehicleId(id);
 
   if (!numId) {
-    return { title: 'Vehículo no encontrado | JDS Vehículos' };
+    return { title: siteContent.seo.notFoundVehicleTitle };
   }
 
   const vehicle = await getVehicleById(numId);
   if (!vehicle) {
-    return { title: 'Vehículo no encontrado | JDS Vehículos' };
+    return { title: siteContent.seo.notFoundVehicleTitle };
   }
 
-  const title = `${vehicle.marcaNombre} ${vehicle.modeloNombre} ${vehicle.anio} | JDS Vehículos`;
+  const title = `${vehicle.marcaNombre} ${vehicle.modeloNombre} ${vehicle.anio}`;
   const description = `${vehicle.marcaNombre} ${vehicle.modeloNombre} ${vehicle.anio} - ${vehicle.condicion === Condicion.NUEVO ? 'Nuevo' : 'Seminuevo'} en ${vehicle.color}. Precio: ${formatCOP(vehicle.precio)}.`;
 
   return {
     title,
     description,
+    alternates: { canonical: `/vehiculos/${vehicle.id}` },
+    twitter: { title, description },
     openGraph: {
       title,
       description,
@@ -93,6 +97,12 @@ export default async function VehicleDetailPage({ params }: VehicleDetailPagePro
 
   return (
     <div className="px-gutter py-space-md sm:py-space-xl mx-auto w-full max-w-7xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(buildVehicleJsonLd(vehicle, getSiteUrl())),
+        }}
+      />
       {/* Migas de Pan (Breadcrumbs) y Volver */}
       <div className="border-outline-variant/20 mb-6 flex flex-col justify-between gap-3 border-b pb-4 text-sm sm:flex-row sm:items-center">
         <nav
