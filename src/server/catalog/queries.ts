@@ -39,6 +39,9 @@ function maskPlate(placa: string | null, condicion: Condicion): string | null {
 export async function listVehicles(
   filters: NormalizedCatalogFilters
 ): Promise<CatalogPaginationResult<VehicleCardData>> {
+  'use cache';
+  cacheTag('catalog-vehicles');
+
   const page = Math.max(1, filters.pagina);
   const skip = (page - 1) * PAGE_SIZE;
 
