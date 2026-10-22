@@ -1,6 +1,6 @@
 # F0-03: Tailwind: tokens de diseño y tipografía
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 0
 - **Depende de:** F0-02
 - **Prioridad:** Media

@@ -53,12 +53,13 @@ jds-vehicules/
 
 4. **Iniciar base de datos con Docker:**
    ```bash
-   # TODO(F0-04): docker compose up -d
+   pnpm db:up
    ```
 
 5. **Ejecutar migraciones y seed:**
    ```bash
-   # TODO(F0-04, F0-05): pnpm prisma migrate dev && pnpm prisma db seed
+   pnpm db:migrate
+   # TODO(F0-05): pnpm db:seed
    ```
 
 6. **Iniciar servidor de desarrollo:**

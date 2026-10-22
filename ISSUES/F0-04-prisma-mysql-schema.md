@@ -1,6 +1,6 @@
 # F0-04: MySQL local (Docker) + Prisma + migración base
 
-- **Estado:** TODO
+- **Estado:** REVIEW
 - **Fase:** 0
 - **Depende de:** F0-02
 - **Prioridad:** Alta
@@ -32,12 +32,12 @@ El modelo de datos está definido en `docs/legacy/database.sql` (y descrito en `
 Datos semilla (F0-05), lógica de reservas/ventas, Auth.js.
 
 ## Criterios de aceptación
-- [ ] `pnpm db:up && pnpm db:migrate` crea las 9 tablas desde cero.
-- [ ] Inspeccionar el esquema generado con `SHOW CREATE TABLE` coincide con `database.sql`: tipos, uniques, FKs (con sus acciones) e índices.
-- [ ] Insertar un vehículo `USADO` sin placa **falla** por el CHECK; uno `NUEVO` sin placa funciona (probar y anotar el resultado en las notas).
-- [ ] `pnpm db:reset` recrea todo sin intervención.
-- [ ] `/api/health` refleja el estado de la BD (probar con la BD apagada → 503).
-- [ ] `pnpm typecheck`, `pnpm lint`, `pnpm build` pasan.
+- [x] `pnpm db:up && pnpm db:migrate` crea las 9 tablas desde cero.
+- [x] Inspeccionar el esquema generado con `SHOW CREATE TABLE` coincide con `database.sql`: tipos, uniques, FKs (con sus acciones) e índices.
+- [x] Insertar un vehículo `USADO` sin placa **falla** por el CHECK; uno `NUEVO` sin placa funciona (probar y anotar el resultado en las notas).
+- [x] `pnpm db:reset` recrea todo sin intervención.
+- [x] `/api/health` refleja el estado de la BD (probar con la BD apagada → 503).
+- [x] `pnpm typecheck`, `pnpm lint`, `pnpm build` pasan.
 
 ## Verificación
 ```bash
@@ -46,3 +46,26 @@ pnpm db:migrate
 docker compose exec db mysql -ujds -pjds jds_vehiculos -e "SHOW TABLES; SHOW CREATE TABLE vehiculos\G"
 curl -s localhost:3000/api/health
 ```
+
+## Notas de entrega
+- **Qué se hizo:**
+  1. Configuración de `docker-compose.yml` con servicio MySQL 8.0, charset `utf8mb4`, collation `utf8mb4_unicode_ci`, credenciales de desarrollo, volumen persistente, healthcheck y mapeo de puerto `${DB_PORT:-3307}:3306` (se usa 3307 por defecto para evitar colisión con servicios de MySQL/MariaDB activos en el host).
+  2. Modelado de las 9 tablas en `prisma/schema.prisma` utilizando nombres de modelos en inglés PascalCase mapeados con `@@map` a los nombres en español de `database.sql`, conservando todos los tipos exactos (`@db.Year`, `@db.Decimal(12, 2)`, `@db.UnsignedInt`), enums, FKs con acciones referenciales íntegras (`RESTRICT`, `CASCADE`, `SET NULL`) e índices.
+  3. Creación de migración inicial `20261022180100_init` agregando el constraint `CHECK chk_placa_usado (((condicion = 'USADO') and (placa is not null) and (placa <> '')) or (condicion = 'NUEVO'))`.
+  4. Prueba del constraint `CHECK`:
+     - Inserción con `condicion='USADO'` y `placa=NULL` falló con: `ERROR 3819 (HY000): Check constraint 'chk_placa_usado' is violated`.
+     - Inserción con `condicion='USADO'` y `placa=''` falló con: `ERROR 3819 (HY000): Check constraint 'chk_placa_usado' is violated`.
+     - Inserción con `condicion='NUEVO'` y `placa=NULL` se ejecutó exitosamente.
+  5. Implementación del singleton `src/lib/db.ts` para PrismaClient seguro con hot-reload.
+  6. Endpoint `src/app/api/health/route.ts` ampliado con consulta `SELECT 1`: retorna 200 `{ "status": "ok", "db": "up" }` cuando la BD está disponible y 503 `{ "status": "error", "db": "down" }` cuando está apagada (ambos escenarios probados).
+  7. Configuración de scripts en `package.json`: `db:up`, `db:down`, `db:migrate`, `db:generate`, `db:studio`, `db:reset`.
+  8. Actualización de `README.md` y de la sección 4 de `docs/DOCUMENTACION.md` detallando el uso de Docker y Prisma.
+- **Desviaciones:** Ninguna en funcionalidad; el puerto exterior por defecto se fijó en 3307 para convivir pacíficamente con cualquier base de datos preinstalada en el host.
+- **Comandos de verificación ejecutados con éxito:**
+  - `pnpm db:up`
+  - `pnpm db:migrate`
+  - `pnpm db:reset`
+  - `docker compose exec db mysql -ujds -pjds jds_vehiculos -e "SHOW TABLES; SHOW CREATE TABLE vehiculos\G"`
+  - `curl -s http://localhost:3000/api/health` -> HTTP 200 `{"status":"ok","db":"up"}`
+  - `curl -s http://localhost:3000/api/health` con DB detenida -> HTTP 503 `{"status":"error","db":"down"}`
+  - `pnpm typecheck`, `pnpm lint`, `pnpm build` pasaron sin errores.

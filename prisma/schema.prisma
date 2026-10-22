@@ -1,0 +1,269 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// -----------------------------------------------------------------------------
+// ENUMS (MySQL ENUMs mapeados fielmente desde docs/legacy/database.sql)
+// -----------------------------------------------------------------------------
+
+enum TipoDocumento {
+  CC
+  CE
+  NIT
+  PASAPORTE
+
+  @@map("tipo_documento")
+}
+
+enum Condicion {
+  NUEVO
+  USADO
+
+  @@map("condicion")
+}
+
+enum Transmision {
+  MANUAL
+  AUTOMATICA
+  SECUENCIAL
+
+  @@map("transmision")
+}
+
+enum Combustible {
+  GASOLINA
+  DIESEL
+  HIBRIDO
+  ELECTRICO
+  GAS
+
+  @@map("combustible")
+}
+
+enum Disponibilidad {
+  DISPONIBLE
+  PROXIMAMENTE
+  RESERVADO
+  VENDIDO
+
+  @@map("disponibilidad")
+}
+
+enum EstadoReserva {
+  PENDIENTE_CONTACTO
+  EN_NEGOCIACION
+  COMPLETADA
+  CANCELADA
+  EXPIRADA
+
+  @@map("estado_reserva")
+}
+
+enum MetodoPago {
+  TRANSFERENCIA
+  EFECTIVO
+  CREDITO
+  MIXTO
+
+  @@map("metodo_pago")
+}
+
+// -----------------------------------------------------------------------------
+// 1. Rol (roles)
+// -----------------------------------------------------------------------------
+model Role {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  nombre      String    @unique @db.VarChar(50)
+  descripcion String?   @db.VarChar(255)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  usuarios    User[]
+
+  @@map("roles")
+}
+
+// -----------------------------------------------------------------------------
+// 2. Usuario (usuarios)
+// -----------------------------------------------------------------------------
+model User {
+  id                 Int           @id @default(autoincrement()) @db.UnsignedInt
+  rolId              Int           @default(1) @map("rol_id") @db.UnsignedInt
+  nombre             String        @db.VarChar(100)
+  apellido           String        @db.VarChar(100)
+  tipoDocumento      TipoDocumento @default(CC) @map("tipo_documento")
+  documentoIdentidad String        @unique @map("documento_identidad") @db.VarChar(30)
+  email              String        @unique @db.VarChar(150)
+  passwordHash       String        @map("password_hash") @db.VarChar(255)
+  telefono           String        @db.VarChar(25)
+  direccion          String?       @db.VarChar(255)
+  ciudad             String?       @db.VarChar(100)
+  activo             Boolean       @default(true)
+  createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt          DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  rol                Role          @relation(fields: [rolId], references: [id], onUpdate: Cascade, onDelete: Restrict, map: "fk_usuarios_roles")
+  reservas           Reserva[]
+  ventasComoComprador Venta[]      @relation("VentasComprador")
+  ventasComoVendedor  Venta[]      @relation("VentasVendedor")
+
+  @@index([documentoIdentidad], map: "idx_usuarios_documento")
+  @@index([email], map: "idx_usuarios_email")
+  @@map("usuarios")
+}
+
+// -----------------------------------------------------------------------------
+// 3. Marca (marcas)
+// -----------------------------------------------------------------------------
+model Marca {
+  id        Int       @id @default(autoincrement()) @db.UnsignedInt
+  nombre    String    @unique @db.VarChar(100)
+  activo    Boolean   @default(true)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  modelos   Modelo[]
+
+  @@map("marcas")
+}
+
+// -----------------------------------------------------------------------------
+// 4. Modelo (modelos)
+// -----------------------------------------------------------------------------
+model Modelo {
+  id        Int        @id @default(autoincrement()) @db.UnsignedInt
+  marcaId   Int        @map("marca_id") @db.UnsignedInt
+  nombre    String     @db.VarChar(100)
+  activo    Boolean    @default(true)
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  marca     Marca      @relation(fields: [marcaId], references: [id], onUpdate: Cascade, onDelete: Restrict, map: "fk_modelos_marcas")
+  vehiculos Vehiculo[]
+
+  @@unique([marcaId, nombre], map: "uq_marca_modelo")
+  @@map("modelos")
+}
+
+// -----------------------------------------------------------------------------
+// 5. Vehículo (vehiculos)
+// Nota: La restricción CHECK chk_placa_usado ((condicion = 'USADO' AND placa IS NOT NULL AND placa <> '') OR (condicion = 'NUEVO'))
+// no es soportada nativamente en la sintaxis de Prisma schema y se añade manualmente en la migración SQL inicial.
+// -----------------------------------------------------------------------------
+model Vehiculo {
+  id              Int            @id @default(autoincrement()) @db.UnsignedInt
+  modeloId        Int            @map("modelo_id") @db.UnsignedInt
+  anio            Int            @db.Year
+  color           String         @db.VarChar(50)
+  condicion       Condicion
+  placa           String?        @db.VarChar(15)
+  precio          Decimal        @db.Decimal(12, 2)
+  kilometraje     Int            @default(0) @db.UnsignedInt
+  transmision     Transmision    @default(MANUAL)
+  combustible     Combustible    @default(GASOLINA)
+  cilindraje      Int?           @db.UnsignedInt
+  descripcion     String?        @db.Text
+  disponibilidad  Disponibilidad @default(DISPONIBLE)
+  visibleCatalogo Boolean        @default(true) @map("visible_catalogo")
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt       DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  modelo          Modelo         @relation(fields: [modeloId], references: [id], onUpdate: Cascade, onDelete: Restrict, map: "fk_vehiculos_modelos")
+  fotos           VehiculoFoto[]
+  reservas        Reserva[]
+  venta           Venta?
+
+  @@index([disponibilidad], map: "idx_vehiculos_disponibilidad")
+  @@index([condicion], map: "idx_vehiculos_condicion")
+  @@index([precio], map: "idx_vehiculos_precio")
+  @@index([anio], map: "idx_vehiculos_anio")
+  @@index([placa], map: "idx_vehiculos_placa")
+  @@map("vehiculos")
+}
+
+// -----------------------------------------------------------------------------
+// 6. Foto de Vehículo (vehiculo_fotos)
+// -----------------------------------------------------------------------------
+model VehiculoFoto {
+  id                Int      @id @default(autoincrement()) @db.UnsignedInt
+  vehiculoId        Int      @map("vehiculo_id") @db.UnsignedInt
+  urlFoto           String   @map("url_foto") @db.VarChar(500)
+  esPrincipal       Boolean  @default(false) @map("es_principal")
+  ordenPresentacion Int      @default(1) @map("orden_presentacion") @db.UnsignedInt
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamp(0)
+
+  vehiculo          Vehiculo @relation(fields: [vehiculoId], references: [id], onUpdate: Cascade, onDelete: Cascade, map: "fk_fotos_vehiculos")
+
+  @@index([vehiculoId], map: "idx_fotos_vehiculo")
+  @@map("vehiculo_fotos")
+}
+
+// -----------------------------------------------------------------------------
+// 7. Reserva (reservas)
+// -----------------------------------------------------------------------------
+model Reserva {
+  id              Int           @id @default(autoincrement()) @db.UnsignedInt
+  codigoReserva   String        @unique @map("codigo_reserva") @db.VarChar(32)
+  vehiculoId      Int           @map("vehiculo_id") @db.UnsignedInt
+  usuarioId       Int           @map("usuario_id") @db.UnsignedInt
+  estado          EstadoReserva @default(PENDIENTE_CONTACTO)
+  fechaReserva    DateTime      @default(now()) @map("fecha_reserva")
+  fechaExpiracion DateTime?     @map("fecha_expiracion")
+  whatsappLink    String?       @map("whatsapp_link") @db.VarChar(500)
+  observaciones   String?       @db.Text
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  vehiculo        Vehiculo      @relation(fields: [vehiculoId], references: [id], onUpdate: Cascade, onDelete: Restrict, map: "fk_reservas_vehiculos")
+  usuario         User          @relation(fields: [usuarioId], references: [id], onUpdate: Cascade, onDelete: Restrict, map: "fk_reservas_usuarios")
+  venta           Venta?
+
+  @@index([estado], map: "idx_reservas_estado")
+  @@index([usuarioId], map: "idx_reservas_usuario")
+  @@index([vehiculoId], map: "idx_reservas_vehiculo")
+  @@map("reservas")
+}
+
+// -----------------------------------------------------------------------------
+// 8. Venta (ventas)
+// -----------------------------------------------------------------------------
+model Venta {
+  id                   Int        @id @default(autoincrement()) @db.UnsignedInt
+  numeroReciboContrato String     @unique @map("numero_recibo_contrato") @db.VarChar(50)
+  vehiculoId           Int        @unique @map("vehiculo_id") @db.UnsignedInt
+  reservaId            Int?       @unique @map("reserva_id") @db.UnsignedInt
+  compradorId          Int        @map("comprador_id") @db.UnsignedInt
+  vendedorUsuarioId    Int?       @map("vendedor_usuario_id") @db.UnsignedInt
+  precioFinal          Decimal    @map("precio_final") @db.Decimal(12, 2)
+  metodoPago           MetodoPago @default(TRANSFERENCIA) @map("metodo_pago")
+  fechaVenta           DateTime   @default(now()) @map("fecha_venta")
+  observaciones        String?    @db.Text
+  createdAt            DateTime   @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt            DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  vehiculo             Vehiculo   @relation(fields: [vehiculoId], references: [id], onUpdate: Cascade, onDelete: Restrict, map: "fk_ventas_vehiculos")
+  reserva              Reserva?   @relation(fields: [reservaId], references: [id], onUpdate: Cascade, onDelete: SetNull, map: "fk_ventas_reservas")
+  comprador            User       @relation("VentasComprador", fields: [compradorId], references: [id], onUpdate: Cascade, onDelete: Restrict, map: "fk_ventas_comprador")
+  vendedor             User?      @relation("VentasVendedor", fields: [vendedorUsuarioId], references: [id], onUpdate: Cascade, onDelete: SetNull, map: "fk_ventas_vendedor")
+
+  @@index([fechaVenta], map: "idx_ventas_fecha")
+  @@map("ventas")
+}
+
+// -----------------------------------------------------------------------------
+// 9. Configuración Concesionario (configuracion_concesionario)
+// -----------------------------------------------------------------------------
+model ConfiguracionConcesionario {
+  id          Int      @id @default(autoincrement()) @db.UnsignedInt
+  clave       String   @unique @db.VarChar(50)
+  valor       String   @db.Text
+  descripcion String?  @db.VarChar(255)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(0)
+
+  @@map("configuracion_concesionario")
+}

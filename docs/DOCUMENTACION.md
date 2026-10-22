@@ -168,23 +168,27 @@ erDiagram
 
 ---
 
-## 4. Instrucciones de Importación en DBeaver
+## 4. Gestión de Base de Datos y Migraciones con Prisma
 
-1. **Crear la Base de Datos**:
-   Abre una consola SQL en DBeaver sobre tu conexión MySQL y ejecuta:
-   ```sql
-   CREATE DATABASE IF NOT EXISTS jds_vehiculos
-   CHARACTER SET utf8mb4
-   COLLATE utf8mb4_unicode_ci;
+> [!NOTE]
+> El archivo [`docs/legacy/database.sql`](legacy/database.sql) se conserva únicamente como referencia histórica del diseño inicial. En el proyecto real, el esquema se modela y evoluciona a través de **Prisma ORM** y migraciones versionadas.
 
-   USE jds_vehiculos;
-   ```
+### 1. Iniciar el servicio de base de datos MySQL (Docker)
+El proyecto incluye un contenedor MySQL 8 configurado con charset `utf8mb4` y collation `utf8mb4_unicode_ci`:
+```bash
+pnpm db:up
+```
 
-2. **Ejecutar el Script**:
-   - En DBeaver, haz clic en el menú **Archivo** > **Abrir archivo...** y selecciona [`database.sql`](legacy/database.sql).
-   - Asegúrate de tener seleccionada la base de datos `jds_vehiculos` en el selector superior.
-   - Presiona `Alt + X` (Ejecutar script SQL) o el botón **Execute SQL Script**.
+### 2. Ejecutar las migraciones
+Para sincronizar el esquema y aplicar las migraciones versionadas en la base de datos local:
+```bash
+pnpm db:migrate
+```
 
-3. **Verificación**:
-   - Refresca el navegador de base de datos a la izquierda.
-   - Deberás ver las 9 tablas creadas con sus respectivas llaves foráneas, índices y datos semilla de prueba.
+### 3. Comandos útiles de base de datos
+- `pnpm db:up`: Inicia el contenedor MySQL en segundo plano.
+- `pnpm db:down`: Detiene el contenedor MySQL.
+- `pnpm db:migrate`: Aplica las migraciones pendientes en desarrollo.
+- `pnpm db:generate`: Genera el cliente de Prisma (`@prisma/client`).
+- `pnpm db:reset`: Restablece la base de datos recreándola desde cero y ejecutando todas las migraciones.
+- `pnpm db:studio`: Abre la interfaz visual de Prisma Studio en el navegador.
