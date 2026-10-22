@@ -47,7 +47,7 @@ export function SiteHeader({ whatsappNumber, instagramUrl }: SiteHeaderProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="font-label-lg text-label-lg px-space-md py-space-xs text-on-surface-variant hover:text-on-surface focus-visible:ring-primary rounded-lg transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                className="font-label-lg text-label-lg px-space-sm py-space-xs text-on-surface-variant hover:text-on-surface focus-visible:ring-primary rounded-lg whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:outline-none"
               >
                 {link.label}
               </Link>

@@ -19,6 +19,8 @@ export const siteContent = {
   heroSubtitle:
     'Inspección pericial de 120 puntos, historial de propiedad verificado y entrega de llave en mano garantizada.',
   catalogTitle: 'Catálogo / Inventario',
+  catalogMetaTitle: 'Catálogo de Vehículos',
+  catalogResultsHeading: 'Resultados del catálogo',
   catalogSubtitle: 'Explora nuestro inventario de vehículos nuevos y seminuevos.',
   featuredSectionTitle: 'Vehículos Disponibles Recientes',
   featuredSectionSubtitle: 'Explora los vehículos disponibles para entrega inmediata.',
@@ -39,9 +41,34 @@ export const siteContent = {
       'https://www.instagram.com/jds_77vehiculos?xtok=MW16OThrNW1iY3Nxbg%3D%3D&utm_source=qr',
     instagramHandle: '@jds_77vehiculos',
   },
+  // Metadatos globales y de la portada (SEO)
+  seo: {
+    titleTemplate: '%s | JDS Vehículos',
+    defaultTitle: 'JDS Vehículos',
+    // TODO(owner): título y descripción de la portada usan las afirmaciones provisionales del prototipo (120 puntos, entrega garantizada)
+    homeTitle: 'JDS Vehículos | Autos Nuevos y Seminuevos Certificados',
+    homeDescription:
+      'Encuentra tu próximo auto nuevo o seminuevo certificado en JDS Vehículos. Inspección pericial de 120 puntos y entrega garantizada.',
+    siteDescription: 'Concesionario de vehículos nuevos y seminuevos.',
+    locale: 'es_CO',
+    notFoundVehicleTitle: 'Vehículo no encontrado',
+  },
+  // Páginas de error globales
+  errorPages: {
+    notFoundTitle: 'Página no encontrada',
+    notFoundDescription: 'La página que buscas no existe o cambió de dirección.',
+    errorTitle: 'Algo salió mal',
+    errorDescription:
+      'Ocurrió un problema inesperado al cargar esta página. Puedes intentarlo de nuevo o escribirnos por WhatsApp.',
+    retryCta: 'Reintentar',
+    catalogCta: 'Ver el catálogo',
+    homeCta: 'Ir al inicio',
+    whatsappCta: 'Escribir por WhatsApp',
+    whatsappMessage: 'Hola JDS Vehículos, tuve un problema al usar el sitio web.',
+  },
   // Contenido de /proximamente
   proximamente: {
-    title: 'Próximamente Disponibles | JDS Vehículos',
+    title: 'Próximamente Disponibles',
     heading: 'Próximamente en Inventario',
     subtitle: 'Vehículos que están por ingresar a nuestro inventario.',
     emptyTitle: 'Pronto tendremos novedades en inventario',
@@ -53,7 +80,7 @@ export const siteContent = {
   },
   // Contenido de /como-funciona
   comoFunciona: {
-    title: 'Cómo Funciona | JDS Vehículos',
+    title: 'Cómo Funciona',
     heading: 'Cómo Comprar en JDS Vehículos',
     subtitle: 'Así reservas tu vehículo en JDS Vehículos, paso a paso.',
     steps: [
@@ -118,7 +145,7 @@ export const siteContent = {
   },
   // Contenido de /contacto
   contacto: {
-    title: 'Contacto | JDS Vehículos',
+    title: 'Contacto',
     heading: 'Canales de Atención Directa',
     subtitle:
       'Estamos listos para asesorarte en la compra de tu vehículo a través de nuestros canales oficiales.',

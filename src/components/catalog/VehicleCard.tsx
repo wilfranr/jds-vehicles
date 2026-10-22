@@ -9,9 +9,11 @@ import { Condicion, Disponibilidad } from '@prisma/client';
 
 interface VehicleCardProps {
   vehicle: VehicleCardData;
+  /** Marca la imagen como prioritaria (LCP) para la primera tarjeta visible de una página. */
+  priority?: boolean;
 }
 
-export function VehicleCard({ vehicle }: VehicleCardProps) {
+export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
   const isReservado = vehicle.disponibilidad === Disponibilidad.RESERVADO;
   const isProximamente = vehicle.disponibilidad === Disponibilidad.PROXIMAMENTE;
 
@@ -38,6 +40,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
             src={vehicle.fotoPrincipalUrl}
             alt={`${vehicle.marcaNombre} ${vehicle.modeloNombre} ${vehicle.anio}`}
             fill
+            priority={priority}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />

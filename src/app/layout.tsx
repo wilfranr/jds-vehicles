@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
+import { siteContent } from '@/lib/site-content';
+import { getSiteUrl } from '@/lib/site-url';
 import './globals.css';
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -10,8 +12,28 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'JDS Vehículos',
-  description: 'Concesionario digital de vehículos',
+  metadataBase: new URL(getSiteUrl()),
+  title: {
+    default: siteContent.seo.defaultTitle,
+    template: siteContent.seo.titleTemplate,
+  },
+  description: siteContent.seo.siteDescription,
+  applicationName: siteContent.businessName,
+  icons: { icon: '/favicon.ico', apple: '/logo.jpg' },
+  openGraph: {
+    type: 'website',
+    siteName: siteContent.businessName,
+    locale: siteContent.seo.locale,
+    title: siteContent.seo.defaultTitle,
+    description: siteContent.seo.siteDescription,
+    images: [{ url: '/logo.jpg' }],
+  },
+  twitter: {
+    card: 'summary',
+    title: siteContent.seo.defaultTitle,
+    description: siteContent.seo.siteDescription,
+    images: ['/logo.jpg'],
+  },
 };
 
 export default function RootLayout({

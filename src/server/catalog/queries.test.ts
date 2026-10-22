@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { listVehicles, getVehicleById, getFilterOptions } from './queries';
+import { listVehicles, getVehicleById, getFilterOptions, getSitemapVehicles } from './queries';
 import { parseCatalogFilters } from './filters';
 import { Disponibilidad, Condicion, Transmision, Combustible, Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
@@ -232,6 +232,55 @@ describe('Capa de datos del catálogo (queries)', () => {
 
       // Serializabilidad
       expect(JSON.parse(JSON.stringify(options))).toEqual(options);
+    });
+  });
+
+  describe('getFilterOptions: modelos solo próximamente', () => {
+    const MODELO_SOLO_PROXIMAMENTE = '__test_modelo_proximamente_f106__';
+    let modeloTemporalId: number;
+    let vehiculoTemporalId: number;
+
+    beforeAll(async () => {
+      const base = await prisma.modelo.findUniqueOrThrow({ where: { id: modeloIdParaPruebas } });
+      const modelo = await prisma.modelo.create({
+        data: { marcaId: base.marcaId, nombre: MODELO_SOLO_PROXIMAMENTE },
+      });
+      modeloTemporalId = modelo.id;
+      const vehiculo = await prisma.vehiculo.create({
+        data: {
+          modeloId: modelo.id,
+          anio: 2025,
+          color: TEST_COLOR_MARKER,
+          condicion: Condicion.NUEVO,
+          precio: new Prisma.Decimal(200000000),
+          kilometraje: 0,
+          transmision: Transmision.AUTOMATICA,
+          combustible: Combustible.GASOLINA,
+          disponibilidad: Disponibilidad.PROXIMAMENTE,
+          visibleCatalogo: true,
+        },
+      });
+      vehiculoTemporalId = vehiculo.id;
+    });
+
+    afterAll(async () => {
+      await prisma.vehiculo.deleteMany({ where: { id: vehiculoTemporalId } });
+      await prisma.modelo.deleteMany({ where: { id: modeloTemporalId } });
+    });
+
+    it('no ofrece modelos cuyos únicos vehículos son PROXIMAMENTE', async () => {
+      const options = await getFilterOptions();
+      const nombres = options.marcas.flatMap((m) => m.modelos.map((mo) => mo.nombre));
+      expect(nombres).not.toContain(MODELO_SOLO_PROXIMAMENTE);
+    });
+  });
+
+  describe('getSitemapVehicles', () => {
+    it('lista vehículos visibles no vendidos y omite vendidos y ocultos', async () => {
+      const ids = (await getSitemapVehicles()).map((v) => v.id);
+      expect(ids).toContain(testVehiculoReservadoId);
+      expect(ids).not.toContain(testVehiculoVendidoId);
+      expect(ids).not.toContain(testVehiculoOcultoId);
     });
   });
 });
