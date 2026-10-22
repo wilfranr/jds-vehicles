@@ -68,6 +68,20 @@ Orden sugerido: F0-01 → F0-02 → (F0-03, F0-04, F0-06 en paralelo) → F0-05 
 
 Orden sugerido: F0-08 → (F1-01 ∥ F1-02) → F1-03 → (F1-04 ∥ F1-05) → F1-06.
 
+### Fase 2: Autenticación
+
+| ID                                        | Título                                          | Depende de          | Estado |
+| :---------------------------------------- | :---------------------------------------------- | :------------------ | :----- |
+| [F2-01](F2-01-authjs-base.md)             | Auth.js: configuración base, sesiones y helpers | F1-07               | TODO   |
+| [F2-02](F2-02-registro.md)                | Registro de clientes                            | F2-01               | TODO   |
+| [F2-03](F2-03-login-logout-ui.md)         | Login, cierre de sesión y menú de usuario       | F2-01, F2-02, F1-06 | TODO   |
+| [F2-04](F2-04-seguridad-rutas-limites.md) | Protección de rutas y limitación de intentos    | F2-01               | TODO   |
+| [F2-05](F2-05-mi-cuenta.md)               | Mi cuenta (perfil y cambio de contraseña)       | F2-03, F2-04        | TODO   |
+| [F2-06](F2-06-e2e-auth.md)                | Pruebas e2e de autenticación y cierre de Fase 2 | F2-05, F1-06        | TODO   |
+
+Orden sugerido: F2-01 → (F2-02 ∥ F2-04) → F2-03 (tras fusionar F1-06) → F2-05 → F2-06 (tras fusionar F1-06).
+F1-06 y las issues F2-01, F2-02 y F2-04 se pueden trabajar en paralelo: no comparten archivos relevantes.
+
 ### Reglas de contenido (vinculantes)
 
 - Todo texto editorial o comercial de la interfaz (títulos, subtítulos, cifras, tarjetas de beneficios, garantías, certificaciones, plazos) vive en `src/lib/site-content.ts`, nunca escrito directamente en páginas o componentes.
@@ -79,7 +93,9 @@ Orden sugerido: F0-08 → (F1-01 ∥ F1-02) → F1-03 → (F1-04 ∥ F1-05) → 
 - **Cifras de marca** ("42 vehículos", "100 % garantía", "48 h", "inspección de 120 puntos"): se usan provisionalmente tal como están en el prototipo, centralizadas en `src/lib/site-content.ts`. Confirmar o reemplazar antes de publicar (Fase 6).
 - **Almacenamiento de fotos** (disco del servidor Oracle vs. servicio externo): se decide antes de la Fase 4. En la Fase 1 las fotos se muestran desde URL.
 - Dirección, horario y mapa del concesionario: no se muestran hasta que existan.
+- **Política de tratamiento de datos personales** (y términos del servicio): el registro (F2-02) recoge documento de identidad, teléfono y dirección, y guarda la fecha de aceptación. El texto legal definitivo debe aportarlo el propietario (probablemente exigido por la Ley 1581 de 2012; confirmar con asesoría legal). Hasta entonces, texto neutro con `TODO(owner)`.
+- **Proveedor de correo para recuperar contraseñas** (SMTP propio, servicio transaccional, etc.): sin él no se puede implementar "¿Olvidaste tu contraseña?". No se incluye en la Fase 2; se crea el issue cuando se decida. Mientras tanto, un administrador puede restablecer contraseñas (Fase 4).
 
 ### Fases siguientes
 
-Se crearán cuando la Fase 1 esté en `DONE`.
+Fase 3 (reservas y WhatsApp) se creará cuando la Fase 2 esté en `DONE`.
