@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "600", "700", "800"],
+  variable: "--font-plus-jakarta-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "JDS Vehículos",
@@ -12,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body className="antialiased min-h-screen bg-neutral-950 text-neutral-100">
+    <html lang="es" className={plusJakartaSans.variable}>
+      <body className="antialiased min-h-screen bg-background text-on-surface font-body-md">
         {children}
       </body>
     </html>

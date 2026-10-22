@@ -1,6 +1,6 @@
 # F0-03: Tailwind: tokens de diseño y tipografía
 
-- **Estado:** TODO
+- **Estado:** REVIEW
 - **Fase:** 0
 - **Depende de:** F0-02
 - **Prioridad:** Media
@@ -23,10 +23,30 @@ El sistema de diseño "Velocita Motors" está en `docs/DESIGN.md` y su implement
 Header, footer, tarjetas de vehículo y demás componentes (Fase 1). Modo oscuro.
 
 ## Criterios de aceptación
-- [ ] Las clases usadas en `code.html` (ej. `bg-surface-container-low`, `text-headline-xl`, `rounded-xl`, `px-gutter`) existen y producen el mismo resultado visual.
-- [ ] La fuente se sirve desde el propio dominio (sin petición a `fonts.googleapis.com` en runtime del cliente).
-- [ ] La página `/_design` muestra paleta, escalas tipográficas y los 5 badges correctamente; devuelve 404 en producción.
-- [ ] `pnpm lint`, `pnpm typecheck`, `pnpm build` pasan.
+- [x] Las clases usadas en `code.html` (ej. `bg-surface-container-low`, `text-headline-xl`, `rounded-xl`, `px-gutter`) existen y producen el mismo resultado visual.
+- [x] La fuente se sirve desde el propio dominio (sin petición a `fonts.googleapis.com` en runtime del cliente).
+- [x] La página `/_design` muestra paleta, escalas tipográficas y los 5 badges correctamente; devuelve 404 en producción.
+- [x] `pnpm lint`, `pnpm typecheck`, `pnpm build` pasan.
 
 ## Verificación
 Abrir `/_design` junto a `docs/prototype/screen.png` y comparar colores y tipografía. Revisar Network en DevTools para la fuente.
+
+## Notas de entrega
+- **Qué se hizo:**
+  1. Configuración completa del sistema de diseño en `src/app/globals.css` mediante la directiva `@theme` de Tailwind v4:
+     - Paleta de colores completa de `DESIGN.md` (surfaces, on-surfaces, primary/secondary/tertiary y sus variantes fijas).
+     - Paleta semántica de estado (`status-nuevo`, `status-seminuevo`, `status-reservado`, `status-vendido`, `status-proximamente` con texto, fondo y bordes) y color de marca `whatsapp` (`#25D366`).
+     - Tokens de espaciado (`gutter`, `gutter-mobile`, `margin`, `margin-mobile`, `space-xs`, `space-sm`, `space-md`, `space-lg`, `space-xl`).
+     - Radios de borde según especificación.
+     - Escala tipográfica con tamaño, altura de línea, espaciado de letras y peso de fuente integrados.
+  2. Carga y autoalojamiento de **Plus Jakarta Sans** (pesos 400, 600, 700, 800) mediante `next/font/google` en `src/app/layout.tsx`.
+  3. Instalación de `lucide-react` y generación del documento de mapeo de iconos en `docs/ICON_MAPPING.md`.
+  4. Creación del componente `src/components/ui/StatusBadge.tsx` con soporte para los 5 estados especificados (`NUEVO`, `USADO` renderizado como SEMINUEVO, `RESERVADO`, `VENDIDO`, `PROXIMAMENTE`).
+  5. Creación de la ruta "kitchen sink" en `src/app/(public)/%5Fdesign/page.tsx` para visualización de badges, paleta y tipografía. Se validó que devuelve HTTP 404 cuando `NODE_ENV === 'production'`.
+- **Desviaciones:** Ninguna.
+- **Comandos de verificación ejecutados con éxito:**
+  - `pnpm typecheck` (tsc sin errores)
+  - `pnpm lint` (eslint limpio)
+  - `pnpm build` (build Turbopack exitoso)
+  - `curl -i http://localhost:3000/_design` en modo dev (200 OK con contenido)
+  - `curl -i http://localhost:3000/_design` con `NODE_ENV=production` (404 Not Found)

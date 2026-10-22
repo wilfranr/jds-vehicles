@@ -1,6 +1,6 @@
 # F0-02: Scaffold Next.js + TypeScript + estructura de carpetas
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 0
 - **Depende de:** F0-01
 - **Prioridad:** Alta
