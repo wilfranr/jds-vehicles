@@ -3,8 +3,9 @@ node_modules/
 .pnp/
 .pnp.js
 
-# Production build outputs
+# Next.js
 .next/
+next-env.d.ts
 out/
 build/
 dist/

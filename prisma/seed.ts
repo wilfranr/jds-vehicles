@@ -94,15 +94,24 @@ async function main() {
   const defaultAdminPass = 'Admin123*';
   const defaultClientPass = 'Cliente123*';
 
-  if (!process.env.SEED_ADMIN_PASSWORD) {
-    console.warn(
-      '⚠️  SEED_ADMIN_PASSWORD no está definida. Se usará la contraseña por defecto de desarrollo.'
-    );
-  }
-  if (!process.env.SEED_CLIENT_PASSWORD) {
-    console.warn(
-      '⚠️  SEED_CLIENT_PASSWORD no está definida. Se usará la contraseña por defecto de desarrollo.'
-    );
+  if (isProduction) {
+    if (!process.env.SEED_ADMIN_PASSWORD || !process.env.SEED_CLIENT_PASSWORD) {
+      console.error(
+        '❌ Error: En producción con flag --demo, se requiere definir las variables de entorno SEED_ADMIN_PASSWORD y SEED_CLIENT_PASSWORD.'
+      );
+      process.exit(1);
+    }
+  } else {
+    if (!process.env.SEED_ADMIN_PASSWORD) {
+      console.warn(
+        '⚠️  SEED_ADMIN_PASSWORD no está definida. Se usará la contraseña por defecto de desarrollo.'
+      );
+    }
+    if (!process.env.SEED_CLIENT_PASSWORD) {
+      console.warn(
+        '⚠️  SEED_CLIENT_PASSWORD no está definida. Se usará la contraseña por defecto de desarrollo.'
+      );
+    }
   }
 
   const rawAdminPassword = process.env.SEED_ADMIN_PASSWORD || defaultAdminPass;
