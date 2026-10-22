@@ -1,6 +1,6 @@
 # F1-05: Próximamente disponibles, Cómo funciona y Contacto
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 1
 - **Depende de:** F1-01, F1-02, F1-03
 - **Prioridad:** Media

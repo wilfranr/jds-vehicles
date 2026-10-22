@@ -26,6 +26,9 @@ Cierre de la Fase 1: visibilidad en buscadores, páginas de error coherentes con
     - `getFilterOptions` incluye modelos cuyos únicos vehículos son `PROXIMAMENTE` (p. ej. Hilux en el selector de modelo del catálogo), y al elegirlos el listado sale vacío. Limitar las opciones a vehículos `DISPONIBLE`/`RESERVADO`.
     - El menú del header (F1-01) parte los textos en dos líneas a 1280 px ("Catálogo / Inventario", "Cómo Funciona"); ajustar para que quepan en una línea.
 
+    - `src/app/(public)/page.tsx` tiene `title` y `description` de `metadata` escritos directamente (con las cifras provisionales del prototipo); moverlos a `site-content.ts` junto con el resto del texto editorial.
+    - Los ids no válidos o vendidos de `/vehiculos/[id]` devuelven HTTP 200 con la pantalla de no encontrado y `noindex` (consecuencia del streaming). Comprobar en `sitemap.ts` que esas URL no se listan; si se quiere un 404 real, evaluar quitar el `loading.tsx` de esa ruta y documentar el compromiso.
+
 ## Fuera de alcance
 
 CSP estricta, analítica, cookies/consentimiento, internacionalización.
