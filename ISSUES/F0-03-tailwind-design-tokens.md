@@ -6,9 +6,11 @@
 - **Prioridad:** Media
 
 ## Contexto
+
 El sistema de diseño "Velocita Motors" está en `docs/DESIGN.md` y su implementación de referencia en `docs/prototype/code.html` (bloque `tailwind.config`, que usa Tailwind por CDN). Hay que llevarlo a la configuración real del proyecto para que las fases siguientes reutilicen los mismos nombres de clase (`bg-surface-container-low`, `text-on-surface`, `font-headline-xl`, etc.).
 
 ## Alcance
+
 1. Trasladar a la configuración de Tailwind del proyecto (según la versión instalada: `tailwind.config.ts` o `@theme` en CSS):
    - `colors` completos del frontmatter de `DESIGN.md`.
    - `borderRadius`, `spacing` (`margin`, `gutter`, `space-*`), `fontFamily` y `fontSize` (con lineHeight, letterSpacing y fontWeight) tal como en `code.html`.
@@ -20,18 +22,22 @@ El sistema de diseño "Velocita Motors" está en `docs/DESIGN.md` y su implement
 7. Ruta temporal `src/app/(public)/_design/page.tsx` ("kitchen sink") mostrando paleta, tipografías y todos los `StatusBadge`. Debe quedar excluida de producción (`notFound()` si `NODE_ENV === 'production'`).
 
 ## Fuera de alcance
+
 Header, footer, tarjetas de vehículo y demás componentes (Fase 1). Modo oscuro.
 
 ## Criterios de aceptación
+
 - [x] Las clases usadas en `code.html` (ej. `bg-surface-container-low`, `text-headline-xl`, `rounded-xl`, `px-gutter`) existen y producen el mismo resultado visual.
 - [x] La fuente se sirve desde el propio dominio (sin petición a `fonts.googleapis.com` en runtime del cliente).
 - [x] La página `/_design` muestra paleta, escalas tipográficas y los 5 badges correctamente; devuelve 404 en producción.
 - [x] `pnpm lint`, `pnpm typecheck`, `pnpm build` pasan.
 
 ## Verificación
+
 Abrir `/_design` junto a `docs/prototype/screen.png` y comparar colores y tipografía. Revisar Network en DevTools para la fuente.
 
 ## Notas de entrega
+
 - **Qué se hizo:**
   1. Configuración completa del sistema de diseño en `src/app/globals.css` mediante la directiva `@theme` de Tailwind v4:
      - Paleta de colores completa de `DESIGN.md` (surfaces, on-surfaces, primary/secondary/tertiary y sus variantes fijas).

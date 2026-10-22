@@ -6,9 +6,11 @@
 - **Prioridad:** Media
 
 ## Contexto
+
 `docs/legacy/database.sql` mezclaba esquema y datos de ejemplo. Los `password_hash` de ejemplo eran inválidos (`$2y$10$e8K7...` truncados). Ahora los datos iniciales deben vivir en un seed idempotente, separado de las migraciones.
 
 ## Alcance
+
 1. `prisma/seed.ts` registrado en `package.json` (`"prisma": { "seed": "tsx prisma/seed.ts" }`) y script `db:seed`.
 2. **Datos de referencia** (se cargan siempre, también en producción), con `upsert` para ser idempotentes:
    - `roles`: CLIENTE, ADMIN, ASESOR.
@@ -21,9 +23,11 @@
 5. Documentar en `README.md` cómo cargar datos de referencia y de demo.
 
 ## Fuera de alcance
+
 Imágenes reales del inventario (Fase 6), lógica de registro de usuarios (Fase 2).
 
 ## Criterios de aceptación
+
 - [x] `pnpm db:reset` (migra + seed) deja la BD usable desde cero.
 - [x] Ejecutar `pnpm db:seed` dos veces seguidas no produce errores ni filas duplicadas (comprobar conteos).
 - [x] Con `NODE_ENV=production` solo se cargan roles y configuración.
@@ -31,6 +35,7 @@ Imágenes reales del inventario (Fase 6), lógica de registro de usuarios (Fase 
 - [x] `pnpm typecheck` y `pnpm lint` pasan.
 
 ## Verificación
+
 ```bash
 pnpm db:reset
 pnpm db:seed && pnpm db:seed
@@ -38,6 +43,7 @@ docker compose exec db mysql -ujds -pjds jds_vehiculos -e "SELECT COUNT(*) FROM 
 ```
 
 ## Notas de entrega
+
 - **Qué se hizo:**
   1. Creación de `prisma/seed.ts` completamente idempotente con `upsert` para todas las entidades.
   2. Registro en `package.json` de `"prisma": { "seed": "tsx prisma/seed.ts" }` y script `"db:seed": "prisma db seed"`.

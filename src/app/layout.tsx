@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Plus_Jakarta_Sans } from 'next/font/google';
+import './globals.css';
 
 const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
-  variable: "--font-plus-jakarta-sans",
-  display: "swap",
+  subsets: ['latin'],
+  weight: ['400', '600', '700', '800'],
+  variable: '--font-plus-jakarta-sans',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "JDS Vehículos",
-  description: "Concesionario digital de vehículos",
+  title: 'JDS Vehículos',
+  description: 'Concesionario digital de vehículos',
 };
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={plusJakartaSans.variable}>
-      <body className="antialiased min-h-screen bg-background text-on-surface font-body-md">
+      <body className="bg-background text-on-surface font-body-md min-h-screen antialiased">
         {children}
       </body>
     </html>

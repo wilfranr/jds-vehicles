@@ -6,9 +6,11 @@
 - **Prioridad:** Alta
 
 ## Contexto
+
 Se necesita la base de la aplicación en la raíz del repositorio (no en subcarpeta). Decisión: Next.js App Router, TypeScript estricto, pnpm, Tailwind.
 
 ## Alcance
+
 1. Crear la app Next.js (última versión estable) en la raíz con: TypeScript, App Router, Tailwind CSS, ESLint, alias de importación `@/*`, directorio `src/`. Usar `pnpm`. Si `create-next-app` se queja de archivos existentes, generarlo en un directorio temporal y mover el resultado sin sobrescribir `README.md`, `.gitignore`, `.env.example` ni `docs/` (fusionar a mano).
 2. `tsconfig.json` con `"strict": true` y `noUncheckedIndexedAccess: true`.
 3. Fijar versión de Node en `.nvmrc` y `engines` de `package.json`; fijar `packageManager` (pnpm).
@@ -35,9 +37,11 @@ Se necesita la base de la aplicación en la raíz del repositorio (no en subcarp
 8. Scripts en `package.json`: `dev`, `build`, `start`, `lint`, `typecheck` (`tsc --noEmit`).
 
 ## Fuera de alcance
+
 Tokens de diseño (F0-03), Prisma (F0-04), pruebas/Prettier (F0-06). No instalar Auth.js todavía.
 
 ## Criterios de aceptación
+
 - [x] `pnpm install && pnpm dev` levanta en `http://localhost:3000`.
 - [x] `curl localhost:3000/api/health` devuelve `{"status":"ok"}`.
 - [x] `pnpm build`, `pnpm lint` y `pnpm typecheck` pasan sin errores ni warnings.
@@ -45,6 +49,7 @@ Tokens de diseño (F0-03), Prisma (F0-04), pruebas/Prettier (F0-06). No instalar
 - [x] `README.md` actualizado con los comandos reales (reemplaza el `TODO(F0-02)`).
 
 ## Verificación
+
 ```bash
 pnpm install
 pnpm typecheck && pnpm lint && pnpm build
@@ -52,6 +57,7 @@ pnpm dev &  curl -s localhost:3000/api/health
 ```
 
 ## Notas de entrega
+
 - **Qué se hizo:**
   1. Scaffold de Next.js 16 (App Router + TypeScript + Tailwind CSS v4 + ESLint con alias `@/*`).
   2. Configuración en `tsconfig.json` con `"strict": true` y `"noUncheckedIndexedAccess": true`.

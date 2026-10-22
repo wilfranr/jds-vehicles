@@ -6,9 +6,11 @@
 - **Prioridad:** Alta (bloquea todo lo demás)
 
 ## Contexto
+
 El directorio del proyecto no es un repositorio git y no tiene README ni gestión de variables de entorno. Contiene documentos de diseño y el SQL original que deben conservarse.
 
 ## Alcance
+
 1. `git init` en la raíz (rama por defecto `main`) y un primer commit con los archivos actuales.
 2. `.gitignore` adecuado para Node/Next.js: `node_modules`, `.next`, `.env*` (excepto `.env.example`), `coverage`, `*.log`, `.DS_Store`, `/uploads`.
 3. Mover los artefactos de diseño a una carpeta `docs/`, sin borrar nada:
@@ -27,9 +29,11 @@ El directorio del proyecto no es un repositorio git y no tiene README ni gestió
    - `NEXT_PUBLIC_WHATSAPP_NUMBER=573202353168` (la fuente de verdad será la tabla `configuracion_concesionario`; esto es solo fallback)
 
 ## Fuera de alcance
+
 Instalar dependencias, crear el proyecto Next.js o tocar el contenido de los documentos más allá de corregir enlaces.
 
 ## Criterios de aceptación
+
 - [x] `git status` limpio y `git log` muestra al menos 2 commits (inicial + reorganización).
 - [x] Ningún archivo original se perdió (verificar con `git ls-files`).
 - [x] `.env` está ignorado; `.env.example` está versionado.
@@ -37,6 +41,7 @@ Instalar dependencias, crear el proyecto Next.js o tocar el contenido de los doc
 - [x] Los enlaces internos de los `.md` funcionan tras mover los archivos.
 
 ## Verificación
+
 ```bash
 git status
 git log --oneline
@@ -45,9 +50,11 @@ git check-ignore -v .env
 ```
 
 ## Notas
+
 Mensajes de commit en español, formato `tipo: descripción` (feat, fix, chore, docs).
 
 ## Notas de entrega
+
 - **Qué se hizo:**
   1. Inicialización del repositorio git en la rama `main` y creación de rama `issue/F0-01-repo-init`.
   2. Commit inicial preservando el 100% de los archivos originales.

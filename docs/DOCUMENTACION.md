@@ -7,7 +7,8 @@ Este documento detalla la arquitectura de base de datos, el flujo de negocio, el
 ## 1. Alcance y Reglas de Negocio
 
 ### 1.1 Catálogo y Vehículos
-- **Condición**: 
+
+- **Condición**:
   - `NUEVO`: No requiere placa (puede no estar matriculado aún). Kilometraje en 0.
   - `USADO`: Obligatoriamente debe registrar su **placa** y kilometraje actual.
 - **Disponibilidad de Inventario**:
@@ -18,6 +19,7 @@ Este documento detalla la arquitectura de base de datos, el flujo de negocio, el
 - **Galería Multimedia**: Cada vehículo soporta múltiples fotografías (`vehiculo_fotos`), permitiendo marcar una imagen como principal/portada y ordenarlas.
 
 ### 1.2 Usuarios y Autenticación
+
 - Los clientes deben registrarse e iniciar sesión para reservar un vehículo.
 - **Datos básicos del comprador**:
   - Nombres y Apellidos.
@@ -27,9 +29,10 @@ Este documento detalla la arquitectura de base de datos, el flujo de negocio, el
   - Dirección y ciudad de residencia.
 
 ### 1.3 Flujo de Reserva y Contacto por WhatsApp
+
 1. **Exploración**: El usuario consulta el catálogo filtrando por marca, modelo, precio, año, color o condición (Nuevo/Usado).
 2. **Selección**: El usuario ingresa al detalle del vehículo.
-3. **Autenticación obligatoria**: Al hacer clic en *"Reservar este vehículo"*, si no está logueado, el sistema redirige al Login o Registro.
+3. **Autenticación obligatoria**: Al hacer clic en _"Reservar este vehículo"_, si no está logueado, el sistema redirige al Login o Registro.
 4. **Reserva**:
    - Se crea un registro en la tabla `reservas` asociando el `usuario_id` con el `vehiculo_id`.
    - El estado del auto en `vehiculos` cambia a `RESERVADO`.
@@ -42,6 +45,7 @@ Este documento detalla la arquitectura de base de datos, el flujo de negocio, el
    - El usuario abre la conversación directamente con el asesor comercial.
 
 ### 1.4 Cierre de Negocio y Salida de Stock
+
 - La negociación física, financiera o de traspaso ocurre **fuera de la plataforma**.
 - El personal del concesionario (rol `ADMIN` o `ASESOR`):
   1. Marca la reserva como `COMPLETADA` (o `CANCELADA` si no prosperó).
@@ -154,17 +158,17 @@ erDiagram
 
 ## 3. Diccionario de Datos
 
-| Tabla | Propósito |
-| :--- | :--- |
-| `roles` | Perfiles de usuario: `CLIENTE`, `ADMIN`, `ASESOR`. |
-| `usuarios` | Datos de clientes compradores y administradores del concesionario. |
-| `marcas` | Fabricantes automotrices (Toyota, Mazda, Chevrolet, etc.). |
-| `modelos` | Líneas asociadas a cada marca (Corolla, CX-30, Onix, etc.). |
-| `vehiculos` | Catálogo de autos con especificaciones técnicas, precio, color, placas y disponibilidad. |
-| `vehiculo_fotos` | Enlaces a imágenes alojadas con soporte para foto de portada (`es_principal`). |
-| `reservas` | Apartado temporal del auto por el cliente y generación del link de WhatsApp. |
-| `ventas` | Registro histórico del cierre de la transacción económica fuera de la app. |
-| `configuracion_concesionario` | Parámetros del negocio como el número oficial de WhatsApp y plantillas de mensaje. |
+| Tabla                         | Propósito                                                                                |
+| :---------------------------- | :--------------------------------------------------------------------------------------- |
+| `roles`                       | Perfiles de usuario: `CLIENTE`, `ADMIN`, `ASESOR`.                                       |
+| `usuarios`                    | Datos de clientes compradores y administradores del concesionario.                       |
+| `marcas`                      | Fabricantes automotrices (Toyota, Mazda, Chevrolet, etc.).                               |
+| `modelos`                     | Líneas asociadas a cada marca (Corolla, CX-30, Onix, etc.).                              |
+| `vehiculos`                   | Catálogo de autos con especificaciones técnicas, precio, color, placas y disponibilidad. |
+| `vehiculo_fotos`              | Enlaces a imágenes alojadas con soporte para foto de portada (`es_principal`).           |
+| `reservas`                    | Apartado temporal del auto por el cliente y generación del link de WhatsApp.             |
+| `ventas`                      | Registro histórico del cierre de la transacción económica fuera de la app.               |
+| `configuracion_concesionario` | Parámetros del negocio como el número oficial de WhatsApp y plantillas de mensaje.       |
 
 ---
 
@@ -174,18 +178,23 @@ erDiagram
 > El archivo [`docs/legacy/database.sql`](legacy/database.sql) se conserva únicamente como referencia histórica del diseño inicial. En el proyecto real, el esquema se modela y evoluciona a través de **Prisma ORM** y migraciones versionadas.
 
 ### 1. Iniciar el servicio de base de datos MySQL (Docker)
+
 El proyecto incluye un contenedor MySQL 8 configurado con charset `utf8mb4` y collation `utf8mb4_unicode_ci`:
+
 ```bash
 pnpm db:up
 ```
 
 ### 2. Ejecutar las migraciones
+
 Para sincronizar el esquema y aplicar las migraciones versionadas en la base de datos local:
+
 ```bash
 pnpm db:migrate
 ```
 
 ### 3. Comandos útiles de base de datos
+
 - `pnpm db:up`: Inicia el contenedor MySQL en segundo plano.
 - `pnpm db:down`: Detiene el contenedor MySQL.
 - `pnpm db:migrate`: Aplica las migraciones pendientes en desarrollo.

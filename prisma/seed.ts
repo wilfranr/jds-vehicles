@@ -1,26 +1,33 @@
-import { PrismaClient, TipoDocumento, Condicion, Transmision, Combustible, Disponibilidad } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import {
+  PrismaClient,
+  TipoDocumento,
+  Condicion,
+  Transmision,
+  Combustible,
+  Disponibilidad,
+} from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Iniciando ejecución de seed...");
+  console.log('🌱 Iniciando ejecución de seed...');
 
   // Determinar si debemos sembrar datos de demo
-  const isProduction = process.env.NODE_ENV === "production";
-  const hasDemoFlag = process.argv.includes("--demo");
+  const isProduction = process.env.NODE_ENV === 'production';
+  const hasDemoFlag = process.argv.includes('--demo');
   const shouldSeedDemo = !isProduction || hasDemoFlag;
 
   // ---------------------------------------------------------------------------
   // 1. DATOS DE REFERENCIA (Siempre se cargan, incluso en producción)
   // ---------------------------------------------------------------------------
-  console.log("📦 Sembrando datos de referencia (roles y configuraciones base)...");
+  console.log('📦 Sembrando datos de referencia (roles y configuraciones base)...');
 
   // 1.1 Roles
   const roles = [
-    { id: 1, nombre: "CLIENTE", descripcion: "Usuario comprador registrado en el portal" },
-    { id: 2, nombre: "ADMIN", descripcion: "Administrador total de concesionario" },
-    { id: 3, nombre: "ASESOR", descripcion: "Asesor comercial para atención de clientes" },
+    { id: 1, nombre: 'CLIENTE', descripcion: 'Usuario comprador registrado en el portal' },
+    { id: 2, nombre: 'ADMIN', descripcion: 'Administrador total de concesionario' },
+    { id: 3, nombre: 'ASESOR', descripcion: 'Asesor comercial para atención de clientes' },
   ];
 
   for (const role of roles) {
@@ -38,19 +45,21 @@ async function main() {
   // 1.2 Configuración del Concesionario
   const configuraciones = [
     {
-      clave: "whatsapp_numero",
-      valor: "573202353168",
-      descripcion: "Número oficial con código de país sin signo + ni espacios",
+      clave: 'whatsapp_numero',
+      valor: '573202353168',
+      descripcion: 'Número oficial con código de país sin signo + ni espacios',
     },
     {
-      clave: "whatsapp_mensaje_plantilla",
-      valor: "Hola JDS Vehículos, acabo de reservar el auto {marca} {modelo} {anio} (ID: {vehiculo_id}, Código Reserva: {codigo_reserva}). Mi nombre es {nombre_comprador}. Quisiera coordinar el cierre del negocio.",
-      descripcion: "Plantilla de mensaje para WhatsApp",
+      clave: 'whatsapp_mensaje_plantilla',
+      valor:
+        'Hola JDS Vehículos, acabo de reservar el auto {marca} {modelo} {anio} (ID: {vehiculo_id}, Código Reserva: {codigo_reserva}). Mi nombre es {nombre_comprador}. Quisiera coordinar el cierre del negocio.',
+      descripcion: 'Plantilla de mensaje para WhatsApp',
     },
     {
-      clave: "instagram_url",
-      valor: "https://www.instagram.com/jds_77vehiculos?xtok=MW16OThrNW1iY3Nxbg%3D%3D&utm_source=qr",
-      descripcion: "Perfil oficial de Instagram",
+      clave: 'instagram_url',
+      valor:
+        'https://www.instagram.com/jds_77vehiculos?xtok=MW16OThrNW1iY3Nxbg%3D%3D&utm_source=qr',
+      descripcion: 'Perfil oficial de Instagram',
     },
   ];
 
@@ -70,24 +79,30 @@ async function main() {
   }
 
   if (!shouldSeedDemo) {
-    console.log("ℹ️  Entorno de producción detectado sin flag --demo. Omitiendo datos de demostración.");
+    console.log(
+      'ℹ️  Entorno de producción detectado sin flag --demo. Omitiendo datos de demostración.'
+    );
     return;
   }
 
   // ---------------------------------------------------------------------------
   // 2. DATOS DE DEMOSTRACIÓN (Solo desarrollo o con flag --demo)
   // ---------------------------------------------------------------------------
-  console.log("🚗 Sembrando datos de demostración...");
+  console.log('🚗 Sembrando datos de demostración...');
 
   // 2.1 Usuarios (con contraseñas hasheadas de verdad)
-  const defaultAdminPass = "Admin123*";
-  const defaultClientPass = "Cliente123*";
+  const defaultAdminPass = 'Admin123*';
+  const defaultClientPass = 'Cliente123*';
 
   if (!process.env.SEED_ADMIN_PASSWORD) {
-    console.warn("⚠️  SEED_ADMIN_PASSWORD no está definida. Se usará la contraseña por defecto de desarrollo.");
+    console.warn(
+      '⚠️  SEED_ADMIN_PASSWORD no está definida. Se usará la contraseña por defecto de desarrollo.'
+    );
   }
   if (!process.env.SEED_CLIENT_PASSWORD) {
-    console.warn("⚠️  SEED_CLIENT_PASSWORD no está definida. Se usará la contraseña por defecto de desarrollo.");
+    console.warn(
+      '⚠️  SEED_CLIENT_PASSWORD no está definida. Se usará la contraseña por defecto de desarrollo.'
+    );
   }
 
   const rawAdminPassword = process.env.SEED_ADMIN_PASSWORD || defaultAdminPass;
@@ -98,52 +113,52 @@ async function main() {
 
   // Admin
   await prisma.user.upsert({
-    where: { email: "admin@jdsvehiculos.com" },
+    where: { email: 'admin@jdsvehiculos.com' },
     update: {
       passwordHash: adminHash,
-      nombre: "Admin",
-      apellido: "JDS",
-      telefono: "573000000001",
-      ciudad: "Bogotá",
+      nombre: 'Admin',
+      apellido: 'JDS',
+      telefono: '573000000001',
+      ciudad: 'Bogotá',
       rolId: 2,
     },
     create: {
       id: 1,
       rolId: 2,
-      nombre: "Admin",
-      apellido: "JDS",
+      nombre: 'Admin',
+      apellido: 'JDS',
       tipoDocumento: TipoDocumento.CC,
-      documentoIdentidad: "1000000001",
-      email: "admin@jdsvehiculos.com",
+      documentoIdentidad: '1000000001',
+      email: 'admin@jdsvehiculos.com',
       passwordHash: adminHash,
-      telefono: "573000000001",
-      ciudad: "Bogotá",
+      telefono: '573000000001',
+      ciudad: 'Bogotá',
       activo: true,
     },
   });
 
   // Cliente
   await prisma.user.upsert({
-    where: { email: "carlos.gomez@example.com" },
+    where: { email: 'carlos.gomez@example.com' },
     update: {
       passwordHash: clientHash,
-      nombre: "Carlos",
-      apellido: "Gómez",
-      telefono: "573105551234",
-      ciudad: "Medellín",
+      nombre: 'Carlos',
+      apellido: 'Gómez',
+      telefono: '573105551234',
+      ciudad: 'Medellín',
       rolId: 1,
     },
     create: {
       id: 2,
       rolId: 1,
-      nombre: "Carlos",
-      apellido: "Gómez",
+      nombre: 'Carlos',
+      apellido: 'Gómez',
       tipoDocumento: TipoDocumento.CC,
-      documentoIdentidad: "1012345678",
-      email: "carlos.gomez@example.com",
+      documentoIdentidad: '1012345678',
+      email: 'carlos.gomez@example.com',
       passwordHash: clientHash,
-      telefono: "573105551234",
-      ciudad: "Medellín",
+      telefono: '573105551234',
+      ciudad: 'Medellín',
       activo: true,
     },
   });
@@ -152,24 +167,24 @@ async function main() {
   const marcasConModelos = [
     {
       id: 1,
-      nombre: "Toyota",
+      nombre: 'Toyota',
       modelos: [
-        { id: 1, nombre: "Corolla" },
-        { id: 2, nombre: "Hilux" },
+        { id: 1, nombre: 'Corolla' },
+        { id: 2, nombre: 'Hilux' },
       ],
     },
     {
       id: 2,
-      nombre: "Mazda",
+      nombre: 'Mazda',
       modelos: [
-        { id: 3, nombre: "CX-30" },
-        { id: 4, nombre: "Mazda 3" },
+        { id: 3, nombre: 'CX-30' },
+        { id: 4, nombre: 'Mazda 3' },
       ],
     },
     {
       id: 3,
-      nombre: "Chevrolet",
-      modelos: [{ id: 5, nombre: "Onix" }],
+      nombre: 'Chevrolet',
+      modelos: [{ id: 5, nombre: 'Onix' }],
     },
   ];
 
@@ -205,7 +220,7 @@ async function main() {
       id: 1,
       modeloId: 1, // Corolla
       anio: 2024,
-      color: "Blanco Perlado",
+      color: 'Blanco Perlado',
       condicion: Condicion.NUEVO,
       placa: null,
       precio: 115000000.0,
@@ -213,33 +228,33 @@ async function main() {
       transmision: Transmision.AUTOMATICA,
       combustible: Combustible.HIBRIDO,
       cilindraje: 1800,
-      descripcion: "Toyota Corolla Híbrido 2024 0km listo para entrega inmediata.",
+      descripcion: 'Toyota Corolla Híbrido 2024 0km listo para entrega inmediata.',
       disponibilidad: Disponibilidad.DISPONIBLE,
       visibleCatalogo: true,
-      fotoPrincipal: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb",
+      fotoPrincipal: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb',
     },
     {
       id: 2,
       modeloId: 3, // CX-30
       anio: 2022,
-      color: "Rojo Diamante",
+      color: 'Rojo Diamante',
       condicion: Condicion.USADO,
-      placa: "ABC123",
+      placa: 'ABC123',
       precio: 92000000.0,
       kilometraje: 24500,
       transmision: Transmision.AUTOMATICA,
       combustible: Combustible.GASOLINA,
       cilindraje: 2000,
-      descripcion: "Mazda CX-30 Grand Touring, único dueño, mantenimientos en concesionario.",
+      descripcion: 'Mazda CX-30 Grand Touring, único dueño, mantenimientos en concesionario.',
       disponibilidad: Disponibilidad.DISPONIBLE,
       visibleCatalogo: true,
-      fotoPrincipal: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341",
+      fotoPrincipal: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341',
     },
     {
       id: 3,
       modeloId: 2, // Hilux
       anio: 2025,
-      color: "Gris Metalizado",
+      color: 'Gris Metalizado',
       condicion: Condicion.NUEVO,
       placa: null,
       precio: 230000000.0,
@@ -247,10 +262,10 @@ async function main() {
       transmision: Transmision.AUTOMATICA,
       combustible: Combustible.DIESEL,
       cilindraje: 2800,
-      descripcion: "Toyota Hilux 4x4 Diésel 2025. Próxima llegada al concesionario.",
+      descripcion: 'Toyota Hilux 4x4 Diésel 2025. Próxima llegada al concesionario.',
       disponibilidad: Disponibilidad.PROXIMAMENTE,
       visibleCatalogo: true,
-      fotoPrincipal: "https://images.unsplash.com/photo-1559416523-140ddc3d238c",
+      fotoPrincipal: 'https://images.unsplash.com/photo-1559416523-140ddc3d238c',
     },
   ];
 
@@ -289,12 +304,12 @@ async function main() {
     }
   }
 
-  console.log("✅ Seed completado con éxito.");
+  console.log('✅ Seed completado con éxito.');
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Error durante la ejecución del seed:", e);
+    console.error('❌ Error durante la ejecución del seed:', e);
     process.exit(1);
   })
   .finally(async () => {

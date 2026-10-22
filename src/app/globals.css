@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* Colors from DESIGN.md frontmatter */
@@ -51,22 +51,22 @@
   --color-surface-variant: #d3e4fe;
 
   /* Status Semantic Palette & Brand WhatsApp */
-  --color-whatsapp: #25D366;
+  --color-whatsapp: #25d366;
   --color-status-nuevo: #059669;
-  --color-status-nuevo-bg: #ECFDF5;
-  --color-status-nuevo-border: #A7F3D0;
-  --color-status-seminuevo: #0891B2;
-  --color-status-seminuevo-bg: #ECFEFF;
-  --color-status-seminuevo-border: #A5F3FC;
-  --color-status-reservado: #D97706;
-  --color-status-reservado-bg: #FFFBEB;
-  --color-status-reservado-border: #FDE68A;
-  --color-status-vendido: #64748B;
-  --color-status-vendido-bg: #F1F5F9;
-  --color-status-vendido-border: #CBD5E1;
-  --color-status-proximamente: #7C3AED;
-  --color-status-proximamente-bg: #F5F3FF;
-  --color-status-proximamente-border: #DDD6FE;
+  --color-status-nuevo-bg: #ecfdf5;
+  --color-status-nuevo-border: #a7f3d0;
+  --color-status-seminuevo: #0891b2;
+  --color-status-seminuevo-bg: #ecfeff;
+  --color-status-seminuevo-border: #a5f3fc;
+  --color-status-reservado: #d97706;
+  --color-status-reservado-bg: #fffbeb;
+  --color-status-reservado-border: #fde68a;
+  --color-status-vendido: #64748b;
+  --color-status-vendido-bg: #f1f5f9;
+  --color-status-vendido-border: #cbd5e1;
+  --color-status-proximamente: #7c3aed;
+  --color-status-proximamente-bg: #f5f3ff;
+  --color-status-proximamente-border: #ddd6fe;
 
   /* Border radius */
   --radius-sm: 0.25rem;
