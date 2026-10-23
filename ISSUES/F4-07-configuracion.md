@@ -1,6 +1,6 @@
 # F4-07: Configuración del concesionario (solo ADMIN)
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 4
 - **Depende de:** F4-01
 - **Prioridad:** Media

@@ -1,6 +1,6 @@
 # F4-06: Gestión de usuarios (solo ADMIN)
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 4
 - **Depende de:** F4-01
 - **Prioridad:** Media
