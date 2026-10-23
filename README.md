@@ -110,6 +110,25 @@ Adicionalmente, se cuenta con hooks de Git configurados con **Husky** y **lint-s
 | `/robots.txt`     | Reglas para buscadores (excluye `/api` y `/_design`)        |
 | `/api/health`     | Comprobación de salud (no indexada)                         |
 
+## Panel
+
+`/admin` es el panel del concesionario (roles `ADMIN` y `ASESOR`). Armazón propio (no usa el header público), `noindex`, sin scroll horizontal a 360 px. Resumen con contadores reales de la BD: vehículos por disponibilidad, reservas activas y por vencer en 24 h, ventas del mes (calendario de Bogotá) y, solo para `ADMIN`, usuarios activos.
+
+| Sección                     | Ruta                                                   | Acceso                                                       |
+| :-------------------------- | :----------------------------------------------------- | :----------------------------------------------------------- |
+| Resumen                     | `/admin`                                               | `ADMIN`, `ASESOR`                                            |
+| Reservas, Ventas, Vehículos | `/admin/reservas`, `/admin/ventas`, `/admin/vehiculos` | `ADMIN`, `ASESOR` (marcadores hasta sus issues de la Fase 4) |
+| Usuarios, Configuración     | `/admin/usuarios`, `/admin/configuracion`              | solo `ADMIN` (marcadores hasta sus issues)                   |
+
+Decisión del demo (confirmar antes de producción): `ASESOR` gestiona reservas, ventas e inventario; solo `ADMIN` gestiona usuarios y la configuración.
+
+**Reglas para quien añada páginas o acciones al panel**
+
+- Cada página y cada Server Action llama a `requireStaff()` o `requireAdmin()` (`src/server/auth/staff.ts`), además del proxy. Estas funciones confirman el rol y que la cuenta siga activa **en la BD** (el JWT dura 7 días y no se revoca); sin sesión redirigen a login y con un rol insuficiente responden 404. El layout no es una barrera: no se vuelve a ejecutar en cada navegación.
+- El rol y el id del actor salen de la sesión/BD, nunca del formulario; campos editables en listas explícitas; validación con Zod en el servidor.
+- Cada cambio relevante escribe un evento con `logAdminEvent` (`src/server/admin/audit.ts`): una línea JSON del canal `admin` con quién, qué y el id afectado, sin datos personales ni secretos.
+- Los mensajes nunca revelan si existe un registro ajeno.
+
 ## Reservas
 
 Flujo: en la ficha de un vehículo `DISPONIBLE`, un usuario con sesión pulsa «Reservar este vehículo» (sin sesión, el botón lleva a `/login?next=…` y vuelve a la ficha; la reserva siempre exige un clic). La acción crea la reserva en una transacción (solo una persona gana si dos reservan a la vez), deja el vehículo `RESERVADO` y lleva a `/mi-cuenta/reservas/<codigo>?nueva=1`, donde se muestra el código `RES-AAAA-XXXX` y el botón de WhatsApp con un mensaje que lleva código, vehículo y nombre (nunca placa ni documento). Las reservas del usuario están en `/mi-cuenta/reservas`. El cliente no cancela: esa acción es del personal (Fase 4).

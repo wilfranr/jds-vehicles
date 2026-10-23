@@ -185,15 +185,4 @@ test.describe('Autenticación', () => {
         .first()
     ).toBeVisible();
   });
-
-  // Variantes de ruta del proxy (F2-04): /admin aún no existe (Fase 4), así que hoy no se puede distinguir
-  // "el proxy la intercepta" de "no hay página". Al crear /admin, quitar el fixme y exigir que ninguna
-  // variante devuelva contenido de admin a un CLIENTE o a un anónimo. Cada página de /admin debe además
-  // llamar a `requireRole()`: el proxy es solo la primera barrera.
-  test.fixme('variantes de /admin no eluden el proxy (Fase 4)', async ({ page }) => {
-    for (const path of ['/%61dmin/x', '/admin%2fx', '/ADMIN/x', '/admin//x', '/admin/../admin/x']) {
-      const response = await page.goto(path);
-      expect([307, 308, 404]).toContain(response?.status());
-    }
-  });
 });

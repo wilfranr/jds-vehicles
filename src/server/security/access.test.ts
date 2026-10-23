@@ -57,4 +57,15 @@ describe('matcher del proxy', () => {
     }
     expect(decideAccess('/mi-cuenta/reservas/RES-1-X', null)).toBe('redirectLogin');
   });
+
+  it('usuarios y configuración del panel son solo de ADMIN', () => {
+    for (const path of ['/admin/usuarios', '/admin/usuarios/4', '/admin/configuracion']) {
+      expect(decideAccess(path, 'ASESOR')).toBe('notFound');
+      expect(decideAccess(path, 'CLIENTE')).toBe('notFound');
+      expect(decideAccess(path, 'ADMIN')).toBe('allow');
+      expect(decideAccess(path, null)).toBe('redirectLogin');
+    }
+    expect(decideAccess('/admin/reservas', 'ASESOR')).toBe('allow');
+    expect(decideAccess('/admin/usuariosx', 'ASESOR')).toBe('allow');
+  });
 });

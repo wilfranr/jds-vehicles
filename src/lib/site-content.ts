@@ -79,8 +79,8 @@ export const siteContent = {
     myReservations: 'Mis reservas',
     adminPanel: 'Panel del concesionario',
     logout: 'Cerrar sesión',
-    // TODO(F4): poner en true cuando exista la ruta /admin (panel del concesionario).
-    showAdminPanelLink: false,
+    // El enlace solo se muestra a ADMIN y ASESOR (ver `accountLinks`).
+    showAdminPanelLink: true,
   },
   // Reservas (F3-02): mensajes de la acción de reservar y texto del mensaje de WhatsApp
   reservations: {
@@ -93,6 +93,49 @@ export const siteContent = {
       limitReachedLink: 'Ver mis reservas',
       invalidVehicle: 'No fue posible procesar la reserva. Inténtalo de nuevo.',
       generic: 'No fue posible completar la reserva en este momento. Inténtalo más tarde.',
+    },
+  },
+  // Panel del concesionario (/admin)
+  admin: {
+    title: 'Panel del concesionario',
+    navLabel: 'Secciones del panel',
+    skipLabel: 'Cargando el panel',
+    viewSite: 'Ver sitio',
+    roleLabels: { ADMIN: 'Administrador', ASESOR: 'Asesor', CLIENTE: 'Cliente' },
+    nav: [
+      { href: '/admin', label: 'Resumen', adminOnly: false },
+      { href: '/admin/reservas', label: 'Reservas', adminOnly: false },
+      { href: '/admin/ventas', label: 'Ventas', adminOnly: false },
+      { href: '/admin/vehiculos', label: 'Vehículos', adminOnly: false },
+      { href: '/admin/usuarios', label: 'Usuarios', adminOnly: true },
+      { href: '/admin/configuracion', label: 'Configuración', adminOnly: true },
+    ],
+    placeholder: 'Esta sección estará disponible próximamente.',
+    sections: {
+      reservas: 'Reservas',
+      ventas: 'Ventas',
+      vehiculos: 'Vehículos',
+      usuarios: 'Usuarios',
+      configuracion: 'Configuración',
+    },
+    dashboard: {
+      title: 'Resumen',
+      subtitle: 'Cifras actuales del inventario y de la actividad.',
+      vehiclesHeading: 'Vehículos por disponibilidad',
+      vehicleLabels: {
+        DISPONIBLE: 'Disponibles',
+        RESERVADO: 'Reservados',
+        PROXIMAMENTE: 'Próximamente',
+        VENDIDO: 'Vendidos',
+      },
+      reservationsHeading: 'Reservas',
+      activeReservations: 'Reservas activas',
+      expiringReservations: 'Por vencer en 24 h',
+      salesHeading: 'Ventas del mes',
+      salesCount: 'Ventas registradas',
+      salesTotal: 'Total vendido',
+      usersHeading: 'Usuarios',
+      activeUsers: 'Usuarios activos',
     },
   },
   // Contenido de /mi-cuenta (perfil, seguridad y reservas)
