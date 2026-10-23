@@ -91,7 +91,7 @@ F1-06 y las issues F2-01, F2-02 y F2-04 se pueden trabajar en paralelo: no compa
 | [F3-02](F3-02-reservar-whatsapp.md)   | Reservar desde el detalle y abrir WhatsApp        | F3-01               | DONE   |
 | [F3-03](F3-03-mis-reservas.md)        | Mis reservas y confirmación                       | F3-01               | DONE   |
 | [F3-04](F3-04-expiracion-reservas.md) | Expiración de reservas                            | F3-01               | DONE   |
-| [F3-05](F3-05-e2e-reservas.md)        | Pruebas e2e de reservas y cierre de la Fase 3     | F3-02, F3-03, F3-04 | TODO   |
+| [F3-05](F3-05-e2e-reservas.md)        | Pruebas e2e de reservas y cierre de la Fase 3     | F3-02, F3-03, F3-04 | DONE   |
 
 Orden sugerido: F3-01 → (F3-02 ∥ F3-03 ∥ F3-04) → F3-05. F3-02 enlaza a la página de F3-03; si se hacen en paralelo, coordinar la ruta `/mi-cuenta/reservas/[codigo]`.
 
@@ -113,4 +113,4 @@ Orden sugerido: F3-01 → (F3-02 ∥ F3-03 ∥ F3-04) → F3-05. F3-02 enlaza a 
 
 ### Fases siguientes
 
-Fase 4 (panel de administración) se creará cuando la Fase 3 esté en `DONE`.
+Fase 4 (panel de administración): pendiente de crear (la Fase 3 está en `DONE`).

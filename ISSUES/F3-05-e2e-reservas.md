@@ -1,6 +1,6 @@
 # F3-05: Pruebas e2e de reservas y cierre de la Fase 3
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 3
 - **Depende de:** F3-02, F3-03, F3-04
 - **Prioridad:** Alta
