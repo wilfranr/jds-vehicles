@@ -19,9 +19,9 @@
 2. **Código de reserva** `RES-AAAA-XXXX` (año de la reserva + 4 caracteres del alfabeto sin ambigüedad `ABCDEFGHJKLMNPQRSTUVWXYZ23456789`), generado con `crypto.randomInt` (no `Math.random`). Reintentar ante colisión del índice único (hasta 5 veces). Función pura probada.
 3. **Reglas de negocio** (probadas con la BD de pruebas o con el cliente simulado):
    - Un usuario no puede tener dos reservas activas (`PENDIENTE_CONTACTO` o `EN_NEGOCIACION`) del mismo vehículo → `already_reserved_by_you`.
-   - **Tope de reservas activas por usuario** (evita que una cuenta bloquee el inventario): constante `MAX_ACTIVE_RESERVATIONS_PER_USER = 2` en un único lugar, `TODO(owner)`: el propietario debe confirmar el valor. Superado → `limit_reached`.
+   - **Tope de reservas activas por usuario** (evita que una cuenta bloquee el inventario): constante `MAX_ACTIVE_RESERVATIONS_PER_USER = 2` en un único lugar (valor elegido por el orquestador por delegación del propietario para el demo; `TODO(owner)`: confirmar antes de producción). Superado → `limit_reached`.
    - Solo usuarios `activo = true` (usar `getFreshUser()` de F2-01 en la acción, y comprobarlo también aquí).
-4. **Expiración (configuración):** variable opcional `RESERVA_EXPIRACION_HORAS` (entero positivo). Si está definida, `fechaExpiracion = ahora + horas`; si no, `null` (sin expiración). **No inventar un plazo por defecto**: la documentación dice que una reserva puede expirar pero no cuánto dura (decisión pendiente del propietario). Documentarla en `.env.example` y el README, y validarla en `src/server/auth/env.ts`-style (si es inválida, fallar claro al arrancar).
+4. **Expiración (configuración):** variable `RESERVA_EXPIRACION_HORAS` (entero positivo). **Decisión del propietario (demo): 48 horas por defecto**, definida como constante en un único lugar (`DEFAULT_RESERVATION_EXPIRY_HOURS = 48`, `TODO(owner)`: confirmar antes de producción). La variable, si existe, tiene prioridad; el valor `0` desactiva la expiración (`fechaExpiracion = null`). Documentarla en `.env.example` y el README, y validarla al arrancar (si es inválida, fallar con un mensaje claro).
 5. Tras confirmar la transacción: invalidar la caché del catálogo con `revalidateTag('catalog-vehicles', …)` o `updateTag`, **según lo que indique la documentación local de Next 16** (la firma cambió; anotar en las notas cuál se usó y por qué). El servicio expone la invalidación como dependencia inyectable para poder probarlo sin Next.
 6. Registro con `logSecurityEvent`-style de auditoría (una línea JSON, sin datos personales): `reservation_created` y `reservation_rejected` (con motivo).
 7. **Tests:** código (formato, alfabeto, reintento por colisión), cada resultado del punto 1, tope por usuario, doble reserva, y una **prueba de concurrencia**: dos llamadas simultáneas (`Promise.all`) al mismo vehículo contra la BD de pruebas → exactamente una `created` y una `not_available`, con una sola fila en `reservas` y el vehículo `RESERVADO`.
@@ -34,7 +34,7 @@ Interfaz, Server Action pública, redirección a WhatsApp (F3-02), listado (F3-0
 
 - [ ] La prueba de concurrencia pasa de forma estable (ejecutarla 20 veces en un bucle y pegar el resultado en las notas).
 - [ ] Una reserva fallida no deja el vehículo en `RESERVADO` ni filas huérfanas (transacción).
-- [ ] No hay plazo de expiración por defecto; con `RESERVA_EXPIRACION_HORAS=24` la fila queda con `fechaExpiracion` a 24 h.
+- [ ] Sin la variable, `fechaExpiracion` queda a 48 h; con `RESERVA_EXPIRACION_HORAS=24`, a 24 h; con `0`, `null`.
 - [ ] `pnpm check` y `pnpm build` pasan; CI en verde.
 
 ## Verificación

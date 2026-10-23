@@ -18,7 +18,7 @@ Cierra la Fase 3 con pruebas de punta a punta en Playwright (job E2E de CI, con 
 5. Tope de reservas activas por usuario (F3-01) y límite de intentos de reserva.
 6. Cada prueba deja los vehículos del seed como estaban (restaurar `disponibilidad` y borrar las reservas creadas) incluso si falla.
 7. `README`: sección "Reservas" (flujo, variable `RESERVA_EXPIRACION_HORAS`, cron de expiración, qué invalida la caché).
-8. Actualizar `ISSUES/README.md` con la Fase 3 y dejar anotadas las decisiones pendientes del propietario (plazo de expiración, tope de reservas, y si el cliente debe poder cancelar).
+8. Actualizar `ISSUES/README.md` con la Fase 3 y dejar anotadas las decisiones por confirmar antes de producción (plazo de 48 h, tope de 2 reservas activas, el cliente no cancela).
 
 ## Criterios de aceptación
 
