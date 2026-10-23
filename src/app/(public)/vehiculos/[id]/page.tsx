@@ -12,6 +12,7 @@ import { ReserveCtaWithSession } from '@/components/catalog/ReserveCtaWithSessio
 import { SpecBadge } from '@/components/catalog/SpecBadge';
 import { formatCOP } from '@/lib/format';
 import { siteContent } from '@/lib/site-content';
+import { parseVehicleId } from '@/lib/vehicle-id';
 import { buildVehicleJsonLd, serializeJsonLd } from '@/lib/structured-data';
 import { getSiteUrl } from '@/lib/site-url';
 import { Condicion, Disponibilidad } from '@prisma/client';
@@ -20,24 +21,8 @@ interface VehicleDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
-const MAX_UNSIGNED_INT = 4294967295;
-
-/**
- * Valida de forma estricta que un string represente un identificador entero positivo
- * dentro del rango UNSIGNED INT de MySQL (1 .. 4294967295).
- * Descarta valores no numéricos, flotantes (ej. "1.5"), exponenciales (ej. "1e3"),
- * enteros negativos, cero y números fuera de rango.
- */
-export function parseVehicleId(rawId: string): number | null {
-  if (!/^[1-9]\d{0,9}$/.test(rawId)) {
-    return null;
-  }
-  const parsed = Number(rawId);
-  if (!Number.isSafeInteger(parsed) || parsed > MAX_UNSIGNED_INT) {
-    return null;
-  }
-  return parsed;
-}
+// Reexportado: las pruebas y la acción de reserva comparten la misma regla estricta (`@/lib/vehicle-id`).
+export { parseVehicleId };
 
 export async function generateMetadata({ params }: VehicleDetailPageProps): Promise<Metadata> {
   const { id } = await params;

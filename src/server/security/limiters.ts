@@ -12,6 +12,9 @@ const register = createRateLimiter({ limit: 5, windowMs: 60 * MINUTE });
 /** Fallos de contraseña actual al cambiarla, por usuario: 5 en 15 minutos. */
 const passwordChange = createRateLimiter({ limit: 5, windowMs: 15 * MINUTE });
 
+/** Intentos de reserva por usuario: 10 por hora (válidos o no). */
+const reserve = createRateLimiter({ limit: 10, windowMs: 60 * MINUTE });
+
 function pairKey(email: string, ip: string): string {
   return `${email.trim().toLowerCase()}|${ip}`;
 }
@@ -56,4 +59,13 @@ export function recordPasswordChangeFailure(userId: number): void {
 
 export function recordPasswordChangeSuccess(userId: number): void {
   passwordChange.reset(String(userId));
+}
+
+export function checkReserveAllowed(userId: number): RateLimitResult {
+  return reserve.check(String(userId));
+}
+
+/** Cada intento de reserva consume cupo del usuario. */
+export function recordReserveAttempt(userId: number): void {
+  reserve.hit(String(userId));
 }

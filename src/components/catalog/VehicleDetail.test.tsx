@@ -3,6 +3,8 @@ import { describe, it, expect, vi } from 'vitest';
 
 // La página del detalle importa componentes que leen la sesión (Auth.js); no se necesita aquí.
 vi.mock('@/server/auth', () => ({ getCurrentUser: vi.fn() }));
+// El formulario de reserva importa la Server Action (Auth.js, Prisma): aquí solo se comprueba el render.
+vi.mock('@/app/(public)/vehiculos/[id]/actions', () => ({ reserveVehicleAction: vi.fn() }));
 
 import { VehicleGallery } from './VehicleGallery';
 import { ReserveCta } from './ReserveCta';
@@ -113,9 +115,14 @@ describe('ReserveCta', () => {
       />
     );
 
-    expect(screen.getByText('Consultar disponibilidad por WhatsApp')).toBeInTheDocument();
+    const form = screen.getByRole('button', { name: 'Reservar este vehículo' }).closest('form');
+    expect(form).not.toBeNull();
+    // El formulario solo lleva el id del vehículo: nunca el del usuario.
+    expect(Array.from(new FormData(form!).keys())).toEqual(['vehicleId']);
+    expect(form!.querySelector<HTMLInputElement>('input[name=vehicleId]')!.value).toBe('3');
     expect(screen.queryByText('Inicia sesión para reservar')).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /reservar/i })).not.toBeInTheDocument();
+    // La consulta por WhatsApp sigue disponible como botón secundario.
+    expect(screen.getByRole('link', { name: 'Escribir por WhatsApp' })).toBeInTheDocument();
   });
 
   it('no cambia los casos RESERVADO y PROXIMAMENTE con sesión', () => {

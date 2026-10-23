@@ -82,6 +82,19 @@ export const siteContent = {
     // TODO(F4): poner en true cuando exista la ruta /admin (panel del concesionario).
     showAdminPanelLink: false,
   },
+  // Reservas (F3-02): mensajes de la acción de reservar y texto del mensaje de WhatsApp
+  reservations: {
+    // Marcadores: {marca}, {modelo}, {codigo}, {nombre}
+    whatsappMessage:
+      'Hola JDS Vehículos, he reservado el auto {marca} {modelo} (Código: {codigo}). Mi nombre es {nombre} y deseo continuar con el proceso.',
+    errors: {
+      notAvailable: 'Este vehículo acaba de ser reservado por otra persona.',
+      limitReached: 'Alcanzaste el máximo de reservas activas permitido.',
+      limitReachedLink: 'Ver mis reservas',
+      invalidVehicle: 'No fue posible procesar la reserva. Inténtalo de nuevo.',
+      generic: 'No fue posible completar la reserva en este momento. Inténtalo más tarde.',
+    },
+  },
   // Contenido de /mi-cuenta (perfil, seguridad y reservas)
   cuenta: {
     navLabel: 'Secciones de la cuenta',
@@ -309,6 +322,8 @@ export const siteContent = {
     similarSubtitle: 'Otras opciones de la misma marca o en un rango de precio semejante.',
     viewAllCatalog: 'Ver catálogo completo',
     reserveAvailableCta: 'Consultar disponibilidad por WhatsApp',
+    reserveCta: 'Reservar este vehículo',
+    reserveSubmitting: 'Reservando…',
     loginToReserveCta: 'Inicia sesión para reservar',
     writeWhatsAppCta: 'Escribir por WhatsApp',
     reservedTitle: 'Este vehículo se encuentra reservado',
