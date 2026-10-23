@@ -88,7 +88,7 @@ export function SiteHeader({ whatsappNumber, instagramUrl, readSession = true }:
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Contactar a JDS Vehículos por WhatsApp"
-            className="gap-space-xs text-label-md font-label-md focus-visible:ring-primary hidden items-center rounded-full bg-[#25D366] px-3.5 py-1.5 text-white shadow-sm transition-all hover:bg-[#20bd5a] focus-visible:ring-2 focus-visible:outline-none sm:inline-flex"
+            className="gap-space-xs text-label-md font-label-md focus-visible:ring-primary hidden items-center rounded-full bg-[#0e7c42] px-3.5 py-1.5 text-white shadow-sm transition-all hover:bg-[#0b6637] focus-visible:ring-2 focus-visible:outline-none sm:inline-flex"
           >
             <WhatsAppIcon className="h-4 w-4 shrink-0 fill-white" />
             <span>WhatsApp</span>

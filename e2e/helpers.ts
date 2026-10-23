@@ -77,6 +77,36 @@ export class TestData {
     return { id: vehicle.id, color };
   }
 
+  /** Reserva en negociación sobre un vehículo RESERVADO propio (código único, sin choques con otras pruebas). */
+  async reservation(userId: number, vehicleId: number) {
+    const code = `RES-2026-Q${randomBytes(2).toString('hex').slice(0, 3).toUpperCase().replace(/[01]/g, '2')}`;
+    await this.prisma.reserva.create({
+      data: {
+        codigoReserva: code,
+        usuarioId: userId,
+        vehiculoId: vehicleId,
+        estado: 'EN_NEGOCIACION',
+      },
+    });
+    return code;
+  }
+
+  /** Venta de un vehículo VENDIDO propio a un comprador propio. */
+  async sale(buyerId: number, vehicleId: number) {
+    const receipt = `VTA-2032-8${randomInt(10000, 99999)}`;
+    await this.prisma.venta.create({
+      data: {
+        numeroReciboContrato: receipt,
+        vehiculoId: vehicleId,
+        compradorId: buyerId,
+        precioFinal: '1000.00',
+        metodoPago: 'EFECTIVO',
+        fechaVenta: new Date('2032-05-05T15:00:00Z'),
+      },
+    });
+    return receipt;
+  }
+
   /** Registra un vehículo creado por la interfaz para que `cleanup()` también lo borre. */
   trackVehicleByColor = async (color: string) => {
     const found = await this.prisma.vehiculo.findFirst({ where: { color }, select: { id: true } });

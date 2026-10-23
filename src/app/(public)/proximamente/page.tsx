@@ -59,7 +59,7 @@ export default async function ProximamentePage() {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-label-lg mt-6 inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1EBE5D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366]"
+            className="font-label-lg mt-6 inline-flex items-center gap-2 rounded-xl bg-[#0e7c42] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0b6637] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366]"
           >
             <MessageCircle className="h-4 w-4" />
             <span>{siteContent.proximamente.emptyCtaText}</span>
@@ -67,8 +67,8 @@ export default async function ProximamentePage() {
         </div>
       ) : (
         <div className="gap-space-lg grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-          {vehicles.map((vehicle) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} />
+          {vehicles.map((vehicle, index) => (
+            <VehicleCard key={vehicle.id} vehicle={vehicle} priority={index === 0} />
           ))}
         </div>
       )}

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Maximize2, X, Images } from 'lucide-react';
 import type { VehiclePhotoData } from '@/types/catalog';
 import { isLocalMedia, thumbOf } from '@/lib/media-url';
+import { useFocusTrap } from '@/components/ui/useFocusTrap';
 
 interface VehicleGalleryProps {
   photos: VehiclePhotoData[];
@@ -16,6 +17,8 @@ export function VehicleGallery({ photos, title }: VehicleGalleryProps) {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const modalCloseBtnRef = useRef<HTMLButtonElement>(null);
   const openModalBtnRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, isFullScreen);
 
   const total = photos.length;
   const currentPhoto = photos[selectedIndex] || photos[0];
@@ -32,6 +35,9 @@ export function VehicleGallery({ photos, title }: VehicleGalleryProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (total <= 1 && !isFullScreen) return;
+      // Las flechas escriben en campos de texto y mueven listas: no deben cambiar de foto desde ahí.
+      const target = e.target as HTMLElement | null;
+      if (target?.closest('input, textarea, select, [contenteditable="true"]')) return;
 
       if (e.key === 'ArrowLeft') {
         goPrev();
@@ -167,6 +173,7 @@ export function VehicleGallery({ photos, title }: VehicleGalleryProps) {
       {/* Modal Pantalla Completa Accesible */}
       {isFullScreen && (
         <div
+          ref={dialogRef}
           role="dialog"
           aria-modal="true"
           aria-label={`Galería a pantalla completa: ${title}`}
