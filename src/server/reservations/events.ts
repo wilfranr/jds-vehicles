@@ -2,6 +2,7 @@ export type ReservationRejection =
   'not_available' | 'already_reserved_by_you' | 'limit_reached' | 'inactive_user';
 
 export type ReservationEvent =
+  | { type: 'reservations_expired'; expired: number; vehiclesReleased: number }
   | { type: 'reservation_created'; userId: number; vehicleId: number; reservationId: number }
   | {
       type: 'reservation_rejected';
