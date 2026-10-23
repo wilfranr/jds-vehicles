@@ -28,3 +28,9 @@ Cierra la Fase 4 con pruebas de punta a punta (patrón de `e2e/reservas.spec.ts`
 ## Recordatorio de proceso
 
 Rama `issue/<ID>-<slug>` **creada desde `main` actualizado** (`git checkout main && git pull`), nunca encadenada sobre otra rama sin fusionar; si dependes de un issue que aún no está en `main`, espera. PR al terminar y estado `REVIEW`. **No fusionar ni marcar `DONE`.** Texto visible en `site-content.ts`, sin afirmaciones comerciales inventadas. **Lee `AGENTS.md` y la documentación local de Next antes de escribir código.**
+
+## Observaciones de la revisión de F4-02, F4-03, F4-06 y F4-07 (añadidas por el orquestador)
+
+- Las pruebas e2e comparten una sola BD y un catálogo global: ninguna prueba debe abrir «la primera tarjeta» ni contar filas globales; cada prueba filtra por su propio dato temporal (color `E2E-…`, correo `@e2e-test.local`) o usa un vehículo del seed por id. Las pruebas que usan la BD real en vitest se llaman `*.db.test.ts` y corren en serie.
+- El job E2E del CI puede fallar sin que fallen las pruebas por la red de `apt` en «Install Playwright system dependencies» (el espejo de Ubuntu a veces baja a pocos KB/s). Si se repite, evaluar ejecutar el job en el contenedor oficial de Playwright (`mcr.microsoft.com/playwright`), que ya trae las bibliotecas.
+- Un cambio de rol solo lo ve el proxy cuando la persona vuelve a iniciar sesión (el JWT no se revoca); las páginas del panel sí confirman el rol vigente en la BD. Incluir en la matriz de autorización una prueba de un usuario degradado con sesión vigente.

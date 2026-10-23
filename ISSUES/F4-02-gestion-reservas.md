@@ -1,6 +1,6 @@
 # F4-02: Gestión de reservas (personal)
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 4
 - **Depende de:** F4-01
 - **Prioridad:** Alta

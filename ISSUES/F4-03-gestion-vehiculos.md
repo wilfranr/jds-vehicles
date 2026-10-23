@@ -1,6 +1,6 @@
 # F4-03: Gestión de vehículos, marcas y modelos
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 4
 - **Depende de:** F4-01
 - **Prioridad:** Alta

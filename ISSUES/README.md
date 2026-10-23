@@ -101,12 +101,12 @@ Orden sugerido: F3-01 → (F3-02 ∥ F3-03 ∥ F3-04) → F3-05. F3-02 enlaza a 
 | :---------------------------------- | :------------------------------------------- | :------------ | :----- |
 | [F4-09](F4-09-ci-estable.md)        | Estabilizar el job E2E del CI                | —             | DONE   |
 | [F4-01](F4-01-base-panel-admin.md)  | Base del panel (/admin), roles y resumen     | F3-05         | DONE   |
-| [F4-02](F4-02-gestion-reservas.md)  | Gestión de reservas (personal)               | F4-01         | TODO   |
-| [F4-03](F4-03-gestion-vehiculos.md) | Gestión de vehículos, marcas y modelos       | F4-01         | TODO   |
+| [F4-02](F4-02-gestion-reservas.md)  | Gestión de reservas (personal)               | F4-01         | DONE   |
+| [F4-03](F4-03-gestion-vehiculos.md) | Gestión de vehículos, marcas y modelos       | F4-01         | DONE   |
 | [F4-04](F4-04-fotos-vehiculos.md)   | Fotos de vehículos (subida y galería)        | F4-03         | TODO   |
 | [F4-05](F4-05-ventas.md)            | Registro de ventas y cierre de reservas      | F4-02         | TODO   |
-| [F4-06](F4-06-usuarios.md)          | Gestión de usuarios (solo ADMIN)             | F4-01         | TODO   |
-| [F4-07](F4-07-configuracion.md)     | Configuración del concesionario (solo ADMIN) | F4-01         | TODO   |
+| [F4-06](F4-06-usuarios.md)          | Gestión de usuarios (solo ADMIN)             | F4-01         | DONE   |
+| [F4-07](F4-07-configuracion.md)     | Configuración del concesionario (solo ADMIN) | F4-01         | DONE   |
 | [F4-08](F4-08-e2e-panel.md)         | Pruebas e2e del panel y cierre de la Fase 4  | F4-02 a F4-07 | TODO   |
 
 Orden sugerido: F4-09 ∥ F4-01 → (F4-02 ∥ F4-03 ∥ F4-06 ∥ F4-07) → (F4-04, F4-05) → F4-08. **Cada rama sale de `main` actualizado; no encadenar ramas** (en la Fase 3 provocó conflictos entre PRs).
