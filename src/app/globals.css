@@ -185,3 +185,15 @@
     font-family: var(--font-plus-jakarta-sans), sans-serif;
   }
 }
+
+/* Respeta la preferencia del sistema de reducir el movimiento (F5-02). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

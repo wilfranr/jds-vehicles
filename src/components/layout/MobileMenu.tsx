@@ -6,6 +6,7 @@ import { Menu, X, Search } from 'lucide-react';
 import { siteContent } from '@/lib/site-content';
 import { WhatsAppIcon, InstagramIcon } from '@/components/ui/BrandIcons';
 import { buildWhatsAppUrl } from '@/lib/whatsapp';
+import { useFocusTrap } from '@/components/ui/useFocusTrap';
 
 interface MobileMenuProps {
   whatsappNumber: string;
@@ -18,6 +19,8 @@ export function MobileMenu({ whatsappNumber, instagramUrl, accountSlot }: Mobile
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, isOpen);
 
   const whatsappUrl = buildWhatsAppUrl(whatsappNumber, siteContent.defaultWhatsAppMessage);
 
@@ -66,6 +69,7 @@ export function MobileMenu({ whatsappNumber, instagramUrl, accountSlot }: Mobile
 
       {isOpen && (
         <div
+          ref={dialogRef}
           id="mobile-navigation-menu"
           role="dialog"
           aria-modal="true"
@@ -131,7 +135,7 @@ export function MobileMenu({ whatsappNumber, instagramUrl, accountSlot }: Mobile
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-label-lg focus-visible:ring-primary flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-white transition-colors hover:bg-[#20bd5a] focus-visible:ring-2 focus-visible:outline-none"
+              className="font-label-lg focus-visible:ring-primary flex items-center justify-center gap-2 rounded-full bg-[#0e7c42] px-4 py-3 text-white transition-colors hover:bg-[#0b6637] focus-visible:ring-2 focus-visible:outline-none"
             >
               <WhatsAppIcon className="h-5 w-5 fill-white" />
               <span>Contactar por WhatsApp</span>

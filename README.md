@@ -223,6 +223,24 @@ Variables de entorno obligatorias o recomendadas (ver `.env.example`):
 
 Notas de seguridad: la limitación de intentos es **en memoria** y solo es válida con un único proceso de Node; con varias instancias debe sustituirse por una implementación con la base de datos (ver `src/server/security/rate-limit.ts`). El proxy de Next (`src/proxy.ts`) es solo la primera barrera: las páginas y acciones privadas vuelven a comprobar sesión y rol, y las operaciones sensibles usan `getFreshUser()`.
 
+## Accesibilidad y Rendimiento (F5-02)
+
+**axe-core** (`@axe-core/playwright`, versión fija) corre en `e2e/accesibilidad.spec.ts`: una prueba por página principal —portada, catálogo con y sin filtros, ficha, próximamente, cómo funciona, contacto, login, registro, mi cuenta (perfil, seguridad, reservas, detalle) y todo el panel— en escritorio (1280 px) y móvil (360 px), con las reglas WCAG 2.1 A/AA. Falla con violaciones `serious`/`critical`; no hay excepciones. Al añadir una página, añádala a la lista del spec.
+
+**Teclado** (`e2e/teclado.spec.ts`): menú de usuario, menú móvil y galería ampliada se operan con teclado, con foco visible, foco **atrapado** en el diálogo (`src/components/ui/useFocusTrap.ts`) y devuelto al origen al cerrar (Escape o botón); las confirmaciones de acciones del panel son `<details>` nativos; la subida de fotos se hace con teclado. `globals.css` anula animaciones y transiciones con `prefers-reduced-motion: reduce`.
+
+**Un solo `banner` y un solo `main`.** Tras un inicio de sesión o cualquier navegación en el cliente, el DOM contiene un segundo `<header>`/`<main>`: es la ruta anterior que Next 16 conserva con `<Activity>` dentro de `<div style="display: none !important">` (hijo de `<body>`). Es inherente al framework (`node_modules/next/dist/docs/01-app/02-guides/preserving-ui-state.md`: «Activity keeps the DOM in the document (hidden with `display: none`)»), no depende de la sesión y queda **fuera del árbol de accesibilidad**. Las pruebas usan `getByRole` (que excluye lo oculto) y cuentan los landmarks no ocultos: deben ser 1 y 1.
+
+**Rendimiento (Lighthouse móvil).** Con `pnpm build && pnpm start` y Chromium:
+
+```bash
+npx lighthouse@12 http://localhost:3000/catalogo --chrome-path=/usr/bin/chromium \
+  --chrome-flags="--headless=new --no-sandbox" \
+  --only-categories=performance,accessibility,best-practices,seo --output=json --output-path=./lh.json
+```
+
+Objetivo: Rendimiento ≥ 85, Accesibilidad ≥ 95, Buenas prácticas ≥ 95, SEO ≥ 95 en `/`, `/catalogo` y `/vehiculos/<id>` (cifras y excepciones en las notas de F5-02). No se añadió Lighthouse CI: el resultado en CI varía con la máquina compartida y no se pudo garantizar estabilidad; ejecute el comando antes de cada lanzamiento. Imágenes: `sizes` en `next/image`, `priority` solo en la primera tarjeta visible y la imagen principal de la ficha, miniaturas `_t.webp` en tarjetas y `alt` descriptivo («Marca Modelo Año - Foto N de M»).
+
 ## Páginas Legales, Cookies y Derechos del Titular (F5-04)
 
 **Páginas legales.** `/privacidad` y `/terminos` leen su contenido de `src/lib/legal-content.ts` (título, fechas de vigencia y de última actualización, responsable y secciones). El texto lo aporta el propietario con asesoría legal (Ley 1581 de 2012): **no se inventa nada**. Mientras un documento sea `null`, esté incompleto o conserve un `TODO(owner)`, su ruta responde **404**, no se enlaza (pie, registro) y no entra al sitemap. Al publicarlo aparecen los enlaces en el pie y junto a la casilla de consentimiento del registro. La política muestra además la lista de cookies y, si el propietario aporta el correo (`siteContent.legal.rightsEmail`), el canal para ejercer los derechos.

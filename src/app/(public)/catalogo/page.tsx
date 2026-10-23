@@ -71,8 +71,8 @@ export default async function CatalogoPage({ searchParams }: CatalogoPageProps) 
               <h2 className="sr-only">{siteContent.catalogResultsHeading}</h2>
               {/* Rejilla responsive: 1 col móvil, 2 cols tablet, 3 cols escritorio */}
               <div className="gap-space-lg grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-                {catalogResult.items.map((vehicle) => (
-                  <VehicleCard key={vehicle.id} vehicle={vehicle} />
+                {catalogResult.items.map((vehicle, index) => (
+                  <VehicleCard key={vehicle.id} vehicle={vehicle} priority={index === 0} />
                 ))}
               </div>
 

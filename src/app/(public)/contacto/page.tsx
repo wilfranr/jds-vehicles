@@ -62,7 +62,7 @@ export default async function ContactoPage() {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-label-lg inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#1EBE5D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366]"
+              className="font-label-lg inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0e7c42] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#0b6637] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366]"
             >
               <MessageCircle className="h-4 w-4" />
               <span>{whatsappButtonText}</span>
