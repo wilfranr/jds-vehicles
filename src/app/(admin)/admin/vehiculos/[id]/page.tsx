@@ -23,6 +23,7 @@ const PHOTO_ERRORS = [
   'notImage',
   'corrupt',
   'limit',
+  'rateLimited',
   'requestTooLarge',
   'notFound',
   'forbidden',

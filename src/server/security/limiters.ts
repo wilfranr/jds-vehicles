@@ -18,6 +18,9 @@ const reserve = createRateLimiter({ limit: 10, windowMs: 60 * MINUTE });
 /** Restablecimientos de contraseña hechos por un administrador: 10 por hora por administrador. */
 const adminPasswordReset = createRateLimiter({ limit: 10, windowMs: 60 * MINUTE });
 
+/** Envíos de fotografías por usuario del panel: 30 por hora (hasta 10 fotos por envío). Cada intento consume cupo. */
+const photoUpload = createRateLimiter({ limit: 30, windowMs: 60 * MINUTE });
+
 function pairKey(email: string, ip: string): string {
   return `${email.trim().toLowerCase()}|${ip}`;
 }
@@ -80,4 +83,13 @@ export function checkAdminResetAllowed(actorId: number): RateLimitResult {
 /** Cada restablecimiento (permitido) consume cupo del administrador. */
 export function recordAdminReset(actorId: number): void {
   adminPasswordReset.hit(String(actorId));
+}
+
+export function checkPhotoUploadAllowed(userId: number): RateLimitResult {
+  return photoUpload.check(String(userId));
+}
+
+/** Cada envío de fotos (válido o no) consume cupo de la persona. */
+export function recordPhotoUploadAttempt(userId: number): void {
+  photoUpload.hit(String(userId));
 }

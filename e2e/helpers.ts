@@ -79,7 +79,9 @@ export class TestData {
 
   /** Reserva en negociación sobre un vehículo RESERVADO propio (código único, sin choques con otras pruebas). */
   async reservation(userId: number, vehicleId: number) {
-    const code = `RES-2026-Q${randomBytes(2).toString('hex').slice(0, 3).toUpperCase().replace(/[01]/g, '2')}`;
+    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // el mismo que los códigos reales (1 M de combinaciones)
+    const suffix = Array.from({ length: 4 }, () => alphabet[randomInt(alphabet.length)]).join('');
+    const code = `RES-2026-${suffix}`;
     await this.prisma.reserva.create({
       data: {
         codigoReserva: code,

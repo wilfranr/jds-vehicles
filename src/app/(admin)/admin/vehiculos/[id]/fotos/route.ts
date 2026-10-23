@@ -1,6 +1,7 @@
 import { logAdminEvent } from '@/server/admin/audit';
 import { addPhotos, countVehiclePhotos } from '@/server/admin/photos';
 import { requireStaff } from '@/server/auth/staff';
+import { checkPhotoUploadAllowed, recordPhotoUploadAttempt } from '@/server/security/limiters';
 import { parseVehicleId } from '@/lib/vehicle-id';
 import { MAX_REQUEST_BYTES } from '@/server/media/limits';
 import { getUploadsDir } from '@/server/media/storage';
@@ -33,6 +34,10 @@ export async function POST(
       status: 303,
       headers: { Location: `/admin/vehiculos/${vehicleId}?${query}` },
     });
+
+  // Límite por persona (en memoria, instancia única): se consulta antes de leer el cuerpo.
+  if (!checkPhotoUploadAllowed(user.id).allowed) return back('fotoError=rateLimited');
+  recordPhotoUploadAttempt(user.id);
 
   // Se exige un tamaño declarado válido (el servidor HTTP no entrega más bytes de los declarados): así un cuerpo
   // «chunked» sin tamaño o gigante no llega a cargarse en memoria.

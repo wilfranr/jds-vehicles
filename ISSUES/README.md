@@ -119,7 +119,7 @@ Orden sugerido: F4-09 ∥ F4-01 → (F4-02 ∥ F4-03 ∥ F4-06 ∥ F4-07) → (F
 | [F5-02](F5-02-accesibilidad-rendimiento.md)   | Accesibilidad y rendimiento                           | F4-08                      | DONE   |
 | [F5-03](F5-03-operacion-y-datos.md)           | Operación, respaldos y primer administrador           | F4-08                      | DONE   |
 | [F5-04](F5-04-legal-y-pendientes.md)          | Páginas legales y lista de pendientes del propietario | F4-08                      | DONE   |
-| [F5-05](F5-05-cierre-fase-5.md)               | Revisión final de seguridad, cobertura y cierre       | F5-01, F5-02, F5-03, F5-04 | TODO   |
+| [F5-05](F5-05-cierre-fase-5.md)               | Revisión final de seguridad, cobertura y cierre       | F5-01, F5-02, F5-03, F5-04 | REVIEW |
 
 Orden sugerido: (F5-01 ∥ F5-02 ∥ F5-03 ∥ F5-04) → F5-05. Una rama por issue desde `main` actualizado, sin encadenar.
 
@@ -162,6 +162,24 @@ El agente desarrollador **no** recibe acceso al servidor: prepara scripts y los 
   - **Cambios de rol** visibles en el proxy al volver a iniciar sesión (el JWT no se revoca); las páginas y acciones del panel sí consultan la BD en cada petición.
   - **Formato de placa** amplio (5–10 caracteres alfanuméricos) y expiración por defecto de 48 h (ver «Reservas»).
   - **Recuperación de contraseña** mientras no haya proveedor de correo: el administrador restablece la clave desde el panel y la comunica por un canal seguro.
+
+### Matriz de decisiones por confirmar antes de producción
+
+Lista completa y fechada de lo que solo el propietario puede aportar: [`PENDIENTES-PROPIETARIO.md`](PENDIENTES-PROPIETARIO.md). Resumen por tema (estado al cierre de la Fase 5):
+
+| Tema                                                        | Decisión vigente (demo)                                      | Quién confirma | Dónde se aplica                                               |
+| ----------------------------------------------------------- | ------------------------------------------------------------ | -------------- | ------------------------------------------------------------- |
+| Textos legales (privacidad, términos)                       | Sin contenido: las páginas dan 404 y no se enlazan           | Propietario    | `src/lib/legal-content.ts`                                    |
+| Canal de derechos del titular                               | Sin correo: no se muestra                                    | Propietario    | `siteContent.legal.rightsEmail`                               |
+| Plazo y tope de reservas                                    | 48 h y 2 reservas activas                                    | Propietario    | `RESERVA_EXPIRACION_HORAS`, `reservations/config.ts`          |
+| Permisos del ASESOR                                         | Reservas, ventas e inventario; sin usuarios ni configuración | Propietario    | `requireStaff`/`requireAdmin`                                 |
+| Fotos en disco                                              | `UPLOADS_DIR` con respaldos                                  | Propietario    | F5-03, F6                                                     |
+| Dominio / acceso por IP                                     | Solo IP con certificado autofirmado, **HSTS desactivado**    | Propietario    | F6-03                                                         |
+| CSP con `unsafe-inline` en `script-src`                     | Aceptado (riesgo residual) por el prerenderizado             | Propietario    | `src/server/security/headers.ts`; revisar antes de producción |
+| Instancia única y limitadores en memoria                    | Una sola instancia; sin escalado horizontal                  | Propietario    | F6; limitador distribuido en la Fase 7                        |
+| Cifras de marca, dirección, horario, mapa, WhatsApp oficial | Provisionales / ocultas                                      | Propietario    | `src/lib/site-content.ts`                                     |
+| Correo para recuperar contraseñas                           | Sin proveedor: el ADMIN restablece la clave                  | Propietario    | Fase 7                                                        |
+| Colores de contraste distintos de `DESIGN.md`               | Se prioriza el contraste AA                                  | Propietario    | `src/app/globals.css`                                         |
 
 ### Fases siguientes
 
