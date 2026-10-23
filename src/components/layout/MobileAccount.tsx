@@ -4,7 +4,7 @@ import { LogOut } from 'lucide-react';
 import { siteContent } from '@/lib/site-content';
 import { logoutAction } from '@/server/auth/logout-action';
 import type { AuthUser } from '@/types/auth';
-import { accountLinks } from './UserMenu';
+import { accountLinks } from './account-links';
 
 const copy = siteContent.account;
 
