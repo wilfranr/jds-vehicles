@@ -1,6 +1,6 @@
 # F5-01: Seguridad HTTP y de dependencias
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 5
 - **Depende de:** F4-08 (DONE)
 - **Prioridad:** Alta

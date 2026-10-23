@@ -1,6 +1,6 @@
 # F5-04: Páginas legales y lista de pendientes del propietario
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 5
 - **Depende de:** F4-08 (DONE)
 - **Prioridad:** Media

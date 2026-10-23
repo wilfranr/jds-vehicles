@@ -1,6 +1,6 @@
 # F5-02: Accesibilidad y rendimiento
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 5
 - **Depende de:** F4-08 (DONE)
 - **Prioridad:** Media
