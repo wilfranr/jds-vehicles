@@ -3,11 +3,11 @@
 - **Estado:** TODO
 - **Fase:** 3
 - **Depende de:** F3-01
-- **Prioridad:** Media (activar solo cuando el propietario defina el plazo)
+- **Prioridad:** Media (el plazo por defecto es 48 h, ver F3-01)
 
 ## Contexto
 
-`docs/DOCUMENTACION.md` §1.4: "Si una reserva se cancela o expira, el auto retorna a estado `DISPONIBLE`". F3-01 deja `fechaExpiracion` opcional (`RESERVA_EXPIRACION_HORAS`). Aquí se implementa el proceso que **aplica** la expiración. **Lee `AGENTS.md` y la documentación local de Next.**
+`docs/DOCUMENTACION.md` §1.4: "Si una reserva se cancela o expira, el auto retorna a estado `DISPONIBLE`". F3-01 deja `fechaExpiracion` opcional (plazo por defecto 48 h, `RESERVA_EXPIRACION_HORAS`). Aquí se implementa el proceso que **aplica** la expiración. **Lee `AGENTS.md` y la documentación local de Next.**
 
 ## Alcance
 
@@ -23,7 +23,7 @@ Elegir el plazo (decisión del propietario), avisos por correo o WhatsApp antes 
 ## Criterios de aceptación
 
 - [ ] Con una reserva vencida de prueba, el script la marca `EXPIRADA` y el auto vuelve a `DISPONIBLE`; una segunda ejecución no hace nada.
-- [ ] Sin `RESERVA_EXPIRACION_HORAS` nada expira.
+- [ ] Con `RESERVA_EXPIRACION_HORAS=0` (o filas con `fechaExpiracion = null`) nada expira.
 - [ ] `pnpm check` y `pnpm build` pasan; CI en verde.
 
 ## Recordatorio de proceso

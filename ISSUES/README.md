@@ -109,7 +109,7 @@ Orden sugerido: F3-01 → (F3-02 ∥ F3-03 ∥ F3-04) → F3-05. F3-02 enlaza a 
 - **Política de tratamiento de datos personales** (y términos del servicio): el registro (F2-02) recoge documento de identidad, teléfono y dirección, y guarda la fecha de aceptación. El texto legal definitivo debe aportarlo el propietario (probablemente exigido por la Ley 1581 de 2012; confirmar con asesoría legal). Hasta entonces, texto neutro con `TODO(owner)`.
 - **Proveedor de correo para recuperar contraseñas** (SMTP propio, servicio transaccional, etc.): sin él no se puede implementar "¿Olvidaste tu contraseña?". No se incluye en la Fase 2; se crea el issue cuando se decida. Mientras tanto, un administrador puede restablecer contraseñas (Fase 4).
 
-- **Reservas (Fase 3):** (a) plazo de expiración de una reserva (hoy sin plazo: `RESERVA_EXPIRACION_HORAS` vacío); (b) tope de reservas activas por usuario (propuesto 2); (c) si el cliente podrá cancelar su propia reserva (la documentación solo da esa acción al personal).
+- **Reservas (Fase 3), decididas por delegación del propietario para el demo; confirmar antes de producción:** (a) plazo de expiración de una reserva: **48 horas** (`RESERVA_EXPIRACION_HORAS`, `0` = sin expiración); (b) tope de reservas activas por usuario: **2**; (c) el cliente **no** cancela su reserva (la documentación solo da esa acción al personal; llega en la Fase 4).
 
 ### Fases siguientes
 
