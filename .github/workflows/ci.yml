@@ -172,7 +172,7 @@ jobs:
       # Los navegadores (~150 MB) se descargaban en cada ejecución y a veces la descarga se colgaba (F4-09).
       - name: Restore Playwright browsers cache
         id: playwright-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
@@ -196,7 +196,7 @@ jobs:
 
       - name: Save Playwright browsers cache
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
