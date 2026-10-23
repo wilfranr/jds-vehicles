@@ -3,6 +3,7 @@
 import React, { useActionState, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { siteContent } from '@/lib/site-content';
+import type { LegalLink } from '@/lib/legal';
 import {
   createRegisterSchema,
   fieldErrors as toFieldErrors,
@@ -60,7 +61,7 @@ function Field({ name, label, error, hint, optional, children }: FieldProps) {
   );
 }
 
-export function RegisterForm() {
+export function RegisterForm({ legalLinks = [] }: { legalLinks?: LegalLink[] }) {
   const [state, formAction, pending] = useActionState(registerAction, initialRegisterState);
   // Los errores del cliente se asocian al estado del servidor vigente: al llegar uno nuevo dejan de aplicar.
   const [clientErrors, setClientErrors] = useState<{
@@ -333,6 +334,23 @@ export function RegisterForm() {
           />
           <span className="text-on-surface">{copy.consentimiento}</span>
         </label>
+        {legalLinks.length > 0 && (
+          <p className="text-on-surface-variant pl-7 text-xs">
+            {siteContent.legal.consentSeeLabel}{' '}
+            {legalLinks.map((link, index) => (
+              <React.Fragment key={link.href}>
+                {index > 0 && ' · '}
+                <Link
+                  href={link.href}
+                  target="_blank"
+                  className="text-secondary focus-visible:ring-primary rounded underline focus-visible:ring-2 focus-visible:outline-none"
+                >
+                  {link.label}
+                </Link>
+              </React.Fragment>
+            ))}
+          </p>
+        )}
         {errors.consentimiento && (
           <p id="registro-consentimiento-error" className="text-error text-xs font-medium">
             {errors.consentimiento}

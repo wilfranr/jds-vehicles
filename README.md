@@ -223,6 +223,24 @@ Variables de entorno obligatorias o recomendadas (ver `.env.example`):
 
 Notas de seguridad: la limitación de intentos es **en memoria** y solo es válida con un único proceso de Node; con varias instancias debe sustituirse por una implementación con la base de datos (ver `src/server/security/rate-limit.ts`). El proxy de Next (`src/proxy.ts`) es solo la primera barrera: las páginas y acciones privadas vuelven a comprobar sesión y rol, y las operaciones sensibles usan `getFreshUser()`.
 
+## Páginas Legales, Cookies y Derechos del Titular (F5-04)
+
+**Páginas legales.** `/privacidad` y `/terminos` leen su contenido de `src/lib/legal-content.ts` (título, fechas de vigencia y de última actualización, responsable y secciones). El texto lo aporta el propietario con asesoría legal (Ley 1581 de 2012): **no se inventa nada**. Mientras un documento sea `null`, esté incompleto o conserve un `TODO(owner)`, su ruta responde **404**, no se enlaza (pie, registro) y no entra al sitemap. Al publicarlo aparecen los enlaces en el pie y junto a la casilla de consentimiento del registro. La política muestra además la lista de cookies y, si el propietario aporta el correo (`siteContent.legal.rightsEmail`), el canal para ejercer los derechos.
+
+**Cookies.** La aplicación solo usa cookies estrictamente necesarias (sesión de Auth.js, su token CSRF y la URL de retorno; ver `essentialCookies` en `src/lib/legal-content.ts`), por lo que no se requiere banner de consentimiento. `e2e/cookies.spec.ts` recorre el sitio como anónimo y como usuario y **falla si aparece cualquier otra cookie**: si se añade una (analítica, publicidad…), hay que revisar esta decisión y, en su caso, añadir el aviso de consentimiento.
+
+**Pendientes del propietario.** Lista fechada en `ISSUES/PENDIENTES-PROPIETARIO.md`. Un test falla si aparece un `TODO(owner)` en un archivo que no esté listado allí.
+
+### Derechos del titular: procedimiento manual (TODO(owner): validar con asesoría legal)
+
+Mientras no exista una pantalla para ello, lo ejecuta un administrador con acceso a la base de datos, tras verificar la identidad de quien lo solicita y **dejando constancia** de la solicitud y la fecha. Haga antes un respaldo (`scripts/backup.sh`).
+
+1. **Desactivar la cuenta** (panel, `/admin/usuarios`): impide iniciar sesión; no borra datos.
+2. **Exportar (acceso/portabilidad).** Datos de la persona en `usuarios` (nombre, apellido, tipo y número de documento, correo, teléfono, ciudad, dirección, `consentimiento_datos_at`; **nunca** el `password_hash`), sus filas de `reservas` (`usuario_id`; incluye `whatsapp_link` y `observaciones`) y de `ventas` (`comprador_id`). Entregue el resultado a la persona por un canal verificado.
+3. **Rectificar:** editar los datos en `usuarios`. Las ventas conservan su recibo.
+4. **Suprimir.** Las claves foráneas son `RESTRICT`: **no se puede borrar** un usuario con reservas o ventas. Qué se conserva: las **ventas registradas** (recibo, precio, fecha, vehículo) por obligación contable y legal (`TODO(owner)`: confirmar plazos de conservación). Lo que se hace es **anonimizar** a la persona en `usuarios` (nombre y apellido a «Eliminado», documento y correo a valores únicos sin relación, p. ej. `eliminado-<id>`/`eliminado-<id>@invalido.test`, teléfono, ciudad y dirección a vacío, `activo = 0`, `password_hash` a un hash aleatorio) y vaciar `reservas.whatsapp_link` y `reservas.observaciones` de sus reservas. Si no tiene reservas ni ventas, se puede borrar la fila.
+5. Los respaldos anteriores conservan los datos hasta que rote su retención (`BACKUP_RETENTION`); si hace falta, aplique el mismo procedimiento tras restaurar uno.
+
 ## Gestión del Proyecto
 
 El desarrollo se gestiona a través del backlog de tareas ubicado en la carpeta [ISSUES/](ISSUES/README.md). Consulta dicho archivo para conocer el flujo de trabajo, convenciones y el estado de cada fase.
