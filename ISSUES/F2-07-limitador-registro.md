@@ -1,6 +1,6 @@
 # F2-07: Integrar el limitador de intentos en el registro
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 2
 - **Depende de:** F2-02 (DONE), F2-04 (DONE)
 - **Prioridad:** Alta (el registro hoy no tiene límite)

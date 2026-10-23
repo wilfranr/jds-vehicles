@@ -51,3 +51,7 @@ docker exec jds_vehiculos_db mysql -ujds -pjds jds_vehiculos -e "SELECT COUNT(*)
 ## Recordatorio de proceso
 
 Rama `issue/F2-06-e2e-auth` + PR; al terminar, estado `REVIEW`. **No fusionar ni marcar `DONE`.**
+
+## Observación de la revisión de F2-03 (añadida por el orquestador)
+
+Con sesión iniciada, el DOM contiene dos elementos `<header>`: el visible y uno con tamaño 0 (resto oculto del streaming de la carcasa parcial). Sin sesión hay uno solo. No es visible ni accesible, pero el e2e debe usar `getByRole('banner')` (no `locator('header')`, que da "strict mode violation") y, si es posible, averiguar por qué el segundo no se elimina tras la hidratación.
