@@ -83,6 +83,18 @@ Orden sugerido: F0-08 → (F1-01 ∥ F1-02) → F1-03 → (F1-04 ∥ F1-05) → 
 Orden sugerido: F2-01 → (F2-02 ∥ F2-04) → (F2-03 ∥ F2-07) → F2-05 → F2-06.
 F1-06 y las issues F2-01, F2-02 y F2-04 se pueden trabajar en paralelo: no comparten archivos relevantes.
 
+### Fase 3: Reservas y WhatsApp
+
+| ID                                    | Título                                            | Depende de          | Estado |
+| :------------------------------------ | :------------------------------------------------ | :------------------ | :----- |
+| [F3-01](F3-01-servicio-reservas.md)   | Servicio de reservas (transacción y concurrencia) | F2-05               | TODO   |
+| [F3-02](F3-02-reservar-whatsapp.md)   | Reservar desde el detalle y abrir WhatsApp        | F3-01               | TODO   |
+| [F3-03](F3-03-mis-reservas.md)        | Mis reservas y confirmación                       | F3-01               | TODO   |
+| [F3-04](F3-04-expiracion-reservas.md) | Expiración de reservas                            | F3-01               | TODO   |
+| [F3-05](F3-05-e2e-reservas.md)        | Pruebas e2e de reservas y cierre de la Fase 3     | F3-02, F3-03, F3-04 | TODO   |
+
+Orden sugerido: F3-01 → (F3-02 ∥ F3-03 ∥ F3-04) → F3-05. F3-02 enlaza a la página de F3-03; si se hacen en paralelo, coordinar la ruta `/mi-cuenta/reservas/[codigo]`.
+
 ### Reglas de contenido (vinculantes)
 
 - Todo texto editorial o comercial de la interfaz (títulos, subtítulos, cifras, tarjetas de beneficios, garantías, certificaciones, plazos) vive en `src/lib/site-content.ts`, nunca escrito directamente en páginas o componentes.
@@ -97,6 +109,8 @@ F1-06 y las issues F2-01, F2-02 y F2-04 se pueden trabajar en paralelo: no compa
 - **Política de tratamiento de datos personales** (y términos del servicio): el registro (F2-02) recoge documento de identidad, teléfono y dirección, y guarda la fecha de aceptación. El texto legal definitivo debe aportarlo el propietario (probablemente exigido por la Ley 1581 de 2012; confirmar con asesoría legal). Hasta entonces, texto neutro con `TODO(owner)`.
 - **Proveedor de correo para recuperar contraseñas** (SMTP propio, servicio transaccional, etc.): sin él no se puede implementar "¿Olvidaste tu contraseña?". No se incluye en la Fase 2; se crea el issue cuando se decida. Mientras tanto, un administrador puede restablecer contraseñas (Fase 4).
 
+- **Reservas (Fase 3):** (a) plazo de expiración de una reserva (hoy sin plazo: `RESERVA_EXPIRACION_HORAS` vacío); (b) tope de reservas activas por usuario (propuesto 2); (c) si el cliente podrá cancelar su propia reserva (la documentación solo da esa acción al personal).
+
 ### Fases siguientes
 
-Fase 3 (reservas y WhatsApp) se creará cuando la Fase 2 esté en `DONE`.
+Fase 4 (panel de administración) se creará cuando la Fase 3 esté en `DONE`.
