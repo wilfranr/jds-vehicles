@@ -180,9 +180,10 @@ describe.skipIf(!dbUp)('createReservation (BD)', () => {
     await makeUser(BASE);
     await makeVehicle(BASE);
 
-    await createReservation({ userId: BASE, vehicleId: BASE }, deps());
+    const first = await createReservation({ userId: BASE, vehicleId: BASE }, deps());
     expect(await createReservation({ userId: BASE, vehicleId: BASE }, deps())).toEqual({
       status: 'already_reserved_by_you',
+      codigoReserva: first.status === 'created' ? first.reservation.codigoReserva : '',
     });
     expect(await prisma.reserva.count({ where: { vehiculoId: BASE } })).toBe(1);
   });

@@ -20,7 +20,10 @@ export interface CreatedReservation {
 
 /** Resultado tipado: los casos de negocio nunca lanzan. */
 export type CreateReservationResult =
-  { status: 'created'; reservation: CreatedReservation } | { status: ReservationRejection };
+  | { status: 'created'; reservation: CreatedReservation }
+  /** Incluye el código de la reserva existente para llevar al usuario a ella. */
+  | { status: 'already_reserved_by_you'; codigoReserva: string }
+  | { status: Exclude<ReservationRejection, 'already_reserved_by_you'> };
 
 export interface CreateReservationDeps {
   db: Pick<PrismaClient, '$transaction'>;
@@ -66,9 +69,9 @@ export async function createReservation(
 
       const own = await tx.reserva.findFirst({
         where: { usuarioId: userId, vehiculoId: vehicleId, estado: { in: ACTIVE_STATES } },
-        select: { id: true },
+        select: { codigoReserva: true },
       });
-      if (own) return { status: 'already_reserved_by_you' };
+      if (own) return { status: 'already_reserved_by_you', codigoReserva: own.codigoReserva };
 
       const activeCount = await tx.reserva.count({
         where: { usuarioId: userId, estado: { in: ACTIVE_STATES } },
