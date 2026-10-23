@@ -1,6 +1,6 @@
 # F2-05: Mi cuenta (perfil y cambio de contraseña)
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 2
 - **Depende de:** F2-03, F2-04
 - **Prioridad:** Media
