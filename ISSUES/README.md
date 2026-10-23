@@ -107,7 +107,7 @@ Orden sugerido: F3-01 → (F3-02 ∥ F3-03 ∥ F3-04) → F3-05. F3-02 enlaza a 
 | [F4-05](F4-05-ventas.md)            | Registro de ventas y cierre de reservas      | F4-02         | DONE   |
 | [F4-06](F4-06-usuarios.md)          | Gestión de usuarios (solo ADMIN)             | F4-01         | DONE   |
 | [F4-07](F4-07-configuracion.md)     | Configuración del concesionario (solo ADMIN) | F4-01         | DONE   |
-| [F4-08](F4-08-e2e-panel.md)         | Pruebas e2e del panel y cierre de la Fase 4  | F4-02 a F4-07 | TODO   |
+| [F4-08](F4-08-e2e-panel.md)         | Pruebas e2e del panel y cierre de la Fase 4  | F4-02 a F4-07 | DONE   |
 
 Orden sugerido: F4-09 ∥ F4-01 → (F4-02 ∥ F4-03 ∥ F4-06 ∥ F4-07) → (F4-04, F4-05) → F4-08. **Cada rama sale de `main` actualizado; no encadenar ramas** (en la Fase 3 provocó conflictos entre PRs).
 
