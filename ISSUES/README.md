@@ -117,7 +117,7 @@ Orden sugerido: F4-09 ∥ F4-01 → (F4-02 ∥ F4-03 ∥ F4-06 ∥ F4-07) → (F
 | :-------------------------------------------- | :---------------------------------------------------- | :------------------------- | :----- |
 | [F5-01](F5-01-seguridad-http-dependencias.md) | Seguridad HTTP (CSP) y de dependencias                | F4-08                      | TODO   |
 | [F5-02](F5-02-accesibilidad-rendimiento.md)   | Accesibilidad y rendimiento                           | F4-08                      | TODO   |
-| [F5-03](F5-03-operacion-y-datos.md)           | Operación, respaldos y primer administrador           | F4-08                      | TODO   |
+| [F5-03](F5-03-operacion-y-datos.md)           | Operación, respaldos y primer administrador           | F4-08                      | REVIEW |
 | [F5-04](F5-04-legal-y-pendientes.md)          | Páginas legales y lista de pendientes del propietario | F4-08                      | TODO   |
 | [F5-05](F5-05-cierre-fase-5.md)               | Revisión final de seguridad, cobertura y cierre       | F5-01, F5-02, F5-03, F5-04 | TODO   |
 

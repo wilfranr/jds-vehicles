@@ -30,12 +30,6 @@ export function parseReservationExpirationHours(
   return Number(raw);
 }
 
-/** Valida la configuración de reservas al arrancar el servidor (no durante `next build`). */
-export function assertReservationEnv(env: Record<string, string | undefined> = process.env): void {
-  if (env.NEXT_PHASE === 'phase-production-build') return;
-  parseReservationExpirationHours(env);
-}
-
 export function expirationDate(now: Date, hours: number | null): Date | null {
   return hours === null ? null : new Date(now.getTime() + hours * 60 * 60 * 1000);
 }
