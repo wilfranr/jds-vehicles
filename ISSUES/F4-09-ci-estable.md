@@ -1,6 +1,6 @@
 # F4-09: Estabilizar el job E2E del CI
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 4
 - **Depende de:** — (puede hacerse primero y en paralelo)
 - **Prioridad:** Alta (hoy el job se queda colgado 10–25 minutos en la descarga de Chromium)

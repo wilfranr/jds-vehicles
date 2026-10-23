@@ -1,6 +1,6 @@
 # F4-01: Base del panel del concesionario (/admin)
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 4
 - **Depende de:** F3-05 (DONE)
 - **Prioridad:** Alta (bloquea el resto de la Fase 4)
