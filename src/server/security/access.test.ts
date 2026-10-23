@@ -48,4 +48,13 @@ describe('matcher del proxy', () => {
       expect(matchers.some((m) => excluded.startsWith(m.split('/:')[0] ?? '###'))).toBe(false);
     }
   });
+
+  it('código de reserva mal formado → 404 (invalidRoute) solo con sesión', () => {
+    expect(decideAccess('/mi-cuenta/reservas/RES-2026-AB2C', 'CLIENTE')).toBe('allow');
+    expect(decideAccess('/mi-cuenta/reservas', 'CLIENTE')).toBe('allow');
+    for (const bad of ['RES-1-X', '..%2F', '%3Cscript%3E', 'res-2026-ab2c', 'RES-2026-AB0C']) {
+      expect(decideAccess(`/mi-cuenta/reservas/${bad}`, 'CLIENTE')).toBe('invalidRoute');
+    }
+    expect(decideAccess('/mi-cuenta/reservas/RES-1-X', null)).toBe('redirectLogin');
+  });
 });

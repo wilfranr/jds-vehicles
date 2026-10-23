@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CODE_ALPHABET, CODE_PATTERN, generateReservationCode } from './code';
+import { CODE_ALPHABET, CODE_PATTERN, generateReservationCode, parseReservationCode } from './code';
 
 describe('generateReservationCode', () => {
   it('tiene el formato RES-AAAA-XXXX con el año de la reserva', () => {
@@ -25,5 +25,29 @@ describe('generateReservationCode', () => {
     expect(generateReservationCode(new Date('2026-01-01T00:00:00'), () => 31)).toBe(
       'RES-2026-9999'
     );
+  });
+});
+
+describe('parseReservationCode (código recibido en la URL)', () => {
+  it('acepta códigos válidos', () => {
+    expect(parseReservationCode('RES-2026-AB2C')).toBe('RES-2026-AB2C');
+    expect(parseReservationCode(generateReservationCode())).not.toBeNull();
+  });
+
+  it.each([
+    'RES-1-X',
+    '../',
+    '..%2F..%2Fetc',
+    '<script>alert(1)</script>',
+    'res-2026-AB2C',
+    'RES-2026-AB2',
+    'RES-2026-AB2CD',
+    'RES-2026-AB0C', // 0 no pertenece al alfabeto
+    'RES-2026-ABIC', // I tampoco
+    'RES-2026-AB2C\n',
+    ' RES-2026-AB2C',
+    '',
+  ])('rechaza %j', (raw) => {
+    expect(parseReservationCode(raw)).toBeNull();
   });
 });

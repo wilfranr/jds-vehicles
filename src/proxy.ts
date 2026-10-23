@@ -44,6 +44,8 @@ export async function proxy(request: NextRequest) {
       });
       // Se reescribe a una ruta inexistente: responde 404 con la página de no encontrado del sitio.
       return NextResponse.rewrite(new URL('/404-not-found', request.url), { status: 404 });
+    case 'invalidRoute':
+      return NextResponse.rewrite(new URL('/404-not-found', request.url), { status: 404 });
     default:
       return NextResponse.next();
   }
