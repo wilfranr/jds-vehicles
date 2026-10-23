@@ -91,11 +91,48 @@ function optionalText(max: number, message: string) {
     .transform((v) => (v ? v : undefined));
 }
 
+/** Regla de contraseña nueva (registro y cambio de contraseña): una sola definición. */
+export function createPasswordRule(m: RegisterMessages) {
+  return z
+    .string(m.passwordLength)
+    .min(10, m.passwordLength)
+    .refine((v) => Buffer.byteLength(v, 'utf8') <= 72, m.passwordLength)
+    .refine((v) => /[A-Za-z]/.test(v) && /\d/.test(v), m.passwordComposition)
+    .refine((v) => !COMMON_PASSWORDS.has(v.toLowerCase()), m.passwordCommon);
+}
+
+/** Campos editables del perfil; el registro y la edición de perfil comparten estas reglas y normalizaciones. */
+function createProfileShape(m: RegisterMessages) {
+  return {
+    nombre: text(2, 100, m.nombre),
+    apellido: text(2, 100, m.apellido),
+    telefono: z
+      .string(m.telefono)
+      .max(60, m.telefono)
+      .transform((v, ctx) => {
+        const normalized = normalizeColombianMobile(v);
+        if (!normalized) {
+          ctx.addIssue({ code: 'custom', message: m.telefono });
+          return z.NEVER;
+        }
+        return normalized;
+      }),
+    ciudad: optionalText(100, m.ciudad),
+    direccion: optionalText(255, m.direccion),
+  };
+}
+
+export function createProfileSchema(m: RegisterMessages) {
+  return z.object(createProfileShape(m));
+}
+
+export type ProfileInput = z.output<ReturnType<typeof createProfileSchema>>;
+export type ProfileField = keyof ProfileInput;
+
 export function createRegisterSchema(m: RegisterMessages) {
   return z
     .object({
-      nombre: text(2, 100, m.nombre),
-      apellido: text(2, 100, m.apellido),
+      ...createProfileShape(m),
       tipoDocumento: z.enum(TIPOS_DOCUMENTO, m.tipoDocumento),
       documento: z
         .string(m.documento)
@@ -113,26 +150,8 @@ export function createRegisterSchema(m: RegisterMessages) {
         .max(400, m.email)
         .transform((v) => v.trim().toLowerCase())
         .pipe(z.email(m.email).max(150, m.email)),
-      telefono: z
-        .string(m.telefono)
-        .max(60, m.telefono)
-        .transform((v, ctx) => {
-          const normalized = normalizeColombianMobile(v);
-          if (!normalized) {
-            ctx.addIssue({ code: 'custom', message: m.telefono });
-            return z.NEVER;
-          }
-          return normalized;
-        }),
-      password: z
-        .string(m.passwordLength)
-        .min(10, m.passwordLength)
-        .refine((v) => Buffer.byteLength(v, 'utf8') <= 72, m.passwordLength)
-        .refine((v) => /[A-Za-z]/.test(v) && /\d/.test(v), m.passwordComposition)
-        .refine((v) => !COMMON_PASSWORDS.has(v.toLowerCase()), m.passwordCommon),
+      password: createPasswordRule(m),
       confirmPassword: z.string(m.passwordMismatch).max(1000, m.passwordMismatch),
-      ciudad: optionalText(100, m.ciudad),
-      direccion: optionalText(255, m.direccion),
       consentimiento: z.literal('on', m.consentimiento),
     })
     .refine((data) => data.password === data.confirmPassword, {

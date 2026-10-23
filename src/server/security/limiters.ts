@@ -9,6 +9,9 @@ const loginIp = createRateLimiter({ limit: 20, windowMs: 15 * MINUTE });
 /** Registros por IP: 5 por hora. */
 const register = createRateLimiter({ limit: 5, windowMs: 60 * MINUTE });
 
+/** Fallos de contraseña actual al cambiarla, por usuario: 5 en 15 minutos. */
+const passwordChange = createRateLimiter({ limit: 5, windowMs: 15 * MINUTE });
+
 function pairKey(email: string, ip: string): string {
   return `${email.trim().toLowerCase()}|${ip}`;
 }
@@ -41,4 +44,16 @@ export function checkRegisterAllowed(ip: string): RateLimitResult {
 /** Cada intento de registro (válido o no) consume cupo de la IP. */
 export function recordRegisterAttempt(ip: string): void {
   register.hit(ip);
+}
+
+export function checkPasswordChangeAllowed(userId: number): RateLimitResult {
+  return passwordChange.check(String(userId));
+}
+
+export function recordPasswordChangeFailure(userId: number): void {
+  passwordChange.hit(String(userId));
+}
+
+export function recordPasswordChangeSuccess(userId: number): void {
+  passwordChange.reset(String(userId));
 }
