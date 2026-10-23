@@ -82,6 +82,60 @@ export const siteContent = {
     // TODO(F4): poner en true cuando exista la ruta /admin (panel del concesionario).
     showAdminPanelLink: false,
   },
+  // Contenido de /mi-cuenta (perfil, seguridad y reservas)
+  cuenta: {
+    navLabel: 'Secciones de la cuenta',
+    heading: 'Mi cuenta',
+    nav: [
+      { href: '/mi-cuenta', label: 'Perfil' },
+      { href: '/mi-cuenta/seguridad', label: 'Seguridad' },
+      { href: '/mi-cuenta/reservas', label: 'Reservas' },
+    ],
+    profile: {
+      title: 'Mi perfil',
+      heading: 'Mi perfil',
+      subtitle: 'Mantén tus datos al día: el celular es el que usamos para contactarte.',
+      fixedHeading: 'Datos que no se pueden cambiar',
+      fixedHelp: 'Para corregirlos, escríbenos desde la página de contacto.',
+      contactLink: 'Ir a contacto',
+      fixedLabels: {
+        documento: 'Documento',
+        email: 'Correo electrónico',
+      },
+      editableHeading: 'Datos editables',
+      submit: 'Guardar cambios',
+      submitting: 'Guardando…',
+      saved: 'Tus datos se guardaron correctamente.',
+      unavailable: 'No fue posible guardar los cambios. Inténtalo de nuevo.',
+    },
+    security: {
+      title: 'Seguridad',
+      heading: 'Seguridad',
+      subtitle: 'Cambia tu contraseña. Tu sesión actual seguirá activa.',
+      submit: 'Cambiar contraseña',
+      submitting: 'Cambiando…',
+      labels: {
+        currentPassword: 'Contraseña actual',
+        newPassword: 'Contraseña nueva',
+        confirmPassword: 'Confirmar contraseña nueva',
+      },
+      hints: { newPassword: 'Entre 10 y 72 caracteres, con al menos una letra y un número.' },
+      changed: 'Tu contraseña se cambió correctamente.',
+      errorSummary: 'Revisa los campos marcados.',
+      errors: {
+        currentRequired: 'Ingresa tu contraseña actual.',
+        currentWrong: 'La contraseña actual no es correcta.',
+        sameAsCurrent: 'La contraseña nueva debe ser distinta de la actual.',
+      },
+    },
+    reservations: {
+      title: 'Mis reservas',
+      heading: 'Mis reservas',
+      emptyTitle: 'Aún no tienes reservas',
+      emptyDescription: 'Cuando reserves un vehículo, aparecerá aquí.',
+      catalogCta: 'Ver el catálogo',
+    },
+  },
   // Contenido de /registro
   registro: {
     title: 'Crear cuenta',

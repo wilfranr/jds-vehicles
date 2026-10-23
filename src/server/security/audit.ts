@@ -1,5 +1,11 @@
 export type SecurityEventType =
-  'login_failed' | 'login_blocked' | 'register_blocked' | 'forbidden_access';
+  | 'login_failed'
+  | 'login_blocked'
+  | 'register_blocked'
+  | 'forbidden_access'
+  | 'password_changed'
+  | 'password_change_failed'
+  | 'password_change_blocked';
 
 export interface SecurityEvent {
   type: SecurityEventType;
