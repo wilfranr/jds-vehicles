@@ -1,6 +1,6 @@
 # F4-08: Pruebas e2e del panel y cierre de la Fase 4
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 4
 - **Depende de:** F4-02, F4-03, F4-04, F4-05, F4-06, F4-07
 - **Prioridad:** Alta
