@@ -95,6 +95,22 @@ F1-06 y las issues F2-01, F2-02 y F2-04 se pueden trabajar en paralelo: no compa
 
 Orden sugerido: F3-01 → (F3-02 ∥ F3-03 ∥ F3-04) → F3-05. F3-02 enlaza a la página de F3-03; si se hacen en paralelo, coordinar la ruta `/mi-cuenta/reservas/[codigo]`.
 
+### Fase 4: Panel del concesionario
+
+| ID                                  | Título                                       | Depende de    | Estado |
+| :---------------------------------- | :------------------------------------------- | :------------ | :----- |
+| [F4-09](F4-09-ci-estable.md)        | Estabilizar el job E2E del CI                | —             | TODO   |
+| [F4-01](F4-01-base-panel-admin.md)  | Base del panel (/admin), roles y resumen     | F3-05         | TODO   |
+| [F4-02](F4-02-gestion-reservas.md)  | Gestión de reservas (personal)               | F4-01         | TODO   |
+| [F4-03](F4-03-gestion-vehiculos.md) | Gestión de vehículos, marcas y modelos       | F4-01         | TODO   |
+| [F4-04](F4-04-fotos-vehiculos.md)   | Fotos de vehículos (subida y galería)        | F4-03         | TODO   |
+| [F4-05](F4-05-ventas.md)            | Registro de ventas y cierre de reservas      | F4-02         | TODO   |
+| [F4-06](F4-06-usuarios.md)          | Gestión de usuarios (solo ADMIN)             | F4-01         | TODO   |
+| [F4-07](F4-07-configuracion.md)     | Configuración del concesionario (solo ADMIN) | F4-01         | TODO   |
+| [F4-08](F4-08-e2e-panel.md)         | Pruebas e2e del panel y cierre de la Fase 4  | F4-02 a F4-07 | TODO   |
+
+Orden sugerido: F4-09 ∥ F4-01 → (F4-02 ∥ F4-03 ∥ F4-06 ∥ F4-07) → (F4-04, F4-05) → F4-08. **Cada rama sale de `main` actualizado; no encadenar ramas** (en la Fase 3 provocó conflictos entre PRs).
+
 ### Reglas de contenido (vinculantes)
 
 - Todo texto editorial o comercial de la interfaz (títulos, subtítulos, cifras, tarjetas de beneficios, garantías, certificaciones, plazos) vive en `src/lib/site-content.ts`, nunca escrito directamente en páginas o componentes.
@@ -111,6 +127,8 @@ Orden sugerido: F3-01 → (F3-02 ∥ F3-03 ∥ F3-04) → F3-05. F3-02 enlaza a 
 
 - **Reservas (Fase 3), decididas por delegación del propietario para el demo; confirmar antes de producción:** (a) plazo de expiración de una reserva: **48 horas** (`RESERVA_EXPIRACION_HORAS`, `0` = sin expiración); (b) tope de reservas activas por usuario: **2**; (c) el cliente **no** cancela su reserva (la documentación solo da esa acción al personal; llega en la Fase 4).
 
+- **Panel (Fase 4), decididas por delegación del propietario para el demo; confirmar antes de producción:** (a) permisos: ASESOR gestiona reservas, ventas e inventario; solo ADMIN gestiona usuarios y configuración; (b) fotos en el disco del servidor Oracle (`UPLOADS_DIR`), con copia de seguridad en la Fase 6; (c) las ventas no se editan ni se borran desde el panel.
+
 ### Fases siguientes
 
-Fase 4 (panel de administración): pendiente de crear (la Fase 3 está en `DONE`).
+Fase 5 (calidad y endurecimiento) y Fase 6 (despliegue en Oracle) se crearán cuando la Fase 4 esté en `DONE`.
