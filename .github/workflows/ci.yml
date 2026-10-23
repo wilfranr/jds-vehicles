@@ -14,6 +14,7 @@ jobs:
   ci:
     name: Lint, Typecheck, Test & Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     services:
       mysql:
@@ -83,6 +84,7 @@ jobs:
   e2e:
     name: E2E (Playwright)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     services:
       mysql:
@@ -138,10 +140,49 @@ jobs:
       - name: Build Next.js application
         run: pnpm build
 
-      - name: Install Playwright Chromium
-        run: pnpm exec playwright install --with-deps chromium
+      - name: Resolve Playwright version
+        id: playwright
+        run: echo "version=$(pnpm exec playwright --version | awk '{print $2}')" >> $GITHUB_OUTPUT
+
+      # Los navegadores (~150 MB) se descargaban en cada ejecución y a veces la descarga se colgaba (F4-09).
+      - name: Restore Playwright browsers cache
+        id: playwright-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      # Un intento por vez con tope de 150 s y un reintento: un cuelgue falla en minutos, no en horas.
+      - name: Install Playwright Chromium (cache miss)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        timeout-minutes: 6
+        run: |
+          for attempt in 1 2; do
+            timeout 150 pnpm exec playwright install --with-deps chromium && exit 0
+            echo "Intento $attempt fallido"; sleep 5
+          done
+          exit 1
+
+      - name: Save Playwright browsers cache
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      # Con la caché, solo hacen falta las bibliotecas del sistema (no se cachean).
+      - name: Install Playwright system dependencies (cache hit)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        timeout-minutes: 6
+        run: |
+          for attempt in 1 2; do
+            timeout 150 pnpm exec playwright install-deps chromium && exit 0
+            echo "Intento $attempt fallido"; sleep 5
+          done
+          exit 1
 
       - name: Run E2E tests
+        timeout-minutes: 10
         run: pnpm e2e
 
       - name: Upload Playwright report
