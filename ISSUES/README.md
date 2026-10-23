@@ -120,14 +120,21 @@ Orden sugerido: F4-09 ∥ F4-01 → (F4-02 ∥ F4-03 ∥ F4-06 ∥ F4-07) → (F
 ### Decisiones pendientes del propietario
 
 - **Cifras de marca** ("42 vehículos", "100 % garantía", "48 h", "inspección de 120 puntos"): se usan provisionalmente tal como están en el prototipo, centralizadas en `src/lib/site-content.ts`. Confirmar o reemplazar antes de publicar (Fase 6).
-- **Almacenamiento de fotos** (disco del servidor Oracle vs. servicio externo): se decide antes de la Fase 4. En la Fase 1 las fotos se muestran desde URL.
+- **Almacenamiento de fotos** (disco del servidor Oracle vs. servicio externo): decidido para el demo en la Fase 4 (disco, `UPLOADS_DIR`); confirmar antes de producción (ver el bloque «Panel» más abajo). Las fotos del seed son URLs externas.
 - Dirección, horario y mapa del concesionario: no se muestran hasta que existan.
 - **Política de tratamiento de datos personales** (y términos del servicio): el registro (F2-02) recoge documento de identidad, teléfono y dirección, y guarda la fecha de aceptación. El texto legal definitivo debe aportarlo el propietario (probablemente exigido por la Ley 1581 de 2012; confirmar con asesoría legal). Hasta entonces, texto neutro con `TODO(owner)`.
 - **Proveedor de correo para recuperar contraseñas** (SMTP propio, servicio transaccional, etc.): sin él no se puede implementar "¿Olvidaste tu contraseña?". No se incluye en la Fase 2; se crea el issue cuando se decida. Mientras tanto, un administrador puede restablecer contraseñas (Fase 4).
 
 - **Reservas (Fase 3), decididas por delegación del propietario para el demo; confirmar antes de producción:** (a) plazo de expiración de una reserva: **48 horas** (`RESERVA_EXPIRACION_HORAS`, `0` = sin expiración); (b) tope de reservas activas por usuario: **2**; (c) el cliente **no** cancela su reserva (la documentación solo da esa acción al personal; llega en la Fase 4).
 
-- **Panel (Fase 4), decididas por delegación del propietario para el demo; confirmar antes de producción:** (a) permisos: ASESOR gestiona reservas, ventas e inventario; solo ADMIN gestiona usuarios y configuración; (b) fotos en el disco del servidor Oracle (`UPLOADS_DIR`), con copia de seguridad en la Fase 6; (c) las ventas no se editan ni se borran desde el panel.
+- **Panel (Fase 4), decididas por delegación del propietario para el demo; confirmar antes de producción:**
+  - **Permisos:** `ASESOR` gestiona reservas, ventas e inventario (vehículos, marcas, modelos y fotos); solo `ADMIN` gestiona usuarios y la configuración del concesionario.
+  - **Ventas:** no se editan ni se borran desde el panel (no hay anulación ni correcciones; llegarían con un issue propio).
+  - **Fotos en el disco del servidor Oracle** (`UPLOADS_DIR`, por defecto `./uploads`, fuera de `public/`): (i) la carpeta debe existir con permisos de lectura y escritura solo para el usuario que ejecuta la app (p. ej. `chmod 750`); (ii) **incluirla en las copias de seguridad** junto con la base de datos (las filas apuntan a `/media/<uuid>.webp`); (iii) el proxy inverso debe admitir cuerpos de ~55 MB en `/admin/vehiculos/*/fotos` (p. ej. `client_max_body_size 55m` en nginx); (iv) no hay **purga de archivos huérfanos** si se borra un vehículo por SQL (el panel no borra vehículos); (v) si se prefiere un servicio externo, solo cambia `src/server/media/` (las filas guardan una URL).
+  - **Consecutivo de recibos** `VTA-AAAA-NNNNNN` serializado con una fila de `roles` como exclusión mutua (suficiente para el volumen esperado; con mucho volumen convendría una tabla de secuencias con migración).
+  - **Cambios de rol** visibles en el proxy al volver a iniciar sesión (el JWT no se revoca); las páginas y acciones del panel sí consultan la BD en cada petición.
+  - **Formato de placa** amplio (5–10 caracteres alfanuméricos) y expiración por defecto de 48 h (ver «Reservas»).
+  - **Recuperación de contraseña** mientras no haya proveedor de correo: el administrador restablece la clave desde el panel y la comunica por un canal seguro.
 
 ### Fases siguientes
 

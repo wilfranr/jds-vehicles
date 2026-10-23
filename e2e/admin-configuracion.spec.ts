@@ -3,6 +3,7 @@ import { test, expect, type Browser, type Page } from '@playwright/test';
 import { PrismaClient } from '@prisma/client';
 import { hashSync } from 'bcryptjs';
 import { siteContent } from '../src/lib/site-content';
+import { captureBlocked, replay } from './helpers';
 import { E2E_EMAIL_DOMAIN } from './test-data';
 
 // Estas pruebas cambian la configuración GLOBAL del sitio: por eso corren en serie dentro de este archivo y
@@ -246,5 +247,64 @@ test.describe('Configuración del concesionario (/admin/configuracion)', () => {
     } finally {
       await context.close();
     }
+  });
+
+  test('la acción de guardar configuración (replay de la petición real del ADMIN): solo ADMIN surte efecto; ASESOR, CLIENTE, anónimo y un ADMIN degradado con sesión vigente no cambian nada', async ({
+    browser,
+    request,
+    baseURL,
+  }) => {
+    const admin = await sessionFor(browser, (await makeUser('ADMIN')).email);
+    const asesor = await sessionFor(browser, (await makeUser('ASESOR')).email);
+    const client = await sessionFor(browser, (await makeUser('CLIENTE')).email);
+    const degradedUser = await makeUser('ADMIN');
+    const degraded = await sessionFor(browser, degradedUser.email);
+    const label = copy.keys.instagram_url.label;
+    const stored = async () =>
+      (
+        await prisma.configuracionConcesionario.findUniqueOrThrow({
+          where: { clave: 'instagram_url' },
+        })
+      ).valor;
+    const NEW_VALUE = 'https://www.instagram.com/e2e_replay';
+
+    try {
+      // Captura (sin que llegue al servidor) la petición real que envía el ADMIN al guardar un valor distinto
+      await admin.page.goto('/admin/configuracion');
+      const saveRequest = await captureBlocked(admin.page, async () => {
+        await saveValue(admin.page, label, NEW_VALUE);
+      });
+      expect(await stored()).toBe(original.instagram_url);
+
+      // Degradar al segundo ADMIN en la BD: su token sigue siendo de ADMIN
+      const asesorRole = await prisma.role.findUniqueOrThrow({ where: { nombre: 'ASESOR' } });
+      await prisma.user.update({ where: { id: degradedUser.id }, data: { rolId: asesorRole.id } });
+
+      const attackers: [string, typeof request][] = [
+        ['ASESOR', asesor.page.request],
+        ['CLIENTE', client.page.request],
+        ['anónimo', request],
+        ['ADMIN degradado con sesión vigente', degraded.page.request],
+      ];
+      for (const [who, ctx] of attackers) {
+        const response = await replay(ctx, '/admin/reservas', saveRequest, baseURL!);
+        expect(response.status(), who).not.toBe(500);
+        expect(await stored(), `${who}: la configuración no debe cambiar`).toBe(
+          original.instagram_url
+        );
+      }
+
+      // CONTROL: el mismo replay con la sesión del ADMIN SÍ cambia el valor (el replay es válido)
+      const control = await replay(admin.page.request, '/admin/reservas', saveRequest, baseURL!);
+      expect(control.status()).toBeLessThan(500);
+      await expect.poll(stored).toBe(NEW_VALUE);
+    } finally {
+      await admin.context.close();
+      await asesor.context.close();
+      await client.context.close();
+      await degraded.context.close();
+      await restoreOriginals(browser); // por la interfaz: también invalida la caché del sitio
+    }
+    expect(await stored()).toBe(original.instagram_url);
   });
 });
