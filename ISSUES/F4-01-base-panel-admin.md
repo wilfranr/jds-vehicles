@@ -64,3 +64,16 @@ Rama `issue/<ID>-<slug>` **creada desde `main` actualizado** (`git checkout main
 5. Persiste en el log del servidor de producción el aviso `crypto.getRandomValues()` de Auth.js ya reportado en F2-06.
 
 **Cómo verificar**: `pnpm db:seed && pnpm check && pnpm build && pnpm test:e2e`; manualmente, poner temporalmente `rol_id = 2` al cliente demo (`UPDATE usuarios SET rol_id=2 WHERE id=2`), entrar a `/admin` y restaurar con `rol_id = 1`.
+
+## Corrección tras la revisión del orquestador: pruebas de BD intermitentes
+
+**Causa (confirmada):** vitest ejecutaba los archivos de prueba en paralelo contra la **misma** BD, y varios cuentan filas globales (`dashboard`: vehículos, reservas, usuarios; `expire`: reservas vencidas) mientras otros archivos insertan y borran filas temporales (`service`, `queries` de reservas y catálogo, `register`). Reproducido a voluntad: forzando el paralelismo (`pnpm vitest run --fileParallelism`) falló **5 de 5** ejecuciones (`dashboard` siempre; en una también `expire`, «vence exactamente en el instante de expiración»).
+
+**Arreglo determinista (sin reintentos ni esperas):** `vitest.config.mts` ahora define dos proyectos:
+
+- `unit`: pruebas sin BD (jsdom), en paralelo, excluye `*.db.test.ts`.
+- `db`: solo `src/**/*.db.test.ts`, entorno `node` y `fileParallelism: false`, de modo que sus archivos corren **uno tras otro** y las filas temporales de un archivo nunca coinciden con los conteos de otro.
+
+Convención: toda prueba que use la BD real se llama `*.db.test.ts` (documentada en el README y en el comentario del config). Se renombraron con `git mv` las 6 existentes que escriben en la BD: `catalog/queries`, `auth/register` (crea usuarios, que alteraban «usuarios activos»), `reservations/service`, `reservations/queries`, `reservations/expire` y `admin/dashboard`. `config.test`, `auth/index.test` y `auth/staff.test` solo simulan Prisma y se quedan en `unit`. Mismo total de pruebas (313 en 39 archivos); el job de CI ejecuta `pnpm test` y por tanto usa esta configuración.
+
+**Resultado:** `pnpm test` completo, 10 ejecuciones seguidas: 10 de 10 con `39 passed / 313 passed`. Estado de la BD tras todas las ejecuciones: 2 usuarios, 0 reservas, 3 vehículos (seed intacto).

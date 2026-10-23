@@ -89,7 +89,7 @@ El proyecto cuenta con herramientas estandarizadas de calidad de código y prueb
 - `pnpm format:check`: Verifica el formateo sin modificar archivos.
 - `pnpm lint`: Ejecuta ESLint con reglas para TypeScript y compatibilidad con Prettier.
 - `pnpm typecheck`: Valida tipos en modo estricto (`tsc --noEmit`).
-- `pnpm test`: Corre las pruebas unitarias y de componentes con Vitest.
+- `pnpm test`: Corre las pruebas unitarias y de componentes con Vitest, en dos proyectos: `unit` (sin BD, en paralelo) y `db` (archivos `*.db.test.ts`, que usan la BD sembrada y se ejecutan **uno tras otro**: comparten la base de datos y varios cuentan filas globales). **Toda prueba que use la BD real debe llamarse `*.db.test.ts`** y limpiar sus filas; las de `e2e/` se ejecutan aparte con `pnpm test:e2e`.
 - `pnpm test:watch`: Ejecuta las pruebas en modo observador.
 - `pnpm test:e2e` (alias de `pnpm e2e`): Corre las pruebas de recorrido con Playwright (Chromium). Requiere BD sembrada y `pnpm build` previo; levanta `pnpm start` en el puerto 3100 (`E2E_PORT`) o usa un servidor existente con `E2E_BASE_URL`. La primera vez: `pnpm exec playwright install chromium`. El servidor de e2e arranca con `AUTH_TRUST_HOST=true` y `TRUST_PROXY=true`: cada prueba de `e2e/auth.spec.ts` envía su propia IP en `X-Forwarded-For`, así los limitadores no se pisan entre pruebas ni entre ejecuciones (si usas `E2E_BASE_URL`, el servidor debe tener `TRUST_PROXY=true`). Las pruebas borran los usuarios que crean y `e2e/global-setup.ts` falla si el número de `usuarios` cambia. Los e2e son obligatorios en CI.
 - `pnpm check`: Ejecuta toda la suite de calidad en secuencia (`format:check`, `lint`, `typecheck` y `test`).
