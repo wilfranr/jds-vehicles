@@ -56,6 +56,7 @@ export const siteContent = {
   // Autenticación (mensajes genéricos: no distinguen correo inexistente, contraseña errónea ni usuario inactivo)
   auth: {
     invalidCredentials: 'Correo o contraseña incorrectos.',
+    tooManyAttempts: 'Demasiados intentos. Inténtalo de nuevo en unos minutos.',
   },
   // Contenido de /registro
   registro: {
