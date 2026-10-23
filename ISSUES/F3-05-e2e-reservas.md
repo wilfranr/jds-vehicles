@@ -28,3 +28,10 @@ Cierra la Fase 3 con pruebas de punta a punta en Playwright (job E2E de CI, con 
 ## Recordatorio de proceso
 
 Rama `issue/F3-05-e2e-reservas` + PR; al terminar, estado `REVIEW`. **No fusionar ni marcar `DONE`.**
+
+## Observaciones de la revisión de F3-01 a F3-04 (añadidas por el orquestador)
+
+- Verificado a mano: la carrera de dos usuarios sobre el mismo vehículo deja una reserva y un rechazo (7 ms de diferencia); la reserva vence a las 48 h; el enlace de WhatsApp lleva código, vehículo y nombre sin placa ni documento; un código ajeno o malformado da la pantalla de no encontrado; `pnpm reservas:expirar` es idempotente y respeta `EN_NEGOCIACION`.
+- En la carrera, el usuario que pierde ve la ficha ya en estado `RESERVADO` (la caché se invalida al instante) y no el mensaje «acaba de ser reservado», porque el formulario se desmonta al cambiar el estado. Es aceptable; el e2e debe comprobar que **ya no hay botón de reservar y se ve el estado reservado**, no el texto del error.
+- Con sesión iniciada, el DOM de páginas dinámicas contiene un segundo `<main>`/`<header>` oculto (tamaño 0; ya anotado en F2-06). Usar `getByRole('main')`/`getByRole('banner')`, nunca `locator('main')`.
+- Cuando se programe el cron de expiración (Fase 6), la caché de Next no se invalida desde el script: el catálogo tarda hasta 60 s en reflejar una liberación (ver README).

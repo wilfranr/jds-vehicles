@@ -1,6 +1,6 @@
 # F2-06: Pruebas end-to-end de autenticación y cierre de la Fase 2
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 2
 - **Depende de:** F2-05, **F1-06 fusionado** (introduce Playwright y el job de e2e en CI)
 - **Prioridad:** Media

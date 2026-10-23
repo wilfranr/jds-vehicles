@@ -1,6 +1,6 @@
 # F3-04: Expiración de reservas
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 3
 - **Depende de:** F3-01
 - **Prioridad:** Media (el plazo por defecto es 48 h, ver F3-01)

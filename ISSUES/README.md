@@ -77,7 +77,7 @@ Orden sugerido: F0-08 → (F1-01 ∥ F1-02) → F1-03 → (F1-04 ∥ F1-05) → 
 | [F2-03](F2-03-login-logout-ui.md)         | Login, cierre de sesión y menú de usuario        | F2-01, F2-02, F1-06 | DONE   |
 | [F2-04](F2-04-seguridad-rutas-limites.md) | Protección de rutas y limitación de intentos     | F2-01               | DONE   |
 | [F2-05](F2-05-mi-cuenta.md)               | Mi cuenta (perfil y cambio de contraseña)        | F2-03, F2-04        | DONE   |
-| [F2-06](F2-06-e2e-auth.md)                | Pruebas e2e de autenticación y cierre de Fase 2  | F2-05, F1-06        | TODO   |
+| [F2-06](F2-06-e2e-auth.md)                | Pruebas e2e de autenticación y cierre de Fase 2  | F2-05, F1-06        | DONE   |
 | [F2-07](F2-07-limitador-registro.md)      | Integrar el limitador de intentos en el registro | F2-02, F2-04        | DONE   |
 
 Orden sugerido: F2-01 → (F2-02 ∥ F2-04) → (F2-03 ∥ F2-07) → F2-05 → F2-06.
@@ -87,10 +87,10 @@ F1-06 y las issues F2-01, F2-02 y F2-04 se pueden trabajar en paralelo: no compa
 
 | ID                                    | Título                                            | Depende de          | Estado |
 | :------------------------------------ | :------------------------------------------------ | :------------------ | :----- |
-| [F3-01](F3-01-servicio-reservas.md)   | Servicio de reservas (transacción y concurrencia) | F2-05               | TODO   |
-| [F3-02](F3-02-reservar-whatsapp.md)   | Reservar desde el detalle y abrir WhatsApp        | F3-01               | TODO   |
-| [F3-03](F3-03-mis-reservas.md)        | Mis reservas y confirmación                       | F3-01               | TODO   |
-| [F3-04](F3-04-expiracion-reservas.md) | Expiración de reservas                            | F3-01               | TODO   |
+| [F3-01](F3-01-servicio-reservas.md)   | Servicio de reservas (transacción y concurrencia) | F2-05               | DONE   |
+| [F3-02](F3-02-reservar-whatsapp.md)   | Reservar desde el detalle y abrir WhatsApp        | F3-01               | DONE   |
+| [F3-03](F3-03-mis-reservas.md)        | Mis reservas y confirmación                       | F3-01               | DONE   |
+| [F3-04](F3-04-expiracion-reservas.md) | Expiración de reservas                            | F3-01               | DONE   |
 | [F3-05](F3-05-e2e-reservas.md)        | Pruebas e2e de reservas y cierre de la Fase 3     | F3-02, F3-03, F3-04 | TODO   |
 
 Orden sugerido: F3-01 → (F3-02 ∥ F3-03 ∥ F3-04) → F3-05. F3-02 enlaza a la página de F3-03; si se hacen en paralelo, coordinar la ruta `/mi-cuenta/reservas/[codigo]`.
