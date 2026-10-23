@@ -4,13 +4,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { Condicion, EstadoReserva, TipoDocumento } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { verifyCredentials } from '@/server/auth/verify-credentials';
-import {
-  listAdminUsers,
-  maskDocument,
-  setUserActive,
-  setUserPasswordHash,
-  setUserRole,
-} from './users';
+import { listAdminUsers, setUserActive, setUserPasswordHash, setUserRole } from './users';
 
 // BD sembrada; usuarios temporales con ids 9801+ borrados siempre. Las pruebas de «último ADMIN» necesitan que el
 // administrador del seed sea el único ADMIN activo (se restaura siempre en afterEach/afterAll).
@@ -82,13 +76,6 @@ async function suspendSeedAdmin() {
     data: { activo: false },
   });
 }
-
-describe('maskDocument', () => {
-  it('deja visibles solo los 3 últimos caracteres', () => {
-    expect(maskDocument('7712345678')).toBe('*******678');
-    expect(maskDocument('AB')).toBe('**');
-  });
-});
 
 describe.skipIf(!dbUp)('gestión de usuarios (BD)', () => {
   beforeAll(restoreSeedAdmin);

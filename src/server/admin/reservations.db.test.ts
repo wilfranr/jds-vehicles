@@ -6,7 +6,6 @@ import {
   changeReservationState,
   getAdminReservation,
   listAdminReservations,
-  maskDocument,
   saveReservationNotes,
 } from './reservations';
 
@@ -84,14 +83,6 @@ const availabilityOf = async (id: number) =>
   (await prisma.vehiculo.findUniqueOrThrow({ where: { id } })).disponibilidad;
 const stateOf = async (code: string) =>
   (await prisma.reserva.findUniqueOrThrow({ where: { codigoReserva: code } })).estado;
-
-describe('maskDocument', () => {
-  it('deja visibles solo los 3 últimos caracteres', () => {
-    expect(maskDocument('7712345678')).toBe('*******678');
-    expect(maskDocument('AB')).toBe('**');
-    expect(maskDocument('')).toBe('');
-  });
-});
 
 describe.skipIf(!dbUp)('reservas del personal (BD)', () => {
   afterEach(cleanup);

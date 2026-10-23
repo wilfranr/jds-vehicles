@@ -61,3 +61,13 @@ Rama desde `main` actualizado (sin encadenar).
 **Cómo verificar**: `pnpm db:seed && pnpm check && pnpm build && pnpm test:e2e`; en `/admin/vehiculos` (con un ASESOR o ADMIN) crear un USADO y buscarlo en `/catalogo?color=<color>`.
 
 **Ajuste de la prueba de catálogo:** en una ejecución de `pnpm test:e2e` falló `catalog.spec.ts` (galería): los vehículos temporales sin fotos que crea `admin-vehiculos.spec.ts` (los más recientes, por tanto primeros del catálogo) podían ser el elegido. `catalog.spec.ts` ahora solo elige tarjetas con foto (`article:has(img)`). Resultado: `pnpm test:e2e` 38/38 en 5 ejecuciones seguidas.
+
+## Corrección tras la revisión del orquestador (pruebas e2e con datos compartidos y `maskDocument`)
+
+**Causa (confirmada por el orquestador):** `catalog.spec.ts` abría «la primera tarjeta» del catálogo (los más recientes van primero). Con varias pruebas creando y borrando vehículos temporales en paralelo, a veces esa tarjeta era un vehículo de otra prueba que desaparecía y la página mostraba «no encontrado» (JSON-LD sin publicar). Mi ajuste anterior (`article:has(img)`) solo cubría la primera prueba y seguía siendo no determinista.
+
+**Arreglo determinista:** ninguna prueba abre ya «la primera tarjeta». `e2e/catalog.spec.ts` apunta al **vehículo del seed por su color** (`Blanco Perlado`, único del seed: Toyota Corolla 2024, id 1) mediante `/catalogo?color=…`, comprueba que hay exactamente una tarjeta y entra a `/vehiculos/1` (el flujo con el filtro de condición se conserva y se verifica antes). Revisados el resto de specs: `reservas.spec.ts` y los `admin-*.spec.ts` ya filtran el catálogo por el color único de su propio vehículo temporal o por el código/correo de su dato temporal; `auth.spec.ts` usa `/vehiculos/1`; los demás `.first()` son sobre el header o botones de un menú, no sobre tarjetas del catálogo.
+
+**`maskDocument`:** ahora hay **una sola definición** en `src/server/admin/mask.ts` (con `mask.test.ts`), usada por `reservations.ts` y `users.ts`; se eliminaron las dos copias y sus pruebas duplicadas.
+
+**Resultado con todo mezclado** (rama al día con `origin/main`, que ya trae F4-02, F4-06 y F4-07): `pnpm check` **472** pruebas, `pnpm build` en verde y `pnpm test:e2e` **56 de 56 en 5 ejecuciones seguidas**, sin ningún fallo (47–50 s cada una). Antes de integrar, con solo F4-06 mezclado y con una simulación local de las 4 ramas, también 5/5. El E2E de CI de #43 había fallado por `apt` (arreglado en #47), no por las pruebas.
