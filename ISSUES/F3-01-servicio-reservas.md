@@ -1,6 +1,6 @@
 # F3-01: Servicio de reservas (dominio, transacción y concurrencia)
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 3
 - **Depende de:** F2-05
 - **Prioridad:** Alta (bloquea el resto de la Fase 3)

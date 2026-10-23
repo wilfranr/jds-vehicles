@@ -1,6 +1,6 @@
 # F3-02: Reservar desde el detalle y abrir WhatsApp
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 3
 - **Depende de:** F3-01
 - **Prioridad:** Alta

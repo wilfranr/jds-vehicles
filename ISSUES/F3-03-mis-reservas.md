@@ -1,6 +1,6 @@
 # F3-03: Mis reservas y confirmación
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 3
 - **Depende de:** F3-01 (puede desarrollarse en paralelo con F3-02; la confirmación de F3-02 usa esta página)
 - **Prioridad:** Alta

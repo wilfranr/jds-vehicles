@@ -130,7 +130,7 @@ No existe una ruta HTTP para esto. Como el script corre en un proceso aparte, **
 | `/login`               | Inicio de sesión; limitado a 5 fallos por correo+IP y 20 por IP cada 15 min. Acepta `?next=` (solo rutas internas) |
 | `/mi-cuenta`           | Perfil: edición de nombre, apellido, teléfono, ciudad y dirección (requiere sesión)                                |
 | `/mi-cuenta/seguridad` | Cambio de contraseña (5 fallos de la actual por usuario cada 15 min)                                               |
-| `/mi-cuenta/reservas`  | Listado de reservas (vacío hasta la Fase 3)                                                                        |
+| `/mi-cuenta/reservas`  | Mis reservas; el detalle `/mi-cuenta/reservas/[codigo]` solo abre reservas propias                                                                        |
 | `/admin/**`            | Reservada al personal (`ADMIN`/`ASESOR`); aún sin páginas                                                          |
 | `/api/auth/**`         | Rutas internas de Auth.js (las pantallas de acceso redirigen a `/login`)                                           |
 
