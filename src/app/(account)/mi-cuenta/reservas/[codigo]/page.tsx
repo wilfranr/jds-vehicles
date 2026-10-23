@@ -12,6 +12,7 @@ import { requireUser } from '@/server/auth';
 import { getDealerConfig } from '@/server/config';
 import { parseReservationCode } from '@/server/reservations/code';
 import { getUserReservationByCode } from '@/server/reservations/queries';
+import { isLocalMedia, thumbOf } from '@/lib/media-url';
 
 const copy = siteContent.cuenta.reservations;
 const ACTIVE = ['PENDIENTE_CONTACTO', 'EN_NEGOCIACION'];
@@ -86,7 +87,8 @@ export default async function ReservationDetailPage({
         <div className="bg-surface-container relative aspect-[16/10] w-full max-w-md overflow-hidden rounded-xl">
           {vehiculo.fotoUrl ? (
             <Image
-              src={vehiculo.fotoUrl}
+              src={thumbOf(vehiculo.fotoUrl)}
+              unoptimized={isLocalMedia(vehiculo.fotoUrl)}
               alt={title}
               fill
               sizes="(max-width: 640px) 100vw, 448px"

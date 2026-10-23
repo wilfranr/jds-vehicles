@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Maximize2, X, Images } from 'lucide-react';
 import type { VehiclePhotoData } from '@/types/catalog';
+import { isLocalMedia, thumbOf } from '@/lib/media-url';
 
 interface VehicleGalleryProps {
   photos: VehiclePhotoData[];
@@ -77,6 +78,7 @@ export function VehicleGallery({ photos, title }: VehicleGalleryProps) {
       <div className="bg-surface-container border-outline-variant/30 group relative aspect-[16/10] w-full overflow-hidden rounded-2xl border shadow-sm">
         <Image
           src={currentPhoto.url}
+          unoptimized={isLocalMedia(currentPhoto.url)}
           alt={`${title} - Foto ${selectedIndex + 1} de ${total}`}
           fill
           priority
@@ -149,7 +151,8 @@ export function VehicleGallery({ photos, title }: VehicleGalleryProps) {
                 }`}
               >
                 <Image
-                  src={photo.url}
+                  src={thumbOf(photo.url)}
+                  unoptimized={isLocalMedia(photo.url)}
                   alt={`${title} - Miniatura ${index + 1}`}
                   fill
                   sizes="100px"
@@ -187,6 +190,7 @@ export function VehicleGallery({ photos, title }: VehicleGalleryProps) {
           <div className="relative h-[80vh] w-[90vw] max-w-6xl">
             <Image
               src={currentPhoto.url}
+              unoptimized={isLocalMedia(currentPhoto.url)}
               alt={`${title} - Foto ${selectedIndex + 1} de ${total}`}
               fill
               className="object-contain"

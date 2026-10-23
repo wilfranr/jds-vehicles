@@ -5,6 +5,7 @@ import { formatDateTime } from '@/lib/format';
 import { siteContent } from '@/lib/site-content';
 import type { ReservationSummary } from '@/server/reservations/queries';
 import { ReservationStatusChip } from './ReservationStatusChip';
+import { isLocalMedia, thumbOf } from '@/lib/media-url';
 
 const copy = siteContent.cuenta.reservations;
 
@@ -17,7 +18,8 @@ export function ReservationCard({ reservation }: { reservation: ReservationSumma
       <div className="bg-surface-container relative aspect-[16/10] w-full shrink-0 overflow-hidden rounded-xl sm:w-44">
         {vehiculo.fotoUrl ? (
           <Image
-            src={vehiculo.fotoUrl}
+            src={thumbOf(vehiculo.fotoUrl)}
+            unoptimized={isLocalMedia(vehiculo.fotoUrl)}
             alt={title}
             fill
             sizes="(max-width: 640px) 100vw, 176px"

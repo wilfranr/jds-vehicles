@@ -10,7 +10,11 @@ import {
 } from './service';
 
 export { MAX_ACTIVE_RESERVATIONS_PER_USER } from './config';
-export { invalidateCatalogFromAction, invalidateCatalogInBackground } from './cache';
+export {
+  invalidateCatalogFromAction,
+  invalidateCatalogImmediately,
+  invalidateCatalogInBackground,
+} from './cache';
 export type { CreateReservationResult } from './service';
 
 /** `createReservation` con la BD real, la configuración del entorno y el registro de auditoría. */

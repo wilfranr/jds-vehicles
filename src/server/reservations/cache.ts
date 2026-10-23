@@ -18,3 +18,12 @@ export function invalidateCatalogFromAction(): void {
 export function invalidateCatalogInBackground(): void {
   for (const tag of CATALOG_CACHE_TAGS) revalidateTag(tag, 'max');
 }
+
+/**
+ * Para Route Handlers (subida de fotos): `updateTag` no está permitido fuera de Server Actions y el perfil `max`
+ * serviría contenido viejo una vez; `{ expire: 0 }` descarta la caché de inmediato (la siguiente petición espera
+ * datos nuevos).
+ */
+export function invalidateCatalogImmediately(): void {
+  for (const tag of CATALOG_CACHE_TAGS) revalidateTag(tag, { expire: 0 });
+}

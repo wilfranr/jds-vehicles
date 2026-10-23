@@ -59,4 +59,29 @@ describe('serializeJsonLd', () => {
     expect(out).not.toContain('<');
     expect(JSON.parse(out).name).toBe('</script><script>alert(1)</script>');
   });
+
+  it('las fotos subidas desde el panel (rutas relativas) salen como URLs absolutas', () => {
+    const uploaded = {
+      ...vehicle,
+      fotos: [
+        {
+          id: 2,
+          url: '/media/3f2b8c1e-9d4a-4b7e-8a61-0c5d2e7f9a10.webp',
+          esPrincipal: true,
+          ordenPresentacion: 1,
+        },
+        {
+          id: 3,
+          url: 'https://images.unsplash.com/b.jpg',
+          esPrincipal: false,
+          ordenPresentacion: 2,
+        },
+      ],
+    };
+    const data = buildVehicleJsonLd(uploaded, 'https://jds.example.com') as { image: string[] };
+    expect(data.image).toEqual([
+      'https://jds.example.com/media/3f2b8c1e-9d4a-4b7e-8a61-0c5d2e7f9a10.webp',
+      'https://images.unsplash.com/b.jpg',
+    ]);
+  });
 });
