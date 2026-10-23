@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db';
 import { siteContent } from '@/lib/site-content';
 import { cacheTag } from 'next/cache';
+import { logEvent } from '@/server/log';
 
 export interface DealerConfig {
   whatsappNumber: string;
@@ -55,10 +56,13 @@ export async function getDealerConfig(): Promise<DealerConfig> {
       instagramUrl: dbConfig.instagramUrl || fallbackInstagram,
     };
   } catch (error) {
-    console.warn(
-      '⚠️ No se pudo conectar a la base de datos para cargar configuracionConcesionario. Usando valores de respaldo transitorios (no cacheados).',
-      error
-    );
+    // Solo el nombre del error: el mensaje puede incluir datos de conexión.
+    logEvent({
+      channel: 'app',
+      level: 'warn',
+      event: 'dealer_config_fallback',
+      errorName: error instanceof Error ? error.name : 'Error',
+    });
     return {
       whatsappNumber: fallbackNumber,
       instagramUrl: fallbackInstagram,

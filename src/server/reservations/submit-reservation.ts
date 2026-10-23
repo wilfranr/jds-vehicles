@@ -1,4 +1,5 @@
 import { parseVehicleId } from '@/lib/vehicle-id';
+import { logEvent } from '@/server/log';
 import type { AuthUser } from '@/types/auth';
 import type { RateLimitResult } from '@/server/security/rate-limit';
 import type { CreateReservationResult } from './service';
@@ -87,7 +88,10 @@ export async function submitReservation(
         }
       } catch {
         // La reserva ya está confirmada: el enlace se reconstruye al abrir la reserva (F3-03).
-        console.error('No se pudo guardar el enlace de WhatsApp de la reserva', {
+        logEvent({
+          channel: 'reservations',
+          level: 'error',
+          event: 'whatsapp_link_save_failed',
           reservationId: id,
         });
       }

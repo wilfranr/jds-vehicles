@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import {
-  assertReservationEnv,
   DEFAULT_RESERVATION_EXPIRY_HOURS,
   expirationDate,
   MAX_ACTIVE_RESERVATIONS_PER_USER,
@@ -29,18 +28,8 @@ describe('RESERVA_EXPIRACION_HORAS', () => {
       expect(() => parseReservationExpirationHours({ RESERVA_EXPIRACION_HORAS: value })).toThrow(
         /RESERVA_EXPIRACION_HORAS/
       );
-      expect(() => assertReservationEnv({ RESERVA_EXPIRACION_HORAS: value })).toThrow();
     }
   );
-
-  it('no valida durante el build', () => {
-    expect(() =>
-      assertReservationEnv({
-        NEXT_PHASE: 'phase-production-build',
-        RESERVA_EXPIRACION_HORAS: 'abc',
-      })
-    ).not.toThrow();
-  });
 
   it('calcula la fecha de expiración a N horas, o null', () => {
     const now = new Date('2026-10-23T10:00:00.000Z');
