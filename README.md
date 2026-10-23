@@ -160,6 +160,17 @@ Debe ejecutarse desde el directorio del proyecto (lee `DATABASE_URL` de `.env`) 
 
 No existe una ruta HTTP para esto. Como el script corre en un proceso aparte, **no puede invalidar la caché de Next** (`updateTag`/`revalidateTag` solo funcionan dentro del servidor). Comprobado: el listado `/catalogo` y la ficha del vehículo leen la BD en cada visita y reflejan la expiración de inmediato; solo las consultas cacheadas (portada y filtros del catálogo, ~60 s; vehículos similares, perfil por defecto de 15 min) se ponen al día cuando vence su caché.
 
+## Fotos de Vehículos
+
+Las fotos se suben desde `/admin/vehiculos/[id]` y se guardan en el **disco del servidor** (decisión del demo; revisar antes de producción), no en un servicio externo. El esquema `vehiculo_fotos` guarda una URL, así que cambiar a otro almacenamiento solo toca `src/server/media/`. Las fotos del seed son URLs externas y siguen funcionando.
+
+- **`UPLOADS_DIR`** (opcional): carpeta de subidas; por defecto `./uploads` (ignorada por git y **fuera de `public/`**). Debe existir con permisos de lectura y escritura **solo** para el usuario que ejecuta la app (por ejemplo `chmod 750`); los archivos se escriben con modo `640`. **Debe incluirse en las copias de seguridad** (Fase 6), junto con la base de datos: las filas apuntan a `/media/<uuid>.webp`.
+- **Subida segura** (`POST /admin/vehiculos/[id]/fotos`, ruta y no Server Action porque estas limitan el cuerpo a 1 MB): solo personal con sesión y rol confirmados en la BD; origen comprobado; solo JPEG, PNG y WebP **verificados por la firma de bytes** (no por extensión ni `Content-Type`); máximo 5 MB por archivo, 10 por envío y 20 por vehículo; todo o nada. Cada imagen se **recodifica con `sharp` a WebP** (se eliminan EXIF y cualquier carga embebida; se aplica la orientación), con lado mayor de 1600 px y miniatura de 480 px. Los nombres son `crypto.randomUUID()` (`<uuid>.webp` y `<uuid>_t.webp`), nunca derivados del original.
+- **Servicio** `GET /media/<uuid>.webp`: solo lectura; el nombre debe cumplir el patrón estricto y resolverse dentro de `UPLOADS_DIR` (`../`, `%2F`, mayúsculas, extensiones distintas o varios segmentos → 404); `Content-Type` fijo `image/webp`, `nosniff`, `Content-Security-Policy: default-src 'none'; sandbox` y caché larga `immutable` (los nombres no cambian).
+- **Galería del panel:** subir, marcar la **principal** (siempre exactamente una; al eliminarla se promueve la siguiente), subir/bajar de posición y eliminar (borra la fila y los dos archivos). Cada cambio invalida la caché del catálogo.
+- **Despliegue:** `sharp` va fijado a una versión exacta (usa binarios precompilados por plataforma: `pnpm install` en el servidor Oracle debe descargar el de su arquitectura). Detrás de un proxy inverso, permitir cuerpos de hasta ~55 MB en `/admin/vehiculos/*/fotos` (p. ej. `client_max_body_size 55m` en nginx).
+- **Pruebas e2e:** el servidor de e2e usa `.e2e-uploads` como `UPLOADS_DIR`; las pruebas borran sus archivos y `e2e/global-setup.ts` falla si queda alguno.
+
 ## Rutas de Autenticación y Cuenta
 
 | Ruta                   | Descripción                                                                                                        |

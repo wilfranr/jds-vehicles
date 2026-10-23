@@ -48,7 +48,10 @@ export function buildVehicleJsonLd(vehicle: VehicleDetailData, baseUrl: string) 
           },
         }
       : {}),
-    ...(vehicle.fotos.length > 0 ? { image: vehicle.fotos.map((f) => f.url) } : {}),
+    // Las fotos subidas desde el panel son rutas relativas (`/media/…`): el JSON-LD necesita URLs absolutas.
+    ...(vehicle.fotos.length > 0
+      ? { image: vehicle.fotos.map((f) => (f.url.startsWith('/') ? `${baseUrl}${f.url}` : f.url)) }
+      : {}),
     ...(vehicle.descripcion ? { description: vehicle.descripcion } : {}),
     offers: {
       '@type': 'Offer',

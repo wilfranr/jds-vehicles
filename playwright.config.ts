@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { E2E_UPLOADS_DIR } from './e2e/test-data';
 
 const port = Number(process.env.E2E_PORT ?? 3100);
 const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${port}`;
@@ -24,7 +25,7 @@ export default defineConfig({
         reuseExistingServer: !process.env.CI,
         // Auth.js en modo producción exige confiar en el host; el header público lee la sesión.
         // TRUST_PROXY: cada prueba envía su propia IP en X-Forwarded-For y los limitadores no se pisan.
-        env: { AUTH_TRUST_HOST: 'true', TRUST_PROXY: 'true' },
+        env: { AUTH_TRUST_HOST: 'true', TRUST_PROXY: 'true', UPLOADS_DIR: E2E_UPLOADS_DIR },
         timeout: 60_000,
       },
 });

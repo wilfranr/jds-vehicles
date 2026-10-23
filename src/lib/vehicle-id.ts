@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 const MAX_UNSIGNED_INT = 4294967295;
 
 /**
@@ -15,4 +17,9 @@ export function parseVehicleId(rawId: string): number | null {
     return null;
   }
   return parsed;
+}
+
+/** Esquema Zod de un id entero positivo del rango UNSIGNED INT (para ids enlazados a una acción). */
+export function vehicleIdSchemaFor(message: string) {
+  return z.number(message).int(message).min(1, message).max(MAX_UNSIGNED_INT, message);
 }

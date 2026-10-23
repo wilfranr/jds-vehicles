@@ -6,6 +6,7 @@ import { type VehicleCardData } from '@/types/catalog';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { formatCOP } from '@/lib/format';
 import { Condicion, Disponibilidad } from '@prisma/client';
+import { isLocalMedia, thumbOf } from '@/lib/media-url';
 
 interface VehicleCardProps {
   vehicle: VehicleCardData;
@@ -37,7 +38,8 @@ export function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
       <div className="bg-surface-container relative aspect-[16/10] w-full overflow-hidden">
         {vehicle.fotoPrincipalUrl ? (
           <Image
-            src={vehicle.fotoPrincipalUrl}
+            src={thumbOf(vehicle.fotoPrincipalUrl)}
+            unoptimized={isLocalMedia(vehicle.fotoPrincipalUrl)}
             alt={`${vehicle.marcaNombre} ${vehicle.modeloNombre} ${vehicle.anio}`}
             fill
             priority={priority}
