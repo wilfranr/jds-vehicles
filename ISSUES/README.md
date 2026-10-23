@@ -123,6 +123,21 @@ Orden sugerido: F4-09 ∥ F4-01 → (F4-02 ∥ F4-03 ∥ F4-06 ∥ F4-07) → (F
 
 Orden sugerido: (F5-01 ∥ F5-02 ∥ F5-03 ∥ F5-04) → F5-05. Una rama por issue desde `main` actualizado, sin encadenar.
 
+### Fase 6: Despliegue en Oracle
+
+Datos del propietario: servidor propio en Oracle Cloud con Ubuntu/Debian y Docker; **acceso solo por IP** (sin dominio todavía); el orquestador ejecuta por SSH con autorización paso a paso. Una sola instancia de la aplicación.
+
+| ID                                        | Título                                      | Responsable          | Depende de   | Estado |
+| :---------------------------------------- | :------------------------------------------ | :------------------- | :----------- | :----- |
+| [F6-01](F6-01-reconocimiento-servidor.md) | Reconocimiento del servidor (solo lectura)  | Orquestador (SSH)    | —            | TODO   |
+| [F6-02](F6-02-imagen-produccion.md)       | Imagen de producción y Docker Compose       | Agente               | F5-03        | TODO   |
+| [F6-03](F6-03-proxy-https-red.md)         | Proxy inverso, HTTPS y red                  | Agente               | F5-01, F6-02 | TODO   |
+| [F6-04](F6-04-script-despliegue.md)       | Script de despliegue, versiones y reversión | Agente               | F6-02, F6-03 | TODO   |
+| [F6-05](F6-05-puesta-en-marcha.md)        | Puesta en marcha en el servidor             | Orquestador (SSH)    | F6-01, F6-04 | TODO   |
+| [F6-06](F6-06-verificacion-produccion.md) | Verificación en producción y runbook        | Orquestador + agente | F6-05        | TODO   |
+
+El agente desarrollador **no** recibe acceso al servidor: prepara scripts y los prueba en local con Docker.
+
 ### Reglas de contenido (vinculantes)
 
 - Todo texto editorial o comercial de la interfaz (títulos, subtítulos, cifras, tarjetas de beneficios, garantías, certificaciones, plazos) vive en `src/lib/site-content.ts`, nunca escrito directamente en páginas o componentes.
@@ -150,4 +165,4 @@ Orden sugerido: (F5-01 ∥ F5-02 ∥ F5-03 ∥ F5-04) → F5-05. Una rama por is
 
 ### Fases siguientes
 
-Fase 6 (despliegue en Oracle) se creará cuando se conozcan los datos del servidor (dominio, arquitectura, Docker) y la Fase 5 esté en `DONE`.
+La Fase 7 (mejoras opcionales: recuperación de contraseña por correo, notificaciones, limitador distribuido, dominio y HTTPS público) se definirá tras el lanzamiento.
