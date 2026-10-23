@@ -223,6 +223,25 @@ Variables de entorno obligatorias o recomendadas (ver `.env.example`):
 
 Notas de seguridad: la limitación de intentos es **en memoria** y solo es válida con un único proceso de Node; con varias instancias debe sustituirse por una implementación con la base de datos (ver `src/server/security/rate-limit.ts`). El proxy de Next (`src/proxy.ts`) es solo la primera barrera: las páginas y acciones privadas vuelven a comprobar sesión y rol, y las operaciones sensibles usan `getFreshUser()`.
 
+## Seguridad HTTP y Dependencias (F5-01)
+
+Las cabeceras se definen en `src/server/security/headers.ts` y se aplican desde `next.config.ts` a todas las rutas (con pruebas unitarias y `e2e/seguridad-http.spec.ts`):
+
+| Cabecera                                                                             | Para qué                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Content-Security-Policy`                                                            | Solo recursos propios; imágenes también de `images.unsplash.com` (fotos del seed); sin `eval`; `object-src 'none'`, `base-uri`/`form-action 'self'`, `frame-ancestors 'none'`. |
+| `Strict-Transport-Security` (1 año, `includeSubDomains`)                             | Solo en producción y si el proxy envía `X-Forwarded-Proto: https` (regla `has` de Next, sin pasar por el proxy de la app).                                                     |
+| `Cross-Origin-Opener-Policy` / `Cross-Origin-Resource-Policy`                        | `same-origin`.                                                                                                                                                                 |
+| `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` | Las básicas de siempre. `X-Powered-By` desactivada (`poweredByHeader: false`).                                                                                                 |
+
+**Por qué la CSP no usa nonce.** La guía de CSP de Next 16 es explícita: un nonce obliga a renderizar **cada petición** y es incompatible con el prerenderizado parcial, es decir, volvería dinámicas todas las páginas públicas. Se midió: con la política en cabecera estática el resumen de `pnpm build` es idéntico al anterior (mismas rutas `○`/`◐`/`ƒ`). El coste, medido en el HTML real, es que Next inserta scripts en línea en cada página (arranque de React y datos RSC), que ni `'self'` ni un hash fijo pueden cubrir, así que `script-src` lleva `'unsafe-inline'`. Lo que sigue bloqueado: scripts de otros orígenes, `eval`, `<style>` en línea (solo se permiten atributos `style`, que escribe `next/image`), conexiones a otros orígenes, formularios hacia otros sitios, enmarcado y objetos. Zod se configura con `jitless` (`src/lib/validation/zod-setup.ts`) para que no intente `Function("")`, que el navegador registraría como violación. En desarrollo la política es `Report-Only` (y admite `eval`/estilos en línea que exige React en `next dev`).
+
+**Ajustar la política.** Edite `buildCsp` (un origen nuevo se añade a la directiva que corresponda, nunca a `default-src`) y el test de `headers.test.ts` fallará si aparece `unsafe-eval`, un `unsafe-inline` fuera de `script-src`/`style-src-attr` o una directiva duplicada. Para endurecer `script-src` con nonce habría que aceptar que las páginas públicas pasen a ser dinámicas.
+
+**Dependencias.** El CI ejecuta `pnpm audit --prod --audit-level high` (falla con `high`/`critical`) y `gitleaks` (v8.24.2 fijada con suma SHA-256, historial completo, configuración en `.gitleaks.toml`). Una excepción puntual se justifica con un `overrides` en `pnpm-workspace.yaml` que indique el aviso (GHSA) y la condición para retirarlo —así está `deepmerge-ts` para Prisma 6— o, si no hay parche, con una nota en el PR y aquí. Dependabot (`.github/dependabot.yml`) propone cada semana actualizaciones de `npm` y `github-actions`, agrupando minor/patch. `pnpm-lock.yaml` se instala con `--frozen-lockfile`. Revisión manual de dependencias sin uso: se retiraron `@typescript-eslint/eslint-plugin` y `@typescript-eslint/parser` (ya llegan con `eslint-config-next`); el resto tiene uso directo.
+
+**Auth.js beta.** Fijada exactamente en `next-auth@5.0.0-beta.32` (sin `^`). Riesgo: es una versión beta sin garantías de estabilidad de API. Dependabot la ignora a propósito: se actualiza a mano, solo si (a) hay un aviso de seguridad que la afecte o (b) sale la versión estable 5.x, y siempre ejecutando `pnpm check`, `pnpm build` y `pnpm test:e2e`, que cubren login, sesión, roles y el proxy. `AUTH_SECRET` débil o ausente se rechaza al arrancar en producción (`instrumentation.ts`; reglas ampliadas en F5-03).
+
 ## Operación, Respaldos y Datos (F5-03)
 
 ### Validación de entorno
