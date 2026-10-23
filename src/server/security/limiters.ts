@@ -15,6 +15,9 @@ const passwordChange = createRateLimiter({ limit: 5, windowMs: 15 * MINUTE });
 /** Intentos de reserva por usuario: 10 por hora (válidos o no). */
 const reserve = createRateLimiter({ limit: 10, windowMs: 60 * MINUTE });
 
+/** Restablecimientos de contraseña hechos por un administrador: 10 por hora por administrador. */
+const adminPasswordReset = createRateLimiter({ limit: 10, windowMs: 60 * MINUTE });
+
 function pairKey(email: string, ip: string): string {
   return `${email.trim().toLowerCase()}|${ip}`;
 }
@@ -68,4 +71,13 @@ export function checkReserveAllowed(userId: number): RateLimitResult {
 /** Cada intento de reserva consume cupo del usuario. */
 export function recordReserveAttempt(userId: number): void {
   reserve.hit(String(userId));
+}
+
+export function checkAdminResetAllowed(actorId: number): RateLimitResult {
+  return adminPasswordReset.check(String(actorId));
+}
+
+/** Cada restablecimiento (permitido) consume cupo del administrador. */
+export function recordAdminReset(actorId: number): void {
+  adminPasswordReset.hit(String(actorId));
 }

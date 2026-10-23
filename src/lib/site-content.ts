@@ -216,6 +216,57 @@ export const siteContent = {
       newDescription: 'Continúa por WhatsApp con tu asesor. Tu código de reserva es:',
     },
   },
+  // Gestión de usuarios (/admin/usuarios, solo ADMIN)
+  adminUsers: {
+    title: 'Usuarios',
+    listLabel: 'Listado de usuarios',
+    empty: 'No hay usuarios que coincidan con la búsqueda.',
+    columns: {
+      user: 'Usuario',
+      document: 'Documento',
+      role: 'Rol',
+      status: 'Estado',
+      joined: 'Alta',
+      actions: 'Acciones',
+    },
+    filters: {
+      search: 'Buscar',
+      searchPlaceholder: 'Nombre o correo',
+      apply: 'Buscar',
+      clear: 'Limpiar',
+    },
+    roleLabels: { CLIENTE: 'Cliente', ASESOR: 'Asesor', ADMIN: 'Administrador' },
+    active: 'Activo',
+    inactive: 'Desactivado',
+    you: '(tú)',
+    previousPage: 'Anterior',
+    nextPage: 'Siguiente',
+    pageOf: 'Página {page} de {total}',
+    changeRole: 'Cambiar rol',
+    roleSelectLabel: 'Rol de',
+    deactivate: 'Desactivar',
+    activate: 'Activar',
+    resetPassword: 'Restablecer contraseña',
+    resetConfirm: 'Generar contraseña temporal',
+    resetIntro:
+      'Se generará una contraseña temporal y se mostrará una sola vez. La contraseña actual dejará de servir.',
+    working: 'Procesando…',
+    roleChanged: 'El rol se actualizó.',
+    deactivated: 'La cuenta se desactivó: ya no puede iniciar sesión ni usar acciones sensibles.',
+    activated: 'La cuenta se activó.',
+    activeReservationsWarning:
+      'Esta persona tiene reservas activas; no se cancelan automáticamente.',
+    activeReservationsLink: 'Ver sus reservas',
+    tempPasswordTitle: 'Contraseña temporal',
+    tempPasswordHelp:
+      'Cópiala ahora: no se volverá a mostrar ni queda guardada. Compártela con la persona por un canal seguro y pídele que la cambie en «Mi cuenta» al ingresar.',
+    errors: {
+      selfForbidden: 'No puedes aplicar este cambio a tu propia cuenta.',
+      lastAdmin: 'Debe quedar al menos un administrador activo.',
+      generic: 'No fue posible completar la acción. Inténtalo de nuevo.',
+      tooMany: 'Demasiados restablecimientos recientes. Inténtalo más tarde.',
+    },
+  },
   // Contenido de /registro
   registro: {
     title: 'Crear cuenta',
