@@ -110,6 +110,18 @@ Adicionalmente, se cuenta con hooks de Git configurados con **Husky** y **lint-s
 | `/robots.txt`     | Reglas para buscadores (excluye `/api` y `/_design`)        |
 | `/api/health`     | Comprobación de salud (no indexada)                         |
 
+## Expiración de Reservas
+
+`pnpm reservas:expirar` (`scripts/expire-reservations.ts`) marca como `EXPIRADA` las reservas `PENDIENTE_CONTACTO` cuya `fechaExpiracion` ya pasó y devuelve el vehículo a `DISPONIBLE` si sigue `RESERVADO` y no tiene otra reserva activa. No toca reservas `EN_NEGOCIACION`, `COMPLETADA` ni `CANCELADA`, ni las que no tienen fecha de expiración. Es idempotente. Imprime una línea JSON (`{"expiradas":n,"vehiculosLiberados":m}`) y sale con código 1 si falla. Con `RESERVA_EXPIRACION_HORAS=0` (expiración desactivada) no hace nada.
+
+Debe ejecutarse desde el directorio del proyecto (lee `DATABASE_URL` de `.env`) con un `cron` del servidor, por ejemplo cada 15 minutos (se configura en la Fase 6):
+
+```cron
+*/15 * * * * cd /ruta/al/proyecto && pnpm -s reservas:expirar >> /var/log/jds-reservas-expirar.log 2>&1
+```
+
+No existe una ruta HTTP para esto. Como el script corre en un proceso aparte, **no puede invalidar la caché de Next** (`updateTag`/`revalidateTag` solo funcionan dentro del servidor). Comprobado: el listado `/catalogo` y la ficha del vehículo leen la BD en cada visita y reflejan la expiración de inmediato; solo las consultas cacheadas (portada y filtros del catálogo, ~60 s; vehículos similares, perfil por defecto de 15 min) se ponen al día cuando vence su caché.
+
 ## Rutas de Autenticación y Cuenta
 
 | Ruta                   | Descripción                                                                                                        |
