@@ -8,7 +8,7 @@ import { getDealerConfig } from '@/server/config';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { VehicleCard } from '@/components/catalog/VehicleCard';
 import { VehicleGallery } from '@/components/catalog/VehicleGallery';
-import { ReserveCta } from '@/components/catalog/ReserveCta';
+import { ReserveCtaWithSession } from '@/components/catalog/ReserveCtaWithSession';
 import { SpecBadge } from '@/components/catalog/SpecBadge';
 import { formatCOP } from '@/lib/format';
 import { siteContent } from '@/lib/site-content';
@@ -212,7 +212,7 @@ export default async function VehicleDetailPage({ params }: VehicleDetailPagePro
 
             {/* Llamada a la Acción (ReserveCta) */}
             <div className="pt-2">
-              <ReserveCta
+              <ReserveCtaWithSession
                 vehicleId={vehicle.id}
                 marca={vehicle.marcaNombre}
                 modelo={vehicle.modeloNombre}

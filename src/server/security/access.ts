@@ -1,6 +1,6 @@
 import type { Rol } from '@/types/auth';
 
-export type AccessDecision = 'allow' | 'redirectLogin' | 'notFound';
+export type AccessDecision = 'allow' | 'redirectLogin' | 'redirectAuthenticated' | 'notFound';
 
 const ADMIN_ROLES: readonly Rol[] = ['ADMIN', 'ASESOR'];
 
@@ -12,9 +12,11 @@ function isUnder(pathname: string, base: string): boolean {
  * Regla de acceso por ruta (función pura, probada). `rol` es `null` sin sesión.
  * - `/mi-cuenta/**`: requiere sesión.
  * - `/admin/**`: sin sesión → login; con sesión solo ADMIN/ASESOR, el resto recibe 404 para no revelar la ruta.
+ * - `/login`: con sesión no tiene sentido; se redirige a `next` (o a `/`).
  * Cualquier otra ruta se permite aquí.
  */
 export function decideAccess(pathname: string, rol: Rol | null): AccessDecision {
+  if (pathname === '/login') return rol ? 'redirectAuthenticated' : 'allow';
   if (isUnder(pathname, '/mi-cuenta')) return rol ? 'allow' : 'redirectLogin';
   if (isUnder(pathname, '/admin')) {
     if (!rol) return 'redirectLogin';

@@ -21,6 +21,8 @@ export default defineConfig({
         command: `pnpm start -p ${port}`,
         url: baseURL,
         reuseExistingServer: !process.env.CI,
+        // Auth.js en modo producción exige confiar en el host; el header público lee la sesión.
+        env: { AUTH_TRUST_HOST: 'true' },
         timeout: 60_000,
       },
 });

@@ -1,5 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+
+// La página del detalle importa componentes que leen la sesión (Auth.js); no se necesita aquí.
+vi.mock('@/server/auth', () => ({ getCurrentUser: vi.fn() }));
+
 import { VehicleGallery } from './VehicleGallery';
 import { ReserveCta } from './ReserveCta';
 import { parseVehicleId } from '@/app/(public)/vehiculos/[id]/page';
@@ -89,8 +93,56 @@ describe('ReserveCta', () => {
       />
     );
 
-    expect(screen.getByText('Consultar disponibilidad por WhatsApp')).toBeInTheDocument();
+    // Sin sesión (valor por defecto): el botón principal lleva a iniciar sesión.
+    const login = screen.getByRole('link', { name: 'Inicia sesión para reservar' });
+    expect(login).toHaveAttribute('href', '/login?next=%2Fvehiculos%2F3');
+    expect(screen.queryByText('Consultar disponibilidad por WhatsApp')).not.toBeInTheDocument();
     expect(screen.getByText('Escribir por WhatsApp')).toBeInTheDocument();
+  });
+
+  it('con sesión mantiene la consulta por WhatsApp y no muestra un botón Reservar sin efecto', () => {
+    render(
+      <ReserveCta
+        vehicleId={3}
+        marca="BMW"
+        modelo="M3"
+        anio={2023}
+        disponibilidad={Disponibilidad.DISPONIBLE}
+        whatsappNumber="573202353168"
+        isAuthenticated
+      />
+    );
+
+    expect(screen.getByText('Consultar disponibilidad por WhatsApp')).toBeInTheDocument();
+    expect(screen.queryByText('Inicia sesión para reservar')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /reservar/i })).not.toBeInTheDocument();
+  });
+
+  it('no cambia los casos RESERVADO y PROXIMAMENTE con sesión', () => {
+    const { rerender } = render(
+      <ReserveCta
+        vehicleId={4}
+        marca="Mazda"
+        modelo="3"
+        anio={2022}
+        disponibilidad={Disponibilidad.RESERVADO}
+        whatsappNumber="573202353168"
+        isAuthenticated
+      />
+    );
+    expect(screen.getByText('Consultar alternativas por WhatsApp')).toBeInTheDocument();
+    rerender(
+      <ReserveCta
+        vehicleId={4}
+        marca="Mazda"
+        modelo="3"
+        anio={2022}
+        disponibilidad={Disponibilidad.PROXIMAMENTE}
+        whatsappNumber="573202353168"
+        isAuthenticated
+      />
+    );
+    expect(screen.getByText('Preguntar por este vehículo')).toBeInTheDocument();
   });
 });
 

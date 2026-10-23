@@ -10,9 +10,11 @@ import { buildWhatsAppUrl } from '@/lib/whatsapp';
 interface MobileMenuProps {
   whatsappNumber: string;
   instagramUrl: string;
+  /** Sección de cuenta (renderizada en el servidor, con la sesión aislada en Suspense). */
+  accountSlot?: React.ReactNode;
 }
 
-export function MobileMenu({ whatsappNumber, instagramUrl }: MobileMenuProps) {
+export function MobileMenu({ whatsappNumber, instagramUrl, accountSlot }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -113,6 +115,15 @@ export function MobileMenu({ whatsappNumber, instagramUrl }: MobileMenuProps) {
               </Link>
             ))}
           </nav>
+
+          {/* Cuenta: los enlaces y el botón de cerrar sesión cierran el menú */}
+          <div
+            onClick={(event) => {
+              if ((event.target as HTMLElement).closest('a, button[type="submit"]')) closeMenu();
+            }}
+          >
+            {accountSlot}
+          </div>
 
           {/* Contacto y redes en móvil */}
           <div className="border-outline-variant/30 mt-auto flex flex-col gap-4 border-t pt-6">

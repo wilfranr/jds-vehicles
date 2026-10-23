@@ -16,6 +16,8 @@ const SESSION_UPDATE_AGE_SECONDS = 24 * 60 * 60;
 const isProduction = process.env.NODE_ENV === 'production';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  // Pantallas propias: evita la página genérica de Auth.js (sin marca ni límites de intentos).
+  pages: { signIn: '/login', error: '/login' },
   // Detrás de un proxy inverso (servidor Oracle) se define AUTH_TRUST_HOST=true.
   trustHost: process.env.AUTH_TRUST_HOST === 'true' || !isProduction,
   session: {

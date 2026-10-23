@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { isRol, type Rol } from '@/types/auth';
+import { safeNextPath } from '@/lib/safe-redirect';
 import { buildLoginUrl } from '@/server/auth/next-path';
 import { decideAccess } from '@/server/security/access';
 import { getClientIp } from '@/server/security/client-ip';
@@ -30,6 +31,10 @@ export async function proxy(request: NextRequest) {
   switch (decideAccess(pathname, rol)) {
     case 'redirectLogin':
       return NextResponse.redirect(new URL(buildLoginUrl(`${pathname}${search}`), request.url));
+    case 'redirectAuthenticated':
+      return NextResponse.redirect(
+        new URL(safeNextPath(request.nextUrl.searchParams.get('next')), request.url)
+      );
     case 'notFound':
       logSecurityEvent({
         type: 'forbidden_access',
@@ -44,7 +49,7 @@ export async function proxy(request: NextRequest) {
   }
 }
 
-// Solo rutas privadas: no se ejecuta sobre `/_next/**`, imágenes, archivos públicos ni `/api/auth/**`.
+// Solo `/login` (redirige si ya hay sesión) y las rutas privadas: no se ejecuta sobre `/_next/**`, imágenes, archivos públicos ni `/api/auth/**`.
 export const config = {
-  matcher: ['/mi-cuenta/:path*', '/admin/:path*'],
+  matcher: ['/login', '/mi-cuenta/:path*', '/admin/:path*'],
 };

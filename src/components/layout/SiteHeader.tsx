@@ -6,13 +6,18 @@ import { siteContent } from '@/lib/site-content';
 import { WhatsAppIcon, InstagramIcon } from '@/components/ui/BrandIcons';
 import { buildWhatsAppUrl } from '@/lib/whatsapp';
 import { MobileMenu } from './MobileMenu';
+import { HeaderAccount, MobileHeaderAccount } from './HeaderAccount';
+import { AccountControls } from './AccountControls';
+import { MobileAccount } from './MobileAccount';
 
 interface SiteHeaderProps {
   whatsappNumber: string;
   instagramUrl: string;
+  /** Ver `SiteShell`: `false` evita el hueco dinámico de la sesión. */
+  readSession?: boolean;
 }
 
-export function SiteHeader({ whatsappNumber, instagramUrl }: SiteHeaderProps) {
+export function SiteHeader({ whatsappNumber, instagramUrl, readSession = true }: SiteHeaderProps) {
   const whatsappUrl = buildWhatsAppUrl(whatsappNumber, siteContent.defaultWhatsAppMessage);
 
   return (
@@ -100,10 +105,15 @@ export function SiteHeader({ whatsappNumber, instagramUrl }: SiteHeaderProps) {
             <InstagramIcon className="h-5 w-5 shrink-0" />
           </a>
 
-          {/* TODO(F2): Iniciar sesión con Auth.js cuando esté implementado */}
+          {/* Sesión: botones de acceso o menú de usuario (lee la sesión aislada en Suspense) */}
+          {readSession ? <HeaderAccount /> : <AccountControls user={null} />}
 
           {/* Menú móvil accesible */}
-          <MobileMenu whatsappNumber={whatsappNumber} instagramUrl={instagramUrl} />
+          <MobileMenu
+            whatsappNumber={whatsappNumber}
+            instagramUrl={instagramUrl}
+            accountSlot={readSession ? <MobileHeaderAccount /> : <MobileAccount user={null} />}
+          />
         </div>
       </div>
     </header>
