@@ -1,6 +1,6 @@
 # F2-03: Login, cierre de sesión y menú de usuario
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 2
 - **Depende de:** F2-01, F2-02, **F1-06 fusionado** (F1-06 también modifica `SiteHeader.tsx`; esperar a que esté en `main` para evitar conflictos)
 - **Prioridad:** Alta
