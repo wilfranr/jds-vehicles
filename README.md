@@ -91,7 +91,7 @@ El proyecto cuenta con herramientas estandarizadas de calidad de código y prueb
 - `pnpm typecheck`: Valida tipos en modo estricto (`tsc --noEmit`).
 - `pnpm test`: Corre las pruebas unitarias y de componentes con Vitest.
 - `pnpm test:watch`: Ejecuta las pruebas en modo observador.
-- `pnpm e2e`: Corre las pruebas de recorrido con Playwright (Chromium). Requiere BD sembrada y `pnpm build` previo; levanta `pnpm start` en el puerto 3100 (`E2E_PORT`) o usa un servidor existente con `E2E_BASE_URL`. La primera vez: `pnpm exec playwright install chromium`. El servidor de e2e arranca con `AUTH_TRUST_HOST=true` y `TRUST_PROXY=true`: cada prueba de `e2e/auth.spec.ts` envía su propia IP en `X-Forwarded-For`, así los limitadores no se pisan entre pruebas ni entre ejecuciones (si usas `E2E_BASE_URL`, el servidor debe tener `TRUST_PROXY=true`). Las pruebas borran los usuarios que crean y `e2e/global-setup.ts` falla si el número de `usuarios` cambia. Los e2e son obligatorios en CI.
+- `pnpm test:e2e` (alias de `pnpm e2e`): Corre las pruebas de recorrido con Playwright (Chromium). Requiere BD sembrada y `pnpm build` previo; levanta `pnpm start` en el puerto 3100 (`E2E_PORT`) o usa un servidor existente con `E2E_BASE_URL`. La primera vez: `pnpm exec playwright install chromium`. El servidor de e2e arranca con `AUTH_TRUST_HOST=true` y `TRUST_PROXY=true`: cada prueba de `e2e/auth.spec.ts` envía su propia IP en `X-Forwarded-For`, así los limitadores no se pisan entre pruebas ni entre ejecuciones (si usas `E2E_BASE_URL`, el servidor debe tener `TRUST_PROXY=true`). Las pruebas borran los usuarios que crean y `e2e/global-setup.ts` falla si el número de `usuarios` cambia. Los e2e son obligatorios en CI.
 - `pnpm check`: Ejecuta toda la suite de calidad en secuencia (`format:check`, `lint`, `typecheck` y `test`).
 
 Adicionalmente, se cuenta con hooks de Git configurados con **Husky** y **lint-staged** que formatean automáticamente los archivos preparados para commit y bloquean commits si existen errores de ESLint.
@@ -109,6 +109,16 @@ Adicionalmente, se cuenta con hooks de Git configurados con **Husky** y **lint-s
 | `/sitemap.xml`    | Sitemap (páginas públicas y vehículos visibles no vendidos) |
 | `/robots.txt`     | Reglas para buscadores (excluye `/api` y `/_design`)        |
 | `/api/health`     | Comprobación de salud (no indexada)                         |
+
+## Reservas
+
+Flujo: en la ficha de un vehículo `DISPONIBLE`, un usuario con sesión pulsa «Reservar este vehículo» (sin sesión, el botón lleva a `/login?next=…` y vuelve a la ficha; la reserva siempre exige un clic). La acción crea la reserva en una transacción (solo una persona gana si dos reservan a la vez), deja el vehículo `RESERVADO` y lleva a `/mi-cuenta/reservas/<codigo>?nueva=1`, donde se muestra el código `RES-AAAA-XXXX` y el botón de WhatsApp con un mensaje que lleva código, vehículo y nombre (nunca placa ni documento). Las reservas del usuario están en `/mi-cuenta/reservas`. El cliente no cancela: esa acción es del personal (Fase 4).
+
+- **Límites:** máximo 2 reservas activas por usuario (`PENDIENTE_CONTACTO` o `EN_NEGOCIACION`) y 10 intentos de reserva por hora por usuario.
+- **Variable `RESERVA_EXPIRACION_HORAS`** (opcional): horas de vigencia; sin ella, 48; `0` desactiva la expiración. Un valor inválido impide arrancar el servidor.
+- **Expiración:** `pnpm reservas:expirar` por `cron` (ver la sección siguiente).
+- **Caché:** al reservar, la acción invalida la caché del catálogo con `updateTag` (el catálogo y la ficha lo muestran `RESERVADO` al instante). El script de expiración corre fuera del servidor y no puede invalidar la caché de Next: el listado y la ficha leen la BD en cada visita, y solo portada, filtros y vehículos similares tardan hasta que vence su caché (~60 s).
+- **Pruebas:** `e2e/reservas.spec.ts` crea sus propios vehículos y usuarios temporales (dominio `@e2e-test.local`, color `E2E-RESERVAS-…`), no toca los vehículos del seed y los borra aunque falle; `e2e/global-setup.ts` barre restos de ejecuciones interrumpidas y falla si cambian los conteos de usuarios, vehículos o reservas.
 
 ## Expiración de Reservas
 
