@@ -28,8 +28,13 @@ test.describe('Recorrido del catálogo público', () => {
     await expect(cta.first()).toHaveAttribute('href', /^https:\/\/wa\.me\/\d+\?text=/);
 
     // Galería: imagen principal y apertura a pantalla completa
-    await page.getByRole('button', { name: 'Ver fotografía en pantalla completa' }).click();
-    await expect(page.getByRole('dialog', { name: /Galería a pantalla completa/ })).toBeVisible();
+    // Se reintenta el clic: bajo carga puede llegar antes de la hidratación y no abrir el diálogo.
+    await expect(async () => {
+      await page.getByRole('button', { name: 'Ver fotografía en pantalla completa' }).click();
+      await expect(page.getByRole('dialog', { name: /Galería a pantalla completa/ })).toBeVisible({
+        timeout: 1500,
+      });
+    }).toPass({ timeout: 10_000 });
     await page.getByRole('button', { name: 'Cerrar vista de pantalla completa' }).click();
     await expect(page.getByRole('dialog')).toBeHidden();
   });

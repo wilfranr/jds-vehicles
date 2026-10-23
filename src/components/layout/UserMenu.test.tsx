@@ -8,7 +8,8 @@ vi.mock('@/server/auth/logout-action', () => ({ logoutAction: vi.fn() }));
 
 import { AccountControls } from './AccountControls';
 import { MobileAccount } from './MobileAccount';
-import { UserMenu, displayFirstName, accountLinks } from './UserMenu';
+import { UserMenu } from './UserMenu';
+import { displayFirstName, accountLinks } from './account-links';
 
 const client: AuthUser = {
   id: 2,
