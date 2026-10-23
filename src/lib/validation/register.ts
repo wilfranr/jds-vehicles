@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import './zod-setup';
 
 export const TIPOS_DOCUMENTO = ['CC', 'CE', 'NIT', 'PASAPORTE'] as const;
 

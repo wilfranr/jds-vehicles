@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import './zod-setup';
 import { createPasswordRule, type RegisterMessages } from './register';
 
 export interface ChangePasswordMessages {

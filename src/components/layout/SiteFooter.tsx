@@ -4,15 +4,23 @@ import Image from 'next/image';
 import { siteContent } from '@/lib/site-content';
 import { WhatsAppIcon, InstagramIcon } from '@/components/ui/BrandIcons';
 import { buildWhatsAppUrl } from '@/lib/whatsapp';
+import { getLegalLinks, type LegalLink } from '@/lib/legal';
 
 interface SiteFooterProps {
   whatsappNumber: string;
   instagramUrl: string;
+  /** Enlaces legales publicados; por defecto, los del contenido aportado por el propietario. */
+  legalLinks?: LegalLink[];
 }
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-export function SiteFooter({ whatsappNumber, instagramUrl }: SiteFooterProps) {
+export function SiteFooter({
+  whatsappNumber,
+  instagramUrl,
+  legalLinks = getLegalLinks(),
+}: SiteFooterProps) {
+  const footerLinks = [...siteContent.footerLinks, ...legalLinks];
   const whatsappUrl = buildWhatsAppUrl(whatsappNumber, siteContent.defaultWhatsAppMessage);
 
   return (
@@ -93,11 +101,13 @@ export function SiteFooter({ whatsappNumber, instagramUrl }: SiteFooterProps) {
           </div>
 
           {/* 4. Legal y Garantías (solo si hay enlaces definidos) */}
-          {siteContent.footerLinks.length > 0 && (
+          {footerLinks.length > 0 && (
             <div className="gap-space-xs flex flex-col">
-              <span className="font-label-lg text-label-lg text-on-surface">Legal y Garantías</span>
+              <span className="font-label-lg text-label-lg text-on-surface">
+                {siteContent.legal.footerHeading}
+              </span>
               <ul className="gap-space-xs m-0 flex list-none flex-col p-0">
-                {siteContent.footerLinks.map((link) => (
+                {footerLinks.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}

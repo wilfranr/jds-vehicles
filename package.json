@@ -24,9 +24,14 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:generate": "prisma generate",
+    "db:verificar": "prisma migrate diff --from-schema-datasource prisma/schema.prisma --to-schema-datamodel prisma/schema.prisma --exit-code",
+    "db:migrar": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset --force",
     "reservas:expirar": "tsx scripts/expire-reservations.ts",
+    "admin:crear": "tsx scripts/create-admin.ts",
+    "backup": "bash scripts/backup.sh",
+    "backup:verificar": "bash scripts/verify-backup-cycle.sh",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -62,8 +67,6 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript-eslint/eslint-plugin": "^8.72.0",
-    "@typescript-eslint/parser": "^8.72.0",
     "@vitejs/plugin-react": "^6.1.2",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",

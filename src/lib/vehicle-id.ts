@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import './validation/zod-setup';
 
 const MAX_UNSIGNED_INT = 4294967295;
 
