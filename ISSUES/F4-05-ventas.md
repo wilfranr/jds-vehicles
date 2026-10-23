@@ -1,6 +1,6 @@
 # F4-05: Registro de ventas y cierre de reservas
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 4
 - **Depende de:** F4-02
 - **Prioridad:** Alta

@@ -1,6 +1,6 @@
 # F4-04: Fotos de vehículos (subida y galería)
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 4
 - **Depende de:** F4-03
 - **Prioridad:** Alta
