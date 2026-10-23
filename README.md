@@ -116,7 +116,7 @@ Variables de entorno obligatorias o recomendadas (ver `.env.example`):
 - `AUTH_TRUST_HOST=true`: obligatoria detrás del proxy inverso; sin ella Auth.js responde 500 `UntrustedHost`.
 - `TRUST_PROXY=true` y `TRUST_PROXY_HOPS=<n>`: para que la limitación de intentos use la IP real del cliente (`X-Forwarded-For`). El proxy debe **añadir** la IP del cliente a esa cabecera, no confiar en la que envíe el cliente.
   **Obligatorio en producción:** sin `TRUST_PROXY=true` todos los visitantes comparten el cupo `unknown`, y como el registro admite 5 envíos por hora y por IP, bastarían 5 envíos para bloquear el registro a todo el mundo (y 20 fallos de login para bloquear el inicio de sesión).
-- `RESERVA_EXPIRACION_HORAS` (opcional): horas de vigencia de una reserva, entero positivo. Si no se define, las reservas no expiran; no hay plazo por defecto (decisión del propietario). Un valor inválido hace que el servidor se niegue a arrancar.
+- `RESERVA_EXPIRACION_HORAS` (opcional): horas de vigencia de una reserva, entero positivo. Sin ella, 48 horas (decisión del demo, `TODO(owner)`: confirmar antes de producción); `0` desactiva la expiración. Un valor inválido hace que el servidor se niegue a arrancar.
 - `NEXT_PUBLIC_SITE_URL`, `DATABASE_URL`.
 
 Notas de seguridad: la limitación de intentos es **en memoria** y solo es válida con un único proceso de Node; con varias instancias debe sustituirse por una implementación con la base de datos (ver `src/server/security/rate-limit.ts`). El proxy de Next (`src/proxy.ts`) es solo la primera barrera: las páginas y acciones privadas vuelven a comprobar sesión y rol, y las operaciones sensibles usan `getFreshUser()`.

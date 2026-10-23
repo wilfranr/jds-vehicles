@@ -6,18 +6,25 @@
 export const MAX_ACTIVE_RESERVATIONS_PER_USER = 2;
 
 /**
- * Horas de vigencia de una reserva, desde `RESERVA_EXPIRACION_HORAS` (entero positivo).
- * Sin la variable no hay expiración (`null`): el plazo lo decide el propietario y no se inventa uno por defecto.
- * Lanza un error claro si el valor no es un entero positivo.
+ * Horas de vigencia por defecto de una reserva (decisión del propietario para el demo).
+ * TODO(owner): confirmar antes de producción.
+ */
+export const DEFAULT_RESERVATION_EXPIRY_HOURS = 48;
+
+/**
+ * Horas de vigencia de una reserva. `RESERVA_EXPIRACION_HORAS` (entero positivo) tiene prioridad; sin ella se
+ * usa `DEFAULT_RESERVATION_EXPIRY_HOURS`; el valor `0` desactiva la expiración (`null`).
+ * Lanza un error claro si el valor no es un entero no negativo.
  */
 export function parseReservationExpirationHours(
   env: Record<string, string | undefined> = process.env
 ): number | null {
   const raw = env.RESERVA_EXPIRACION_HORAS?.trim();
-  if (!raw) return null;
+  if (!raw) return DEFAULT_RESERVATION_EXPIRY_HOURS;
+  if (raw === '0') return null;
   if (!/^[1-9]\d{0,5}$/.test(raw)) {
     throw new Error(
-      `RESERVA_EXPIRACION_HORAS debe ser un entero positivo de horas (por ejemplo 24); se recibió "${raw}". Déjala vacía para que las reservas no expiren.`
+      `RESERVA_EXPIRACION_HORAS debe ser un entero de horas (por ejemplo 24), o 0 para que no expiren; se recibió "${raw}". Déjala vacía para usar ${DEFAULT_RESERVATION_EXPIRY_HOURS} horas.`
     );
   }
   return Number(raw);

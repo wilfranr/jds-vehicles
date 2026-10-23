@@ -1,15 +1,21 @@
 import { describe, it, expect } from 'vitest';
 import {
   assertReservationEnv,
+  DEFAULT_RESERVATION_EXPIRY_HOURS,
   expirationDate,
   MAX_ACTIVE_RESERVATIONS_PER_USER,
   parseReservationExpirationHours,
 } from './config';
 
 describe('RESERVA_EXPIRACION_HORAS', () => {
-  it('sin la variable no hay expiración (sin plazo por defecto)', () => {
-    expect(parseReservationExpirationHours({})).toBeNull();
-    expect(parseReservationExpirationHours({ RESERVA_EXPIRACION_HORAS: '  ' })).toBeNull();
+  it('sin la variable usa el valor por defecto de 48 horas', () => {
+    expect(DEFAULT_RESERVATION_EXPIRY_HOURS).toBe(48);
+    expect(parseReservationExpirationHours({})).toBe(48);
+    expect(parseReservationExpirationHours({ RESERVA_EXPIRACION_HORAS: '  ' })).toBe(48);
+  });
+
+  it('el valor 0 desactiva la expiración', () => {
+    expect(parseReservationExpirationHours({ RESERVA_EXPIRACION_HORAS: '0' })).toBeNull();
   });
 
   it('acepta enteros positivos', () => {
@@ -17,7 +23,7 @@ describe('RESERVA_EXPIRACION_HORAS', () => {
     expect(parseReservationExpirationHours({ RESERVA_EXPIRACION_HORAS: ' 48 ' })).toBe(48);
   });
 
-  it.each(['0', '-5', '1.5', '1e3', 'abc', '24h', '0024', '9999999'])(
+  it.each(['-5', '1.5', '1e3', 'abc', '24h', '0024', '9999999'])(
     'rechaza %s con un mensaje claro',
     (value) => {
       expect(() => parseReservationExpirationHours({ RESERVA_EXPIRACION_HORAS: value })).toThrow(
