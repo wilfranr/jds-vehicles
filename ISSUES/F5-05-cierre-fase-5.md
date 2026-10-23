@@ -1,6 +1,6 @@
 # F5-05: Revisión final de seguridad, cobertura y cierre de la Fase 5
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 5
 - **Depende de:** F5-01, F5-02, F5-03, F5-04
 - **Prioridad:** Alta
