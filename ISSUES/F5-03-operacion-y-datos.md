@@ -1,6 +1,6 @@
 # F5-03: Operación, respaldos y arranque del primer administrador
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 5
 - **Depende de:** F4-08 (DONE)
 - **Prioridad:** Alta (lo necesita la Fase 6)
