@@ -111,6 +111,18 @@ Orden sugerido: F3-01 → (F3-02 ∥ F3-03 ∥ F3-04) → F3-05. F3-02 enlaza a 
 
 Orden sugerido: F4-09 ∥ F4-01 → (F4-02 ∥ F4-03 ∥ F4-06 ∥ F4-07) → (F4-04, F4-05) → F4-08. **Cada rama sale de `main` actualizado; no encadenar ramas** (en la Fase 3 provocó conflictos entre PRs).
 
+### Fase 5: Calidad y endurecimiento
+
+| ID                                            | Título                                                | Depende de                 | Estado |
+| :-------------------------------------------- | :---------------------------------------------------- | :------------------------- | :----- |
+| [F5-01](F5-01-seguridad-http-dependencias.md) | Seguridad HTTP (CSP) y de dependencias                | F4-08                      | TODO   |
+| [F5-02](F5-02-accesibilidad-rendimiento.md)   | Accesibilidad y rendimiento                           | F4-08                      | TODO   |
+| [F5-03](F5-03-operacion-y-datos.md)           | Operación, respaldos y primer administrador           | F4-08                      | TODO   |
+| [F5-04](F5-04-legal-y-pendientes.md)          | Páginas legales y lista de pendientes del propietario | F4-08                      | TODO   |
+| [F5-05](F5-05-cierre-fase-5.md)               | Revisión final de seguridad, cobertura y cierre       | F5-01, F5-02, F5-03, F5-04 | TODO   |
+
+Orden sugerido: (F5-01 ∥ F5-02 ∥ F5-03 ∥ F5-04) → F5-05. Una rama por issue desde `main` actualizado, sin encadenar.
+
 ### Reglas de contenido (vinculantes)
 
 - Todo texto editorial o comercial de la interfaz (títulos, subtítulos, cifras, tarjetas de beneficios, garantías, certificaciones, plazos) vive en `src/lib/site-content.ts`, nunca escrito directamente en páginas o componentes.
@@ -138,4 +150,4 @@ Orden sugerido: F4-09 ∥ F4-01 → (F4-02 ∥ F4-03 ∥ F4-06 ∥ F4-07) → (F
 
 ### Fases siguientes
 
-Fase 5 (calidad y endurecimiento) y Fase 6 (despliegue en Oracle) se crearán cuando la Fase 4 esté en `DONE`.
+Fase 6 (despliegue en Oracle) se creará cuando se conozcan los datos del servidor (dominio, arquitectura, Docker) y la Fase 5 esté en `DONE`.
