@@ -14,7 +14,8 @@ test.describe('Recorrido del catálogo público', () => {
     await filters.getByRole('button', { name: 'Aplicar Filtros' }).click();
     await expect(page).toHaveURL(/condicion=NUEVO/);
 
-    const detailLinks = page.locator('a[href^="/vehiculos/"]');
+    // Solo tarjetas con foto: otras pruebas crean vehículos temporales sin fotos, y la galería necesita una.
+    const detailLinks = page.locator('article:has(img) a[href^="/vehiculos/"]');
     await expect(detailLinks.first()).toBeVisible();
     await detailLinks.first().click();
 

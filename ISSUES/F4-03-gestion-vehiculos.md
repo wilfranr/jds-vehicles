@@ -59,3 +59,5 @@ Rama desde `main` actualizado (sin encadenar).
 5. Las fotos son F4-04: el formulario no las incluye.
 
 **Cómo verificar**: `pnpm db:seed && pnpm check && pnpm build && pnpm test:e2e`; en `/admin/vehiculos` (con un ASESOR o ADMIN) crear un USADO y buscarlo en `/catalogo?color=<color>`.
+
+**Ajuste de la prueba de catálogo:** en una ejecución de `pnpm test:e2e` falló `catalog.spec.ts` (galería): los vehículos temporales sin fotos que crea `admin-vehiculos.spec.ts` (los más recientes, por tanto primeros del catálogo) podían ser el elegido. `catalog.spec.ts` ahora solo elige tarjetas con foto (`article:has(img)`). Resultado: `pnpm test:e2e` 38/38 en 5 ejecuciones seguidas.
