@@ -319,6 +319,47 @@ Copie los respaldos fuera del servidor; un respaldo en el mismo disco no protege
 
 En producción solo `pnpm db:migrar` (`prisma migrate deploy`); nunca `migrate dev` ni `db push`. `pnpm db:verificar` falla si `schema.prisma` y las migraciones divergen (corre en CI). `scripts/explain-volumen.sh` carga un volumen sintético en una BD temporal y ejecuta `scripts/sql/explain-queries.sql` para revisar planes con `EXPLAIN`.
 
+## Seguridad (resumen y reglas del proyecto)
+
+Detalle por tema: «Panel» (roles y barreras), «Seguridad HTTP y Dependencias» (cabeceras, CSP, audit, gitleaks), «Páginas Legales» (cookies) y «Operación» (más abajo).
+
+**Pruebas que protegen las reglas** (fallan si alguien añade una ruta o acción sin cuidado):
+
+- `src/server/security/route-audit.test.ts`: toda `page.tsx`/`route.ts` de `(admin)` y `(account)` y **toda Server Action** (`'use server'`, función a función) debe llamar a su guardia: `requireStaff`/`requireAdmin` en el panel; `requireUser` o `getFreshUser` en la cuenta; las acciones públicas por diseño (login, registro, cierre de sesión) están en una lista blanca con su justificación, y una entrada obsoleta también falla. Quitar `requireStaff()` de cualquier página o acción del panel rompe el test. Un `authorize()` local sirve solo si la acción lo llama.
+- Mismo archivo: nada de `Object.fromEntries(formData)`, `data: formData|body|payload` ni `...body` hacia Prisma: las acciones leen **campos explícitos** validados con Zod.
+- **Mapa de rutas `docs/RUTAS.md`** (generado con `pnpm rutas`): lista cada página, ruta HTTP y Server Action con su acceso. El test falla si el archivo y el código divergen; al añadir una ruta se regenera y se revisa la columna «Acceso».
+- Cobertura: `pnpm test:coverage` (v8, `src/server` y `src/lib`) con umbrales en `vitest.config.mts` (sentencias 95, ramas 89, funciones 96, líneas 96) que **no se bajan**; el CI publica la tabla en el resumen del job y el informe HTML como artefacto `coverage`.
+
+**Limitadores de intentos** (`src/server/security/limiters.ts`, probados en `limiters.test.ts`):
+
+| Acción                                    | Política                                                        |
+| ----------------------------------------- | --------------------------------------------------------------- |
+| Inicio de sesión                          | 5 fallos por correo+IP y 20 por IP, en 15 min                   |
+| Registro                                  | 5 intentos por IP y hora                                        |
+| Cambio de contraseña                      | 5 fallos de la clave actual por usuario en 15 min               |
+| Reservas                                  | 10 intentos por usuario y hora                                  |
+| Restablecer clave de otra persona (ADMIN) | 10 por administrador y hora                                     |
+| Subida de fotos (panel)                   | 30 envíos por persona y hora (cada envío admite hasta 10 fotos) |
+
+**Instancia única (decisión).** Los limitadores viven **en memoria del proceso** y el proxy no comparte estado: son válidos solo con **una sola instancia** de Node. La Fase 6 despliega **una instancia**. Con varias habría que moverlos a la base de datos o a un almacén compartido (limitador distribuido, Fase 7); hasta entonces, no escalar horizontalmente. Un reinicio vacía los contadores.
+
+**Riesgos residuales a revisar antes de producción**
+
+- **CSP con `'unsafe-inline'` en `script-src`** (decisión aceptada en F5-01): una CSP estricta con nonce volvería dinámicas todas las páginas públicas. Un XSS que inyectara un script en línea no lo bloquearía la CSP; siguen cerradas las cargas de scripts externos, `eval`, `<style>` en línea, formularios y conexiones a otros orígenes y el enmarcado. Mitigaciones: React escapa todo el texto, no se usa `dangerouslySetInnerHTML` con datos de usuarios y cada campo se valida. Revisar si el volumen de datos de usuario en páginas públicas crece.
+- **HSTS y modo IP:** la aplicación envía `Strict-Transport-Security` cuando el proxy indica `X-Forwarded-Proto: https`. Con IP y certificado autofirmado **debe estar desactivado** (un navegador que lo recuerde no podría entrar si cambia el certificado): lo neutraliza el proxy en F6-03 (quitar la cabecera o hacer `HSTS=on|off`).
+- **JWT de 7 días no revocable:** el proxy decide por rol del token; páginas y acciones confirman rol y cuenta activa en la BD en cada petición.
+- **Auth.js `5.0.0-beta.32`** fijada exacta (ver «Seguridad HTTP y Dependencias»).
+- **Limitadores en memoria** (arriba).
+
+## Operación (resumen)
+
+- **Una sola instancia** de la aplicación (ver «Seguridad»). Salud: `/api/health` y `/api/health/live`. Registro: líneas JSON en stdout (`LOG_LEVEL`).
+- **Antes de desplegar**: `pnpm check`, `pnpm build`, `pnpm test:e2e`, `pnpm test:coverage`, `pnpm audit --prod` y, si cambió una ruta, `pnpm rutas`. En producción solo `prisma migrate deploy` (`pnpm db:migrar`); `pnpm db:verificar` confirma que el esquema y las migraciones coinciden.
+- **Primer administrador**: `pnpm admin:crear` (sin usuarios demo en producción).
+- **Datos**: respaldo diario de la BD y de `UPLOADS_DIR` (`scripts/backup.sh`, retención `BACKUP_RETENTION`), restauración con `scripts/restore.sh`, ciclo comprobable con `pnpm backup:verificar`. Copiar los respaldos fuera del servidor.
+- **Decisiones del propietario** pendientes: `ISSUES/PENDIENTES-PROPIETARIO.md` y la matriz de `ISSUES/README.md`.
+- Detalle en «Operación, Respaldos y Datos (F5-03)» y «Checklist de Despliegue».
+
 ## Gestión del Proyecto
 
 El desarrollo se gestiona a través del backlog de tareas ubicado en la carpeta [ISSUES/](ISSUES/README.md). Consulta dicho archivo para conocer el flujo de trabajo, convenciones y el estado de cada fase.

@@ -16,6 +16,21 @@ export default defineConfig({
   resolve: { alias },
   test: {
     globals: true,
+    coverage: {
+      provider: 'v8',
+      include: ['src/server/**/*.{ts,tsx}', 'src/lib/**/*.{ts,tsx}'],
+      exclude: [
+        '**/*.test.{ts,tsx}',
+        '**/*.d.ts',
+        'src/lib/site-content.ts',
+        'src/lib/legal-content.ts',
+      ],
+      reporter: ['text-summary', 'json-summary', 'html'],
+      reportsDirectory: 'coverage',
+      // Umbrales = nivel de F5-05 redondeado hacia abajo. NO se bajan nunca: si una prueba se borra o un módulo nuevo
+      // llega sin pruebas y el total cae por debajo, el CI falla (se sube el umbral cuando la cobertura suba).
+      thresholds: { statements: 95, branches: 89, functions: 96, lines: 96 },
+    },
     setupFiles: ['./vitest.setup.ts'],
     projects: [
       {

@@ -89,7 +89,7 @@ describe('resetPasswordAction', () => {
     const blocked = await resetPasswordAction(7, {}, form());
     expect(blocked).toEqual({ error: copy.errors.tooMany });
     expect(setUserPasswordHash).toHaveBeenCalledTimes(10);
-  });
+  }, 30_000); // 10 hashes bcrypt de coste 12: con cobertura o CPU ocupada superan los 5 s por defecto
 
   it('no permite restablecer la propia contraseña y no revela datos de otros', async () => {
     setUserPasswordHash.mockResolvedValue({ status: 'self_forbidden' });

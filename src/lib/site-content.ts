@@ -603,6 +603,8 @@ export const siteContent = {
       corrupt: 'La fotografía {n} está dañada o es demasiado grande.',
       limit: 'Un vehículo admite hasta 20 fotografías.',
       requestTooLarge: 'El envío es demasiado grande (máximo 10 fotografías de 5 MB).',
+      rateLimited:
+        'Has hecho demasiados envíos de fotografías. Espera un rato e inténtalo de nuevo.',
       notFound: 'No se encontró el vehículo.',
       forbidden: 'No se pudo verificar el origen de la petición.',
       generic: 'No fue posible completar la acción. Inténtalo de nuevo.',
