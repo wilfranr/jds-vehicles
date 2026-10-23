@@ -72,6 +72,8 @@ _Nota: La estructura del código fuente (`src/`, `prisma/`, etc.) se creará en 
    pnpm db:seed
    ```
 
+   **Usuarios de prueba** (solo desarrollo y e2e; el seed usa `SEED_ADMIN_PASSWORD` / `SEED_CLIENT_PASSWORD`, por defecto `Admin123*` y `Cliente123*`): `admin@jdsvehiculos.com` (rol `ADMIN`) y `carlos.gomez@example.com` (rol `CLIENTE`). Tras probar cambios de perfil o contraseña, `pnpm db:seed` restaura sus datos.
+
    _Nota: En desarrollo, `pnpm db:seed` siembra datos de referencia (roles y configuración) más datos de demostración (usuarios, marcas, modelos y vehículos con fotos). En producción (`NODE_ENV=production`), solo siembra datos de referencia a menos que se invoque con la bandera `--demo` (`pnpm db:seed --demo`), en cuyo caso se exige definir `SEED_ADMIN_PASSWORD` y `SEED_CLIENT_PASSWORD` para evitar contraseñas por defecto._
 
 6. **Iniciar servidor de desarrollo:**
@@ -89,7 +91,7 @@ El proyecto cuenta con herramientas estandarizadas de calidad de código y prueb
 - `pnpm typecheck`: Valida tipos en modo estricto (`tsc --noEmit`).
 - `pnpm test`: Corre las pruebas unitarias y de componentes con Vitest.
 - `pnpm test:watch`: Ejecuta las pruebas en modo observador.
-- `pnpm e2e`: Corre las pruebas de recorrido con Playwright (Chromium). Requiere BD sembrada y `pnpm build` previo; levanta `pnpm start` en el puerto 3100 (`E2E_PORT`) o usa un servidor existente con `E2E_BASE_URL`. La primera vez: `pnpm exec playwright install chromium`.
+- `pnpm e2e`: Corre las pruebas de recorrido con Playwright (Chromium). Requiere BD sembrada y `pnpm build` previo; levanta `pnpm start` en el puerto 3100 (`E2E_PORT`) o usa un servidor existente con `E2E_BASE_URL`. La primera vez: `pnpm exec playwright install chromium`. El servidor de e2e arranca con `AUTH_TRUST_HOST=true` y `TRUST_PROXY=true`: cada prueba de `e2e/auth.spec.ts` envía su propia IP en `X-Forwarded-For`, así los limitadores no se pisan entre pruebas ni entre ejecuciones (si usas `E2E_BASE_URL`, el servidor debe tener `TRUST_PROXY=true`). Las pruebas borran los usuarios que crean y `e2e/global-setup.ts` falla si el número de `usuarios` cambia. Los e2e son obligatorios en CI.
 - `pnpm check`: Ejecuta toda la suite de calidad en secuencia (`format:check`, `lint`, `typecheck` y `test`).
 
 Adicionalmente, se cuenta con hooks de Git configurados con **Husky** y **lint-staged** que formatean automáticamente los archivos preparados para commit y bloquean commits si existen errores de ESLint.
@@ -119,6 +121,20 @@ Debe ejecutarse desde el directorio del proyecto (lee `DATABASE_URL` de `.env`) 
 ```
 
 No existe una ruta HTTP para esto. Como el script corre en un proceso aparte, **no puede invalidar la caché de Next** (`updateTag`/`revalidateTag` solo funcionan dentro del servidor). Comprobado: el listado `/catalogo` y la ficha del vehículo leen la BD en cada visita y reflejan la expiración de inmediato; solo las consultas cacheadas (portada y filtros del catálogo, ~60 s; vehículos similares, perfil por defecto de 15 min) se ponen al día cuando vence su caché.
+
+## Rutas de Autenticación y Cuenta
+
+| Ruta                   | Descripción                                                                                                        |
+| :--------------------- | :----------------------------------------------------------------------------------------------------------------- |
+| `/registro`            | Alta de clientes (inicia sesión al terminar); limitada a 5 envíos por hora y por IP                                |
+| `/login`               | Inicio de sesión; limitado a 5 fallos por correo+IP y 20 por IP cada 15 min. Acepta `?next=` (solo rutas internas) |
+| `/mi-cuenta`           | Perfil: edición de nombre, apellido, teléfono, ciudad y dirección (requiere sesión)                                |
+| `/mi-cuenta/seguridad` | Cambio de contraseña (5 fallos de la actual por usuario cada 15 min)                                               |
+| `/mi-cuenta/reservas`  | Listado de reservas (vacío hasta la Fase 3)                                                                        |
+| `/admin/**`            | Reservada al personal (`ADMIN`/`ASESOR`); aún sin páginas                                                          |
+| `/api/auth/**`         | Rutas internas de Auth.js (las pantallas de acceso redirigen a `/login`)                                           |
+
+Las rutas de cuenta, `/login` y `/registro` llevan `noindex` y no están en el sitemap.
 
 ## Checklist de Despliegue (producción, detrás de proxy inverso)
 

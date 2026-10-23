@@ -6,27 +6,9 @@ import { ChevronDown, LogOut, User } from 'lucide-react';
 import { siteContent } from '@/lib/site-content';
 import { logoutAction } from '@/server/auth/logout-action';
 import type { AuthUser } from '@/types/auth';
+import { accountLinks, displayFirstName } from './account-links';
 
 const copy = siteContent.account;
-const MAX_NAME_LENGTH = 14;
-
-/** Primer nombre truncado para el botón del menú. */
-export function displayFirstName(fullName: string): string {
-  const first = fullName.trim().split(/\s+/)[0] ?? '';
-  if (!first) return copy.myAccount;
-  return first.length > MAX_NAME_LENGTH ? `${first.slice(0, MAX_NAME_LENGTH - 1)}…` : first;
-}
-
-export function accountLinks(rol: AuthUser['rol']) {
-  const links: { label: string; href: string }[] = [
-    { label: copy.myAccount, href: '/mi-cuenta' },
-    { label: copy.myReservations, href: '/mi-cuenta/reservas' },
-  ];
-  if (copy.showAdminPanelLink && (rol === 'ADMIN' || rol === 'ASESOR')) {
-    links.push({ label: copy.adminPanel, href: '/admin' });
-  }
-  return links;
-}
 
 const itemClass =
   'text-on-surface hover:bg-surface-container-low focus-visible:bg-surface-container-low flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm focus-visible:outline-none';

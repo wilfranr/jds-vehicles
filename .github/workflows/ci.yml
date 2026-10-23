@@ -83,8 +83,6 @@ jobs:
   e2e:
     name: E2E (Playwright)
     runs-on: ubuntu-latest
-    # Opcional hasta estabilizarlo (F1-06): un fallo aquí no bloquea el PR.
-    continue-on-error: true
 
     services:
       mysql:
