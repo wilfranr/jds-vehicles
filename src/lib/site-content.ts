@@ -417,6 +417,39 @@ export const siteContent = {
     whatsappCta: 'Escribir por WhatsApp',
     whatsappMessage: 'Hola JDS Vehículos, tuve un problema al usar el sitio web.',
   },
+  // Configuración del concesionario (/admin/configuracion, solo ADMIN)
+  adminConfig: {
+    title: 'Configuración',
+    intro: 'Datos de contacto que usa todo el sitio. Un error aquí rompe los enlaces de WhatsApp.',
+    current: 'Valor actual',
+    fallbackNote: 'Usando el valor de respaldo (aún no hay uno guardado).',
+    newValue: 'Nuevo valor',
+    save: 'Guardar',
+    saving: 'Guardando…',
+    saved: 'Cambio guardado. El sitio ya usa el nuevo valor.',
+    keys: {
+      whatsapp_numero: {
+        label: 'Número de WhatsApp',
+        hint: 'Celular colombiano de 10 dígitos; se guarda como 57 más el número.',
+        confirm: 'Confirmo que la vista previa abre el WhatsApp correcto.',
+      },
+      instagram_url: {
+        label: 'Perfil de Instagram',
+        hint: 'Dirección https de instagram.com.',
+        confirm: 'Confirmo que la dirección es la del perfil oficial.',
+      },
+    },
+    preview: 'Vista previa del enlace',
+    previewOpen: 'Probar enlace',
+    previewInvalid: 'Todavía no hay un valor válido.',
+    errors: {
+      whatsapp: 'Ingresa un celular colombiano de 10 dígitos que empiece por 3.',
+      instagram: 'Ingresa una dirección https de instagram.com (sin usuario ni puerto).',
+      confirm: 'Marca la casilla para confirmar el cambio.',
+      unknownKey: 'Esa configuración no se puede editar.',
+      generic: 'No fue posible guardar el cambio. Inténtalo de nuevo.',
+    },
+  },
   // Contenido de /proximamente
   proximamente: {
     title: 'Próximamente Disponibles',
