@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import './zod-setup';
 import { normalizeColombianMobile } from './register';
 
 /**

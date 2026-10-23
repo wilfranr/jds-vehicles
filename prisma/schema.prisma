@@ -224,7 +224,10 @@ model Reserva {
   usuario         User          @relation(fields: [usuarioId], references: [id], onUpdate: Cascade, onDelete: Restrict, map: "fk_reservas_usuarios")
   venta           Venta?
 
-  @@index([estado], map: "idx_reservas_estado")
+  // F5-03: ordenar por fecha dentro de un estado (panel) y buscar vencimientos por estado. Reemplazan al índice
+  // simple por `estado` (prefijo de ambos): ver el EXPLAIN antes/después en las notas de F5-03.
+  @@index([estado, fechaReserva], map: "idx_reservas_estado_fecha")
+  @@index([estado, fechaExpiracion], map: "idx_reservas_estado_expiracion")
   @@index([usuarioId], map: "idx_reservas_usuario")
   @@index([vehiculoId], map: "idx_reservas_vehiculo")
   @@map("reservas")

@@ -15,7 +15,7 @@ describe('maskEmail', () => {
 
 describe('logSecurityEvent', () => {
   it('escribe una sola línea JSON con los campos esperados', () => {
-    const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const spy = vi.spyOn(console, 'info').mockImplementation(() => {});
     logSecurityEvent({ type: 'login_failed', ip: '203.0.113.1', detail: maskEmail('ana@x.com') });
     expect(spy).toHaveBeenCalledTimes(1);
     const line = String(spy.mock.calls[0]?.[0]);
@@ -30,7 +30,7 @@ describe('logSecurityEvent', () => {
   });
 
   it('recorta detalles largos', () => {
-    const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const spy = vi.spyOn(console, 'info').mockImplementation(() => {});
     logSecurityEvent({ type: 'forbidden_access', ip: 'unknown', detail: 'x'.repeat(5000) });
     expect(String(spy.mock.calls[0]?.[0]).length).toBeLessThan(500);
   });

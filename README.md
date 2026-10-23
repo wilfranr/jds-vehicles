@@ -241,6 +241,66 @@ Mientras no exista una pantalla para ello, lo ejecuta un administrador con acces
 4. **Suprimir.** Las claves foráneas son `RESTRICT`: **no se puede borrar** un usuario con reservas o ventas. Qué se conserva: las **ventas registradas** (recibo, precio, fecha, vehículo) por obligación contable y legal (`TODO(owner)`: confirmar plazos de conservación). Lo que se hace es **anonimizar** a la persona en `usuarios` (nombre y apellido a «Eliminado», documento y correo a valores únicos sin relación, p. ej. `eliminado-<id>`/`eliminado-<id>@invalido.test`, teléfono, ciudad y dirección a vacío, `activo = 0`, `password_hash` a un hash aleatorio) y vaciar `reservas.whatsapp_link` y `reservas.observaciones` de sus reservas. Si no tiene reservas ni ventas, se puede borrar la fila.
 5. Los respaldos anteriores conservan los datos hasta que rote su retención (`BACKUP_RETENTION`); si hace falta, aplique el mismo procedimiento tras restaurar uno.
 
+## Seguridad HTTP y Dependencias (F5-01)
+
+Las cabeceras se definen en `src/server/security/headers.ts` y se aplican desde `next.config.ts` a todas las rutas (con pruebas unitarias y `e2e/seguridad-http.spec.ts`):
+
+| Cabecera                                                                             | Para qué                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Content-Security-Policy`                                                            | Solo recursos propios; imágenes también de `images.unsplash.com` (fotos del seed); sin `eval`; `object-src 'none'`, `base-uri`/`form-action 'self'`, `frame-ancestors 'none'`. |
+| `Strict-Transport-Security` (1 año, `includeSubDomains`)                             | Solo en producción y si el proxy envía `X-Forwarded-Proto: https` (regla `has` de Next, sin pasar por el proxy de la app).                                                     |
+| `Cross-Origin-Opener-Policy` / `Cross-Origin-Resource-Policy`                        | `same-origin`.                                                                                                                                                                 |
+| `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` | Las básicas de siempre. `X-Powered-By` desactivada (`poweredByHeader: false`).                                                                                                 |
+
+**Por qué la CSP no usa nonce.** La guía de CSP de Next 16 es explícita: un nonce obliga a renderizar **cada petición** y es incompatible con el prerenderizado parcial, es decir, volvería dinámicas todas las páginas públicas. Se midió: con la política en cabecera estática el resumen de `pnpm build` es idéntico al anterior (mismas rutas `○`/`◐`/`ƒ`). El coste, medido en el HTML real, es que Next inserta scripts en línea en cada página (arranque de React y datos RSC), que ni `'self'` ni un hash fijo pueden cubrir, así que `script-src` lleva `'unsafe-inline'`. Lo que sigue bloqueado: scripts de otros orígenes, `eval`, `<style>` en línea (solo se permiten atributos `style`, que escribe `next/image`), conexiones a otros orígenes, formularios hacia otros sitios, enmarcado y objetos. Zod se configura con `jitless` (`src/lib/validation/zod-setup.ts`) para que no intente `Function("")`, que el navegador registraría como violación. En desarrollo la política es `Report-Only` (y admite `eval`/estilos en línea que exige React en `next dev`).
+
+**Ajustar la política.** Edite `buildCsp` (un origen nuevo se añade a la directiva que corresponda, nunca a `default-src`) y el test de `headers.test.ts` fallará si aparece `unsafe-eval`, un `unsafe-inline` fuera de `script-src`/`style-src-attr` o una directiva duplicada. Para endurecer `script-src` con nonce habría que aceptar que las páginas públicas pasen a ser dinámicas.
+
+**Dependencias.** El CI ejecuta `pnpm audit --prod --audit-level high` (falla con `high`/`critical`) y `gitleaks` (v8.24.2 fijada con suma SHA-256, historial completo, configuración en `.gitleaks.toml`). Una excepción puntual se justifica con un `overrides` en `pnpm-workspace.yaml` que indique el aviso (GHSA) y la condición para retirarlo —así está `deepmerge-ts` para Prisma 6— o, si no hay parche, con una nota en el PR y aquí. Dependabot (`.github/dependabot.yml`) propone cada semana actualizaciones de `npm` y `github-actions`, agrupando minor/patch. `pnpm-lock.yaml` se instala con `--frozen-lockfile`. Revisión manual de dependencias sin uso: se retiraron `@typescript-eslint/eslint-plugin` y `@typescript-eslint/parser` (ya llegan con `eslint-config-next`); el resto tiene uso directo.
+
+**Auth.js beta.** Fijada exactamente en `next-auth@5.0.0-beta.32` (sin `^`). Riesgo: es una versión beta sin garantías de estabilidad de API. Dependabot la ignora a propósito: se actualiza a mano, solo si (a) hay un aviso de seguridad que la afecte o (b) sale la versión estable 5.x, y siempre ejecutando `pnpm check`, `pnpm build` y `pnpm test:e2e`, que cubren login, sesión, roles y el proxy. `AUTH_SECRET` débil o ausente se rechaza al arrancar en producción (`instrumentation.ts`; reglas ampliadas en F5-03).
+
+## Operación, Respaldos y Datos (F5-03)
+
+### Validación de entorno
+
+`src/server/env.ts` es la única definición de variables. Se ejecuta al arrancar (`instrumentation.ts`): en producción exige `AUTH_SECRET` de ≥32 caracteres y no trivial, `AUTH_TRUST_HOST=true`, `TRUST_PROXY=true`, `UPLOADS_DIR` absoluta y escribible, `NEXT_PUBLIC_SITE_URL` en `https` y `DATABASE_URL` `mysql://`. El mensaje nombra la variable y la regla, **nunca el valor**. Un test comprueba que `.env.example` y el esquema coinciden.
+
+### Primer administrador
+
+No hay usuarios demo en producción (`pnpm db:seed` solo crea los roles; `--demo` aborta en producción). Para crear el primer ADMIN:
+
+```bash
+ADMIN_NAME=… ADMIN_LASTNAME=… ADMIN_DOCUMENT_TYPE=CC ADMIN_DOCUMENT=… ADMIN_EMAIL=… ADMIN_PHONE=… pnpm admin:crear
+```
+
+La contraseña se pide por entrada oculta; `--password-from-env` la lee de `ADMIN_PASSWORD` (solo para automatizar). Aplica la política de contraseña y bcrypt coste 12; sale con código 2 si ya existe un ADMIN.
+
+### Respaldos y restauración
+
+- `scripts/backup.sh [--env-file ruta]`: `mysqldump --single-transaction --routines --triggers --events` comprimido + `tar` de `UPLOADS_DIR` + suma SHA-256, en `BACKUP_DIR` (por defecto `./backups`, carpeta `0700`, archivos `0600`). Conserva los últimos `BACKUP_RETENTION` (14). La contraseña nunca va en la línea de comandos (archivo de opciones temporal `0600`).
+- `scripts/restore.sh AAAAMMDD-HHMMSS [--yes] [--env-file ruta]`: verifica las sumas, exige escribir `RESTAURAR`, restaura la BD y mueve las subidas actuales a `<UPLOADS_DIR>.antes-<fecha>`.
+- `pnpm backup:verificar`: prueba el ciclo completo (respaldar → destruir → restaurar → comparar) en una BD **temporal** que se elimina al terminar; nunca toca la BD de desarrollo. `DB_CLIENT_SSL=off` desactiva TLS del cliente (solo para BD local).
+- Programación con `cron` (se instala en la Fase 6):
+
+```cron
+15 3 * * *  cd /srv/jds-vehiculos && ./scripts/backup.sh --env-file /etc/jds/env >> /var/log/jds-backup.log 2>&1
+```
+
+Copie los respaldos fuera del servidor; un respaldo en el mismo disco no protege contra su pérdida.
+
+### Salud
+
+`GET /api/health` (BD, carpeta de subidas escribible, espacio libre ≥ `HEALTH_MIN_FREE_MB`, 200 por defecto 200 MB): responde `200`/`503` con `{status,db,uploads,disk}` y `Cache-Control: no-store`, sin versiones, rutas ni mensajes internos. `GET /api/health/live` solo confirma que el proceso responde (para el reinicio automático).
+
+### Registro de eventos
+
+`logEvent({ channel, level, … })` (`src/server/log.ts`) escribe una línea JSON en stdout para seguridad, panel, reservas y errores. `LOG_LEVEL` (`debug|info|warn|error`, por defecto `info`). Redacta claves sensibles (contraseñas, tokens, cookies…). La rotación se configura en el servidor (`logrotate` o el journal de systemd, Fase 6).
+
+### Migraciones e índices
+
+En producción solo `pnpm db:migrar` (`prisma migrate deploy`); nunca `migrate dev` ni `db push`. `pnpm db:verificar` falla si `schema.prisma` y las migraciones divergen (corre en CI). `scripts/explain-volumen.sh` carga un volumen sintético en una BD temporal y ejecuta `scripts/sql/explain-queries.sql` para revisar planes con `EXPLAIN`.
+
 ## Gestión del Proyecto
 
 El desarrollo se gestiona a través del backlog de tareas ubicado en la carpeta [ISSUES/](ISSUES/README.md). Consulta dicho archivo para conocer el flujo de trabajo, convenciones y el estado de cada fase.
