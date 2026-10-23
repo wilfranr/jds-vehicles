@@ -3,17 +3,12 @@ import 'server-only';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { ACTIVE_STATES } from '@/server/reservations/service';
+import { maskDocument } from './mask';
 
 export const ADMIN_USERS_PAGE_SIZE = 20;
 
 export type RoleName = 'CLIENTE' | 'ASESOR' | 'ADMIN';
 export const ROLE_NAMES: readonly RoleName[] = ['CLIENTE', 'ASESOR', 'ADMIN'];
-
-/** `*******678`: del documento solo se muestran los 3 últimos caracteres. */
-export function maskDocument(document: string): string {
-  if (document.length <= 3) return '*'.repeat(document.length);
-  return `${'*'.repeat(document.length - 3)}${document.slice(-3)}`;
-}
 
 export interface AdminUserRow {
   id: number;

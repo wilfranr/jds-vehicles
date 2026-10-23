@@ -1,5 +1,11 @@
 import { test, expect } from '@playwright/test';
 
+// Otras pruebas crean y borran vehículos temporales en paralelo y aparecen en el catálogo (los más recientes
+// van primero). Por eso aquí NUNCA se abre «la primera tarjeta»: se apunta al vehículo del seed por su color,
+// que es único del seed (Toyota Corolla 2024, id 1: nuevo, disponible y con fotografía).
+const SEED_VEHICLE = { id: 1, color: 'Blanco Perlado' };
+const SEED_CARD = `/catalogo?color=${encodeURIComponent(SEED_VEHICLE.color)}`;
+
 test.describe('Recorrido del catálogo público', () => {
   test('portada → catálogo → filtro de condición → detalle con CTA y galería', async ({ page }) => {
     await page.goto('/');
@@ -14,11 +20,13 @@ test.describe('Recorrido del catálogo público', () => {
     await filters.getByRole('button', { name: 'Aplicar Filtros' }).click();
     await expect(page).toHaveURL(/condicion=NUEVO/);
 
-    const detailLinks = page.locator('a[href^="/vehiculos/"]');
-    await expect(detailLinks.first()).toBeVisible();
-    await detailLinks.first().click();
+    // El filtro de condición funciona; para abrir un detalle determinista se acota al vehículo del seed por color.
+    await page.goto(SEED_CARD);
+    const card = page.getByRole('main').getByRole('article');
+    await expect(card).toHaveCount(1);
+    await card.getByRole('link', { name: 'Ver detalles' }).click();
 
-    await expect(page).toHaveURL(/\/vehiculos\/\d+$/);
+    await expect(page).toHaveURL(new RegExp(`/vehiculos/${SEED_VEHICLE.id}$`));
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 
     // CTA de WhatsApp con mensaje prellenado
@@ -40,8 +48,13 @@ test.describe('Recorrido del catálogo público', () => {
   });
 
   test('el detalle publica JSON-LD de tipo Car con oferta en COP', async ({ page }) => {
-    await page.goto('/catalogo');
-    await page.locator('a[href^="/vehiculos/"]').first().click();
+    await page.goto(SEED_CARD);
+    await page
+      .getByRole('main')
+      .getByRole('article')
+      .getByRole('link', { name: 'Ver detalles' })
+      .click();
+    await expect(page).toHaveURL(new RegExp(`/vehiculos/${SEED_VEHICLE.id}$`));
     const raw = await page.locator('script[type="application/ld+json"]').first().textContent();
     const data = JSON.parse(raw ?? '{}');
     expect(data['@type']).toBe('Car');

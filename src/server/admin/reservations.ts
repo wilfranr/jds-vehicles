@@ -3,6 +3,7 @@ import 'server-only';
 import type { EstadoReserva, Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { ACTIVE_STATES } from '@/server/reservations/service';
+import { maskDocument } from './mask';
 import { checkTransition } from '@/server/reservations/transitions';
 
 export const ADMIN_RESERVATIONS_PAGE_SIZE = 20;
@@ -21,12 +22,6 @@ export interface AdminReservationRow {
   fechaExpiracion: Date | null;
   cliente: string;
   vehiculo: string;
-}
-
-/** `*******890`: del documento solo se muestran los 3 últimos caracteres. */
-export function maskDocument(document: string): string {
-  if (document.length <= 3) return '*'.repeat(document.length);
-  return `${'*'.repeat(document.length - 3)}${document.slice(-3)}`;
 }
 
 /**
