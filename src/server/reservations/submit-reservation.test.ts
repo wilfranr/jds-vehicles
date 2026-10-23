@@ -161,7 +161,7 @@ describe('submitReservation', () => {
   });
 
   it('si falla guardar el enlace de WhatsApp, la reserva confirmada igualmente redirige', async () => {
-    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const spy = vi.spyOn(console, 'info').mockImplementation(() => {});
     const ctx = makeContext({ saveWhatsappLink: vi.fn().mockRejectedValue(new Error('db')) });
     const result = await submitReservation(form({ vehicleId: '3' }), ctx);
 

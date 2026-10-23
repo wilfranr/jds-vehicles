@@ -1,3 +1,5 @@
+import { logEvent } from '@/server/log';
+
 export type ReservationRejection =
   'not_available' | 'already_reserved_by_you' | 'limit_reached' | 'inactive_user';
 
@@ -13,5 +15,5 @@ export type ReservationEvent =
 
 /** Una línea JSON en la salida estándar. Solo ids y motivo: sin nombres, correos ni teléfonos. */
 export function logReservationEvent(event: ReservationEvent): void {
-  console.info(JSON.stringify({ ts: new Date().toISOString(), channel: 'reservations', ...event }));
+  logEvent({ channel: 'reservations', ...event });
 }

@@ -242,6 +242,47 @@ Las cabeceras se definen en `src/server/security/headers.ts` y se aplican desde 
 
 **Auth.js beta.** Fijada exactamente en `next-auth@5.0.0-beta.32` (sin `^`). Riesgo: es una versión beta sin garantías de estabilidad de API. Dependabot la ignora a propósito: se actualiza a mano, solo si (a) hay un aviso de seguridad que la afecte o (b) sale la versión estable 5.x, y siempre ejecutando `pnpm check`, `pnpm build` y `pnpm test:e2e`, que cubren login, sesión, roles y el proxy. `AUTH_SECRET` débil o ausente se rechaza al arrancar en producción (`instrumentation.ts`; reglas ampliadas en F5-03).
 
+## Operación, Respaldos y Datos (F5-03)
+
+### Validación de entorno
+
+`src/server/env.ts` es la única definición de variables. Se ejecuta al arrancar (`instrumentation.ts`): en producción exige `AUTH_SECRET` de ≥32 caracteres y no trivial, `AUTH_TRUST_HOST=true`, `TRUST_PROXY=true`, `UPLOADS_DIR` absoluta y escribible, `NEXT_PUBLIC_SITE_URL` en `https` y `DATABASE_URL` `mysql://`. El mensaje nombra la variable y la regla, **nunca el valor**. Un test comprueba que `.env.example` y el esquema coinciden.
+
+### Primer administrador
+
+No hay usuarios demo en producción (`pnpm db:seed` solo crea los roles; `--demo` aborta en producción). Para crear el primer ADMIN:
+
+```bash
+ADMIN_NAME=… ADMIN_LASTNAME=… ADMIN_DOCUMENT_TYPE=CC ADMIN_DOCUMENT=… ADMIN_EMAIL=… ADMIN_PHONE=… pnpm admin:crear
+```
+
+La contraseña se pide por entrada oculta; `--password-from-env` la lee de `ADMIN_PASSWORD` (solo para automatizar). Aplica la política de contraseña y bcrypt coste 12; sale con código 2 si ya existe un ADMIN.
+
+### Respaldos y restauración
+
+- `scripts/backup.sh [--env-file ruta]`: `mysqldump --single-transaction --routines --triggers --events` comprimido + `tar` de `UPLOADS_DIR` + suma SHA-256, en `BACKUP_DIR` (por defecto `./backups`, carpeta `0700`, archivos `0600`). Conserva los últimos `BACKUP_RETENTION` (14). La contraseña nunca va en la línea de comandos (archivo de opciones temporal `0600`).
+- `scripts/restore.sh AAAAMMDD-HHMMSS [--yes] [--env-file ruta]`: verifica las sumas, exige escribir `RESTAURAR`, restaura la BD y mueve las subidas actuales a `<UPLOADS_DIR>.antes-<fecha>`.
+- `pnpm backup:verificar`: prueba el ciclo completo (respaldar → destruir → restaurar → comparar) en una BD **temporal** que se elimina al terminar; nunca toca la BD de desarrollo. `DB_CLIENT_SSL=off` desactiva TLS del cliente (solo para BD local).
+- Programación con `cron` (se instala en la Fase 6):
+
+```cron
+15 3 * * *  cd /srv/jds-vehiculos && ./scripts/backup.sh --env-file /etc/jds/env >> /var/log/jds-backup.log 2>&1
+```
+
+Copie los respaldos fuera del servidor; un respaldo en el mismo disco no protege contra su pérdida.
+
+### Salud
+
+`GET /api/health` (BD, carpeta de subidas escribible, espacio libre ≥ `HEALTH_MIN_FREE_MB`, 200 por defecto 200 MB): responde `200`/`503` con `{status,db,uploads,disk}` y `Cache-Control: no-store`, sin versiones, rutas ni mensajes internos. `GET /api/health/live` solo confirma que el proceso responde (para el reinicio automático).
+
+### Registro de eventos
+
+`logEvent({ channel, level, … })` (`src/server/log.ts`) escribe una línea JSON en stdout para seguridad, panel, reservas y errores. `LOG_LEVEL` (`debug|info|warn|error`, por defecto `info`). Redacta claves sensibles (contraseñas, tokens, cookies…). La rotación se configura en el servidor (`logrotate` o el journal de systemd, Fase 6).
+
+### Migraciones e índices
+
+En producción solo `pnpm db:migrar` (`prisma migrate deploy`); nunca `migrate dev` ni `db push`. `pnpm db:verificar` falla si `schema.prisma` y las migraciones divergen (corre en CI). `scripts/explain-volumen.sh` carga un volumen sintético en una BD temporal y ejecuta `scripts/sql/explain-queries.sql` para revisar planes con `EXPLAIN`.
+
 ## Gestión del Proyecto
 
 El desarrollo se gestiona a través del backlog de tareas ubicado en la carpeta [ISSUES/](ISSUES/README.md). Consulta dicho archivo para conocer el flujo de trabajo, convenciones y el estado de cada fase.

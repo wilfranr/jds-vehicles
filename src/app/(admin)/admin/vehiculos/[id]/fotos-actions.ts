@@ -8,6 +8,7 @@ import { deletePhoto, movePhoto, setPrincipalPhoto } from '@/server/admin/photos
 import type { ActionState } from '@/server/admin/reservation-form-state';
 import { requireStaff } from '@/server/auth/staff';
 import { deleteImagePair, getUploadsDir } from '@/server/media/storage';
+import { logEvent } from '@/server/log';
 import { invalidateCatalogFromAction } from '@/server/reservations';
 
 const copy = siteContent.adminPhotos;
@@ -84,7 +85,12 @@ export async function deletePhotoAction(
   try {
     await deleteImagePair(getUploadsDir(), result.url);
   } catch {
-    console.error('No se pudo borrar el archivo de una foto eliminada', { photoId: ctx.photoId });
+    logEvent({
+      channel: 'admin',
+      level: 'error',
+      event: 'photo_file_delete_failed',
+      photoId: ctx.photoId,
+    });
   }
   logAdminEvent({
     actorId: ctx.user.id,

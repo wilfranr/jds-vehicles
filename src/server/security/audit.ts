@@ -1,3 +1,5 @@
+import { logEvent } from '@/server/log';
+
 export type SecurityEventType =
   | 'login_failed'
   | 'login_blocked'
@@ -22,15 +24,14 @@ export function maskEmail(email: string): string {
   return `${email[0]}***${email.slice(at)}`;
 }
 
-/** Escribe el evento como una línea JSON en la salida estándar. */
+/** Escribe el evento de seguridad como una línea JSON (canal `security`, nivel `warn`). */
 export function logSecurityEvent(event: SecurityEvent): void {
-  const line = {
-    ts: new Date().toISOString(),
+  logEvent({
     channel: 'security',
+    level: 'warn',
     type: event.type,
     ...(event.userId !== undefined ? { userId: event.userId } : {}),
     ip: event.ip,
     ...(event.detail ? { detail: event.detail.slice(0, 200) } : {}),
-  };
-  console.warn(JSON.stringify(line));
+  });
 }
