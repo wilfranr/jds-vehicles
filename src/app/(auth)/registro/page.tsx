@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
+import { getLegalLinks } from '@/lib/legal';
 import { siteContent } from '@/lib/site-content';
 import { RegisterForm } from './RegisterForm';
 
@@ -20,7 +21,7 @@ export default function RegistroPage() {
         </p>
       </div>
       <div className="bg-surface-container-lowest border-outline-variant/30 p-space-lg rounded-2xl border shadow-sm">
-        <RegisterForm />
+        <RegisterForm legalLinks={getLegalLinks()} />
       </div>
     </div>
   );

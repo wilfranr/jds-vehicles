@@ -32,7 +32,8 @@ export const siteContent = {
     { label: 'Cómo Funciona', href: '/como-funciona' },
     { label: 'Contacto', href: '/contacto' },
   ],
-  // TODO(owner): reponer enlaces legales cuando existan las páginas correspondientes (/terminos-condiciones, /privacidad, /certificacion)
+  // Enlaces legales: no se escriben aquí; salen de `src/lib/legal.ts` y solo aparecen cuando el propietario aporta el
+  // contenido (`src/lib/legal-content.ts`). TODO(owner): enlace a /certificacion cuando exista esa página.
   footerLinks: [] as const as { label: string; href: string }[],
   defaultFallbackSocials: {
     whatsappNumber: '573202353168',
@@ -541,6 +542,34 @@ export const siteContent = {
       duplicate: 'No fue posible completar el registro con esos datos.',
       config: 'No fue posible completar el registro en este momento. Inténtalo más tarde.',
     },
+  },
+  // Páginas legales (F5-04). El texto legal lo aporta el propietario (`src/lib/legal-content.ts`).
+  legal: {
+    pages: {
+      privacidad: {
+        href: '/privacidad',
+        linkLabel: 'Política de privacidad',
+        description: 'Cómo se tratan los datos personales que entregas al registrarte y reservar.',
+      },
+      terminos: {
+        href: '/terminos',
+        linkLabel: 'Términos del servicio',
+        description: 'Condiciones de uso del sitio y del servicio de reservas.',
+      },
+    },
+    footerHeading: 'Legal',
+    consentSeeLabel: 'Consulta:',
+    effectiveLabel: 'Vigente desde',
+    updatedLabel: 'Última actualización',
+    responsibleLabel: 'Responsable del tratamiento',
+    rightsHeading: 'Ejercicio de tus derechos',
+    rightsIntro: 'Para conocer, actualizar, rectificar o suprimir tus datos, escribe a',
+    // TODO(owner): correo del concesionario para ejercer los derechos del titular. Vacío = no se muestra ningún canal.
+    rightsEmail: '',
+    cookiesHeading: 'Cookies',
+    cookiesIntro:
+      'Este sitio solo usa las cookies estrictamente necesarias para iniciar sesión y proteger los formularios. No usa cookies de publicidad ni de analítica.',
+    cookiesColumns: { name: 'Cookie', purpose: 'Para qué sirve', duration: 'Duración' },
   },
   // Fotos de vehículos (/admin/vehiculos/[id])
   adminPhotos: {
