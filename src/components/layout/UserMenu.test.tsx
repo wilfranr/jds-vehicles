@@ -72,9 +72,11 @@ describe('UserMenu (con sesión)', () => {
     expect(screen.queryByRole('link', { name: 'Cerrar sesión' })).not.toBeInTheDocument();
   });
 
-  it('el enlace al panel del concesionario no se muestra mientras la ruta no exista', () => {
-    expect(siteContent.account.showAdminPanelLink).toBe(false);
-    expect(accountLinks('ADMIN').map((l) => l.href)).not.toContain('/admin');
+  it('«Panel del concesionario» solo se ofrece a ADMIN y ASESOR', () => {
+    expect(siteContent.account.showAdminPanelLink).toBe(true);
+    expect(accountLinks('ADMIN').map((l) => l.href)).toContain('/admin');
+    expect(accountLinks('ASESOR').map((l) => l.href)).toContain('/admin');
+    expect(accountLinks('CLIENTE').map((l) => l.href)).not.toContain('/admin');
   });
 
   it('trunca nombres largos y tolera nombres vacíos', () => {

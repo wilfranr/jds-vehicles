@@ -89,7 +89,7 @@ El proyecto cuenta con herramientas estandarizadas de calidad de código y prueb
 - `pnpm format:check`: Verifica el formateo sin modificar archivos.
 - `pnpm lint`: Ejecuta ESLint con reglas para TypeScript y compatibilidad con Prettier.
 - `pnpm typecheck`: Valida tipos en modo estricto (`tsc --noEmit`).
-- `pnpm test`: Corre las pruebas unitarias y de componentes con Vitest.
+- `pnpm test`: Corre las pruebas unitarias y de componentes con Vitest, en dos proyectos: `unit` (sin BD, en paralelo) y `db` (archivos `*.db.test.ts`, que usan la BD sembrada y se ejecutan **uno tras otro**: comparten la base de datos y varios cuentan filas globales). **Toda prueba que use la BD real debe llamarse `*.db.test.ts`** y limpiar sus filas; las de `e2e/` se ejecutan aparte con `pnpm test:e2e`.
 - `pnpm test:watch`: Ejecuta las pruebas en modo observador.
 - `pnpm test:e2e` (alias de `pnpm e2e`): Corre las pruebas de recorrido con Playwright (Chromium). Requiere BD sembrada y `pnpm build` previo; levanta `pnpm start` en el puerto 3100 (`E2E_PORT`) o usa un servidor existente con `E2E_BASE_URL`. La primera vez: `pnpm exec playwright install chromium`. El servidor de e2e arranca con `AUTH_TRUST_HOST=true` y `TRUST_PROXY=true`: cada prueba de `e2e/auth.spec.ts` envía su propia IP en `X-Forwarded-For`, así los limitadores no se pisan entre pruebas ni entre ejecuciones (si usas `E2E_BASE_URL`, el servidor debe tener `TRUST_PROXY=true`). Las pruebas borran los usuarios que crean y `e2e/global-setup.ts` falla si el número de `usuarios` cambia. Los e2e son obligatorios en CI.
 - `pnpm check`: Ejecuta toda la suite de calidad en secuencia (`format:check`, `lint`, `typecheck` y `test`).
@@ -109,6 +109,25 @@ Adicionalmente, se cuenta con hooks de Git configurados con **Husky** y **lint-s
 | `/sitemap.xml`    | Sitemap (páginas públicas y vehículos visibles no vendidos) |
 | `/robots.txt`     | Reglas para buscadores (excluye `/api` y `/_design`)        |
 | `/api/health`     | Comprobación de salud (no indexada)                         |
+
+## Panel
+
+`/admin` es el panel del concesionario (roles `ADMIN` y `ASESOR`). Armazón propio (no usa el header público), `noindex`, sin scroll horizontal a 360 px. Resumen con contadores reales de la BD: vehículos por disponibilidad, reservas activas y por vencer en 24 h, ventas del mes (calendario de Bogotá) y, solo para `ADMIN`, usuarios activos.
+
+| Sección                     | Ruta                                                   | Acceso                                                       |
+| :-------------------------- | :----------------------------------------------------- | :----------------------------------------------------------- |
+| Resumen                     | `/admin`                                               | `ADMIN`, `ASESOR`                                            |
+| Reservas, Ventas, Vehículos | `/admin/reservas`, `/admin/ventas`, `/admin/vehiculos` | `ADMIN`, `ASESOR` (marcadores hasta sus issues de la Fase 4) |
+| Usuarios, Configuración     | `/admin/usuarios`, `/admin/configuracion`              | solo `ADMIN` (marcadores hasta sus issues)                   |
+
+Decisión del demo (confirmar antes de producción): `ASESOR` gestiona reservas, ventas e inventario; solo `ADMIN` gestiona usuarios y la configuración.
+
+**Reglas para quien añada páginas o acciones al panel**
+
+- Cada página y cada Server Action llama a `requireStaff()` o `requireAdmin()` (`src/server/auth/staff.ts`), además del proxy. Estas funciones confirman el rol y que la cuenta siga activa **en la BD** (el JWT dura 7 días y no se revoca); sin sesión redirigen a login y con un rol insuficiente responden 404. El layout no es una barrera: no se vuelve a ejecutar en cada navegación.
+- El rol y el id del actor salen de la sesión/BD, nunca del formulario; campos editables en listas explícitas; validación con Zod en el servidor.
+- Cada cambio relevante escribe un evento con `logAdminEvent` (`src/server/admin/audit.ts`): una línea JSON del canal `admin` con quién, qué y el id afectado, sin datos personales ni secretos.
+- Los mensajes nunca revelan si existe un registro ajeno.
 
 ## Reservas
 

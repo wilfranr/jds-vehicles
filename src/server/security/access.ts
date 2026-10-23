@@ -19,7 +19,8 @@ function isUnder(pathname: string, base: string): boolean {
 /**
  * Regla de acceso por ruta (función pura, probada). `rol` es `null` sin sesión.
  * - `/mi-cuenta/**`: requiere sesión; el código de `/mi-cuenta/reservas/<codigo>` debe tener formato válido.
- * - `/admin/**`: sin sesión → login; con sesión solo ADMIN/ASESOR, el resto recibe 404 para no revelar la ruta.
+ * - `/admin/**`: sin sesión → login; con sesión solo ADMIN/ASESOR, el resto recibe 404 para no revelar la ruta;
+ *   `/admin/usuarios` y `/admin/configuracion` solo para ADMIN.
  * - `/login`: con sesión no tiene sentido; se redirige a `next` (o a `/`).
  * Cualquier otra ruta se permite aquí.
  */
@@ -34,7 +35,15 @@ export function decideAccess(pathname: string, rol: Rol | null): AccessDecision 
   }
   if (isUnder(pathname, '/admin')) {
     if (!rol) return 'redirectLogin';
-    return ADMIN_ROLES.includes(rol) ? 'allow' : 'notFound';
+    if (!ADMIN_ROLES.includes(rol)) return 'notFound';
+    // Usuarios y configuración son solo de ADMIN (404 real; la página lo vuelve a comprobar con la BD).
+    if (
+      rol !== 'ADMIN' &&
+      (isUnder(pathname, '/admin/usuarios') || isUnder(pathname, '/admin/configuracion'))
+    ) {
+      return 'notFound';
+    }
+    return 'allow';
   }
   return 'allow';
 }
