@@ -52,3 +52,28 @@ export function buildReservationMessage(data: ReservationMessageData): string {
 export function buildReservationWhatsAppUrl(phone: string, data: ReservationMessageData): string {
   return buildWhatsAppUrl(phone, buildReservationMessage(data));
 }
+
+export interface StaffContactData {
+  nombre: string;
+  codigo: string;
+  marca: string;
+  modelo: string;
+}
+
+/**
+ * Enlace `wa.me` para que el personal escriba al cliente de una reserva (teléfono del cliente; plantilla en
+ * `site-content.ts`). Los valores se sanean igual que en el mensaje del cliente.
+ */
+export function buildStaffContactUrl(clientPhone: string, data: StaffContactData): string {
+  const values: Record<string, string> = {
+    nombre: sanitizeField(data.nombre),
+    codigo: sanitizeField(data.codigo),
+    marca: sanitizeField(data.marca),
+    modelo: sanitizeField(data.modelo),
+  };
+  const message = siteContent.adminReservations.contactMessage.replace(
+    /\{(nombre|codigo|marca|modelo)\}/g,
+    (_match, key: string) => values[key] ?? ''
+  );
+  return buildWhatsAppUrl(clientPhone, message);
+}

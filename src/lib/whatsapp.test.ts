@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { buildReservationMessage, buildReservationWhatsAppUrl, buildWhatsAppUrl } from './whatsapp';
+import {
+  buildReservationMessage,
+  buildReservationWhatsAppUrl,
+  buildStaffContactUrl,
+  buildWhatsAppUrl,
+} from './whatsapp';
 
 describe('buildWhatsAppUrl', () => {
   it('sanea números con signo más, espacios y caracteres especiales', () => {
@@ -56,5 +61,21 @@ describe('mensaje de reserva', () => {
     expect(url.startsWith('https://wa.me/573202353168?text=')).toBe(true);
     expect(decodeURIComponent(url.split('text=')[1]!)).toBe(buildReservationMessage(data));
     expect(url).not.toMatch(/placa|documento/i);
+  });
+});
+
+describe('enlace del personal al cliente', () => {
+  it('va al teléfono del cliente con código, nombre y vehículo, sanitizado', () => {
+    const url = buildStaffContactUrl('+57 (310) 555-1234', {
+      nombre: 'Ana\nPérez',
+      codigo: 'RES-2026-AB2C',
+      marca: 'Toyota',
+      modelo: 'Corolla',
+    });
+    expect(url.startsWith('https://wa.me/573105551234?text=')).toBe(true);
+    const text = decodeURIComponent(url.split('?text=')[1]!);
+    expect(text).toBe(
+      'Hola Ana Pérez, te escribimos de JDS Vehículos por tu reserva RES-2026-AB2C del Toyota Corolla.'
+    );
   });
 });

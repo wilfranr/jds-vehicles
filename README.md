@@ -129,6 +129,8 @@ Decisión del demo (confirmar antes de producción): `ASESOR` gestiona reservas,
 - Cada cambio relevante escribe un evento con `logAdminEvent` (`src/server/admin/audit.ts`): una línea JSON del canal `admin` con quién, qué y el id afectado, sin datos personales ni secretos.
 - Los mensajes nunca revelan si existe un registro ajeno.
 
+**Reservas del personal (F4-02):** `/admin/reservas` (activas primero, filtro por estado, búsqueda por código o correo) y `/admin/reservas/[codigo]` (datos del cliente con el documento enmascarado, vehículo con placa, observaciones internas y botón de WhatsApp al cliente). Máquina de estados en `src/server/reservations/transitions.ts`: `PENDIENTE_CONTACTO → EN_NEGOCIACION | CANCELADA` y `EN_NEGOCIACION → CANCELADA`; `COMPLETADA` solo la produce el registro de una venta (F4-05) y `EXPIRADA` el proceso de expiración. Cancelar devuelve el vehículo a `DISPONIBLE` solo si sigue `RESERVADO` y no tiene otra reserva activa, e invalida la caché del catálogo. La fila de la reserva se bloquea durante el cambio: si dos personas actúan a la vez, la segunda recibe un aviso.
+
 ## Reservas
 
 Flujo: en la ficha de un vehículo `DISPONIBLE`, un usuario con sesión pulsa «Reservar este vehículo» (sin sesión, el botón lleva a `/login?next=…` y vuelve a la ficha; la reserva siempre exige un clic). La acción crea la reserva en una transacción (solo una persona gana si dos reservan a la vez), deja el vehículo `RESERVADO` y lleva a `/mi-cuenta/reservas/<codigo>?nueva=1`, donde se muestra el código `RES-AAAA-XXXX` y el botón de WhatsApp con un mensaje que lleva código, vehículo y nombre (nunca placa ni documento). Las reservas del usuario están en `/mi-cuenta/reservas`. El cliente no cancela: esa acción es del personal (Fase 4).
