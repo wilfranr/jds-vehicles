@@ -155,11 +155,17 @@ jobs:
       # Un intento por vez con tope de 150 s y un reintento: un cuelgue falla en minutos, no en horas.
       - name: Install Playwright Chromium (cache miss)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        timeout-minutes: 6
+        timeout-minutes: 10
         run: |
-          for attempt in 1 2; do
-            timeout 150 pnpm exec playwright install --with-deps chromium && exit 0
-            echo "Intento $attempt fallido"; sleep 5
+          for attempt in 1 2 3; do
+            timeout --kill-after=10 150 pnpm exec playwright install --with-deps chromium && exit 0
+            echo "Intento $attempt fallido"
+            # Si el intento colgó, `apt` puede seguir vivo con el bloqueo de dpkg y el reintento fallaría al instante.
+            sudo pkill -9 -x apt-get || true
+            sudo pkill -9 -x apt || true
+            sudo pkill -9 -x dpkg || true
+            sudo dpkg --configure -a || true
+            sleep 5
           done
           exit 1
 
@@ -173,11 +179,17 @@ jobs:
       # Con la caché, solo hacen falta las bibliotecas del sistema (no se cachean).
       - name: Install Playwright system dependencies (cache hit)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        timeout-minutes: 6
+        timeout-minutes: 10
         run: |
-          for attempt in 1 2; do
-            timeout 150 pnpm exec playwright install-deps chromium && exit 0
-            echo "Intento $attempt fallido"; sleep 5
+          for attempt in 1 2 3; do
+            timeout --kill-after=10 150 pnpm exec playwright install-deps chromium && exit 0
+            echo "Intento $attempt fallido"
+            # Si el intento colgó, `apt` puede seguir vivo con el bloqueo de dpkg y el reintento fallaría al instante.
+            sudo pkill -9 -x apt-get || true
+            sudo pkill -9 -x apt || true
+            sudo pkill -9 -x dpkg || true
+            sudo dpkg --configure -a || true
+            sleep 5
           done
           exit 1
 
