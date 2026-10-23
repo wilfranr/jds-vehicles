@@ -8,7 +8,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api', '/_design'],
+      // El panel y la cuenta llevan además `noindex`; aquí se excluyen del rastreo (defensa en profundidad).
+      disallow: ['/api', '/_design', '/admin', '/mi-cuenta'],
     },
     sitemap: `${baseUrl}/sitemap.xml`,
   };
