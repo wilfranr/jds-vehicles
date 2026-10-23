@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import './zod-setup';
 
 export const CONDICIONES = ['NUEVO', 'USADO'] as const;
 export const TRANSMISIONES = ['MANUAL', 'AUTOMATICA', 'SECUENCIAL'] as const;

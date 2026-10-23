@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import './zod-setup';
 import { createNotesSchema } from './reservation-admin';
 import { parsePrice } from './vehicle';
 

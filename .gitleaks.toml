@@ -1,0 +1,17 @@
+title = "JDS Vehículos"
+
+[extend]
+useDefault = true
+
+# Valores de ejemplo conocidos (no son secretos): contraseñas de demostración y del CI.
+[allowlist]
+description = "Valores de ejemplo y de pruebas"
+paths = [
+  '''pnpm-lock\.yaml''',
+  # Contraseñas de prueba de las suites (únicas y de un solo uso, nunca de un entorno real).
+  '''.*\.test\.tsx?$''',
+  '''^e2e/''',
+]
+regexes = [
+  '''ci_pipeline_dummy_secret_for_nextjs_build_at_least_32_characters''',
+]

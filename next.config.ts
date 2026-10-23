@@ -1,17 +1,13 @@
 import type { NextConfig } from 'next';
+import { buildHeaderRules } from './src/server/security/headers';
 
-// Cabeceras de seguridad básicas. La CSP estricta se decide en la Fase 5.
-const securityHeaders = [
-  { key: 'X-Content-Type-Options', value: 'nosniff' },
-  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  { key: 'X-Frame-Options', value: 'DENY' },
-  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=()' },
-];
+const development = process.env.NODE_ENV !== 'production';
 
 const nextConfig: NextConfig = {
   async headers() {
-    return [{ source: '/:path*', headers: securityHeaders }];
+    return buildHeaderRules({ development });
   },
+  poweredByHeader: false,
   cacheComponents: true,
   partialPrefetching: true,
   images: {

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import './zod-setup';
 
 export interface NameMessages {
   name: string;
