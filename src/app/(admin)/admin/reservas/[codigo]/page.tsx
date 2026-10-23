@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ReservationStatusChip } from '@/components/account/ReservationStatusChip';
 import { NotesForm, ReservationActionsPanel } from '@/components/admin/ReservationActions';
+import { SaleForm } from '@/components/admin/SaleForm';
 import { WhatsAppIcon } from '@/components/ui/BrandIcons';
 import { formatCOP, formatDateTime } from '@/lib/format';
 import { siteContent } from '@/lib/site-content';
@@ -13,8 +14,10 @@ import { requireStaff } from '@/server/auth/staff';
 import { parseReservationCode } from '@/server/reservations/code';
 import { checkTransition } from '@/server/reservations/transitions';
 import { cancelReservationAction, saveNotesAction, startNegotiationAction } from '../actions';
+import { registerSaleAction } from './venta-actions';
 
 const copy = siteContent.adminReservations;
+const saleCopy = siteContent.adminSales;
 
 export const metadata: Metadata = { title: copy.detailTitle };
 
@@ -42,6 +45,8 @@ export default async function AdminReservationDetailPage({
   const { cliente, vehiculo } = reservation;
   const canNegotiate = checkTransition(reservation.estado, 'EN_NEGOCIACION').ok;
   const canCancel = checkTransition(reservation.estado, 'CANCELADA').ok;
+  // Se puede registrar la venta desde una reserva activa (pendiente o en negociación).
+  const canSell = checkTransition(reservation.estado, 'COMPLETADA', { viaSale: true }).ok;
   const contactUrl = buildStaffContactUrl(cliente.telefono, {
     nombre: cliente.nombre,
     codigo: reservation.codigo,
@@ -156,6 +161,21 @@ export default async function AdminReservationDetailPage({
           cancelAction={cancelReservationAction.bind(null, reservation.codigo)}
         />
       </section>
+
+      {canSell && (
+        <section
+          aria-labelledby="sec-venta"
+          className="bg-surface-container-lowest border-outline-variant/30 flex flex-col gap-3 rounded-2xl border p-4"
+        >
+          <h2 id="sec-venta" className="font-headline-sm text-lg font-bold">
+            {saleCopy.form.heading}
+          </h2>
+          <SaleForm
+            action={registerSaleAction.bind(null, reservation.codigo)}
+            defaultPrice={vehiculo.precio.toFixed(2)}
+          />
+        </section>
+      )}
     </div>
   );
 }

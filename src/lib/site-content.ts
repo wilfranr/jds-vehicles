@@ -637,6 +637,70 @@ export const siteContent = {
     emptyWhatsAppMessage:
       'Hola JDS Vehículos, me gustaría saber qué próximos vehículos ingresarán al inventario.',
   },
+  // Registro y listado de ventas (/admin/reservas/[codigo], /admin/ventas)
+  adminSales: {
+    title: 'Ventas',
+    detailTitle: 'Detalle de la venta',
+    listLabel: 'Listado de ventas',
+    backToList: 'Volver a ventas',
+    empty: 'No hay ventas en el periodo seleccionado.',
+    columns: {
+      receipt: 'Recibo',
+      date: 'Fecha',
+      vehicle: 'Vehículo',
+      buyer: 'Comprador',
+      seller: 'Vendedor',
+      price: 'Precio final',
+      method: 'Método de pago',
+    },
+    filters: {
+      from: 'Desde',
+      to: 'Hasta',
+      apply: 'Filtrar',
+      clear: 'Limpiar',
+      invalidRange: 'El rango de fechas no es válido: se muestran todas las ventas.',
+    },
+    total: 'Total del periodo',
+    count: 'Ventas',
+    previousPage: 'Anterior',
+    nextPage: 'Siguiente',
+    pageOf: 'Página {page} de {total}',
+    view: 'Ver',
+    methodLabels: {
+      TRANSFERENCIA: 'Transferencia',
+      EFECTIVO: 'Efectivo',
+      CREDITO: 'Crédito',
+      MIXTO: 'Mixto',
+    },
+    notes: 'Observaciones',
+    sellerMissing: 'Sin vendedor registrado',
+    readOnly: 'Las ventas no se editan ni se eliminan desde el panel.',
+    form: {
+      heading: 'Registrar venta',
+      intro:
+        'El comprador es la persona de la reserva y el vendedor es tu usuario. Al registrar, la reserva queda completada y el vehículo sale del catálogo.',
+      price: 'Precio final pactado (COP)',
+      priceHint: 'Solo números; decimales con punto, sin separadores de miles.',
+      method: 'Método de pago',
+      notes: 'Observaciones (opcional)',
+      notesHint: 'Texto plano, hasta 1000 caracteres.',
+      submit: 'Registrar venta',
+      submitting: 'Registrando…',
+      confirm: 'Confirmo que los datos de la venta son correctos.',
+    },
+    errors: {
+      price: 'Ingresa un precio mayor que cero (solo números, hasta dos decimales con punto).',
+      method: 'Selecciona un método de pago válido.',
+      notes: 'Las observaciones admiten hasta 1000 caracteres de texto plano.',
+      confirm: 'Marca la casilla para confirmar el registro.',
+      invalidState:
+        'Esta reserva ya no admite el registro de una venta (otra persona la modificó antes). Actualiza la página para ver su estado.',
+      vehicleInvalid:
+        'El vehículo ya no está reservado, así que no se puede registrar la venta. Actualiza la página.',
+      notFound: 'No se encontró la reserva.',
+      generic: 'No fue posible registrar la venta. Inténtalo de nuevo.',
+    },
+  },
   // Contenido de /como-funciona
   comoFunciona: {
     title: 'Cómo Funciona',

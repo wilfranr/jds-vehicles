@@ -22,3 +22,13 @@ export function formatDateTime(date: Date): string {
     timeZone: 'America/Bogota',
   }).format(date);
 }
+
+/**
+ * Muestra un decimal exacto en texto (`"115000000.50"`) como pesos sin pasar por coma flotante:
+ * `$ 115.000.000,50`; los centavos en cero se omiten (`$ 115.000.000`).
+ */
+export function formatExactCOP(amount: string): string {
+  const [whole = '0', decimals = '00'] = amount.split('.');
+  const grouped = whole.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return `$ ${grouped}${/^0*$/.test(decimals) ? '' : `,${decimals}`}`;
+}
