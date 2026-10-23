@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { E2E_EMAIL_DOMAIN, E2E_VEHICLE_COLOR_PREFIX } from './test-data';
+import { E2E_BRAND_PREFIX, E2E_EMAIL_DOMAIN, E2E_VEHICLE_COLOR_PREFIX } from './test-data';
 
 /** Borra los datos temporales de las pruebas de reservas (usuarios, vehículos y sus reservas). */
 async function sweepTemporaryData(prisma: PrismaClient) {
@@ -18,6 +18,16 @@ async function sweepTemporaryData(prisma: PrismaClient) {
   });
   await prisma.vehiculo.deleteMany({ where: { id: { in: vehicleIds } } });
   await prisma.user.deleteMany({ where: { id: { in: userIds } } });
+  // Marcas y modelos de las pruebas del panel (los vehículos que los usan ya se borraron arriba).
+  await prisma.modelo.deleteMany({
+    where: {
+      OR: [
+        { nombre: { startsWith: E2E_BRAND_PREFIX } },
+        { marca: { nombre: { startsWith: E2E_BRAND_PREFIX } } },
+      ],
+    },
+  });
+  await prisma.marca.deleteMany({ where: { nombre: { startsWith: E2E_BRAND_PREFIX } } });
 }
 
 /**

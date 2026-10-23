@@ -114,11 +114,14 @@ Adicionalmente, se cuenta con hooks de Git configurados con **Husky** y **lint-s
 
 `/admin` es el panel del concesionario (roles `ADMIN` y `ASESOR`). Armazón propio (no usa el header público), `noindex`, sin scroll horizontal a 360 px. Resumen con contadores reales de la BD: vehículos por disponibilidad, reservas activas y por vencer en 24 h, ventas del mes (calendario de Bogotá) y, solo para `ADMIN`, usuarios activos.
 
-| Sección                     | Ruta                                                   | Acceso                                                       |
-| :-------------------------- | :----------------------------------------------------- | :----------------------------------------------------------- |
-| Resumen                     | `/admin`                                               | `ADMIN`, `ASESOR`                                            |
-| Reservas, Ventas, Vehículos | `/admin/reservas`, `/admin/ventas`, `/admin/vehiculos` | `ADMIN`, `ASESOR` (marcadores hasta sus issues de la Fase 4) |
-| Usuarios, Configuración     | `/admin/usuarios`, `/admin/configuracion`              | solo `ADMIN` (marcadores hasta sus issues)                   |
+| Sección                 | Ruta                                                                                      | Acceso                                                       |
+| :---------------------- | :---------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
+| Resumen                 | `/admin`                                                                                  | `ADMIN`, `ASESOR`                                            |
+| Vehículos               | `/admin/vehiculos` (listado con filtros), `/nuevo`, `/[id]`, `/marcas` (marcas y modelos) | `ADMIN`, `ASESOR`                                            |
+| Reservas, Ventas        | `/admin/reservas`, `/admin/ventas`                                                        | `ADMIN`, `ASESOR` (marcadores hasta sus issues de la Fase 4) |
+| Usuarios, Configuración | `/admin/usuarios`, `/admin/configuracion`                                                 | solo `ADMIN` (marcadores hasta sus issues)                   |
+
+**Vehículos (F4-03):** un único esquema Zod (`src/lib/validation/vehicle.ts`) para crear y editar: placa obligatoria y normalizada para seminuevos, sin placa y 0 km para nuevos, precio decimal exacto, y la placa debe ser única entre vehículos no vendidos. La disponibilidad solo se cambia a mano entre `DISPONIBLE` y `PROXIMAMENTE`; con una reserva activa solo se editan precio y descripción y no se puede ocultar; un vehículo vendido es de solo lectura. Marcas y modelos se crean, renombran y desactivan (no se eliminan). Cada cambio invalida la caché del catálogo y escribe un evento `admin`.
 
 Decisión del demo (confirmar antes de producción): `ASESOR` gestiona reservas, ventas e inventario; solo `ADMIN` gestiona usuarios y la configuración.
 
