@@ -129,6 +129,8 @@ Decisión del demo (confirmar antes de producción): `ASESOR` gestiona reservas,
 - Cada cambio relevante escribe un evento con `logAdminEvent` (`src/server/admin/audit.ts`): una línea JSON del canal `admin` con quién, qué y el id afectado, sin datos personales ni secretos.
 - Los mensajes nunca revelan si existe un registro ajeno.
 
+**Configuración (F4-07, solo `ADMIN`):** `/admin/configuracion` edita únicamente las claves de la lista blanca `whatsapp_numero` e `instagram_url` (`src/lib/validation/dealer-config.ts`); no se pueden crear ni modificar otras. WhatsApp se normaliza a `57XXXXXXXXXX` (misma función que el registro) e Instagram debe ser `https` de `instagram.com` o `www.instagram.com` (sin usuario, puerto ni dominios parecidos). El formulario muestra una vista previa del enlace y exige confirmar (el servidor también lo exige). Al guardar se invalida la etiqueta `dealer-config` (`updateTag`), por lo que el botón flotante, el header, el pie y los enlaces de reserva usan el nuevo valor sin reiniciar; el evento `config_changed` registra el valor anterior y el nuevo (datos del negocio, no personales).
+
 ## Reservas
 
 Flujo: en la ficha de un vehículo `DISPONIBLE`, un usuario con sesión pulsa «Reservar este vehículo» (sin sesión, el botón lleva a `/login?next=…` y vuelve a la ficha; la reserva siempre exige un clic). La acción crea la reserva en una transacción (solo una persona gana si dos reservan a la vez), deja el vehículo `RESERVADO` y lleva a `/mi-cuenta/reservas/<codigo>?nueva=1`, donde se muestra el código `RES-AAAA-XXXX` y el botón de WhatsApp con un mensaje que lleva código, vehículo y nombre (nunca placa ni documento). Las reservas del usuario están en `/mi-cuenta/reservas`. El cliente no cancela: esa acción es del personal (Fase 4).
