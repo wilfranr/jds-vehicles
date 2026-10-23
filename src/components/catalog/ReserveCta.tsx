@@ -5,6 +5,7 @@ import { buildWhatsAppUrl } from '@/lib/whatsapp';
 import { siteContent } from '@/lib/site-content';
 import { buildLoginUrl } from '@/server/auth/next-path';
 import { Disponibilidad } from '@prisma/client';
+import { ReserveForm } from './ReserveForm';
 
 interface ReserveCtaProps {
   vehicleId: number;
@@ -19,8 +20,8 @@ interface ReserveCtaProps {
 
 /**
  * Componente que aísla la decisión de llamada a la acción para la reserva:
- * - En Fase 1 (actual): los botones dirigen a WhatsApp con mensaje contextual prellenado.
- * - En Fase 3: el botón DISPONIBLE mutará a la creación formal de reserva con Auth.js (Fase 2).
+ * - DISPONIBLE con sesión: formulario «Reservar este vehículo» (crea la reserva y lleva a su confirmación).
+ * - DISPONIBLE sin sesión: «Inicia sesión para reservar». RESERVADO y PROXIMAMENTE: consultas por WhatsApp.
  */
 export function ReserveCta({
   vehicleId,
@@ -119,8 +120,7 @@ export function ReserveCta({
 
   // DISPONIBLE
   // Sin sesión: el botón principal lleva a iniciar sesión y volver aquí.
-  // TODO(F3): con sesión, cuando exista el flujo de reserva real, el botón principal será la Server Action
-  // de reserva. Mientras tanto se mantiene la consulta por WhatsApp (no se muestra un botón "Reservar" sin efecto).
+  // Con sesión el botón principal es el formulario de reserva (Server Action); la reserva siempre exige un clic.
   const consultMessage = `Hola JDS Vehículos, estoy interesado en reservar el vehículo ${vehicleLabel}. ¿Cómo podemos coordinar?`;
   const whatsappUrl = buildWhatsAppUrl(whatsappNumber, consultMessage);
 
@@ -128,14 +128,7 @@ export function ReserveCta({
     <div className="flex flex-col gap-2.5">
       {/* Botón principal de Reserva / Consulta */}
       {isAuthenticated ? (
-        <a
-          href={whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-secondary text-on-secondary font-label-lg hover:bg-on-secondary-fixed-variant focus-visible:ring-secondary flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-base font-bold shadow-md transition-all focus-visible:ring-2 focus-visible:outline-none active:scale-[0.99]"
-        >
-          <span>{siteContent.vehicleDetail.reserveAvailableCta}</span>
-        </a>
+        <ReserveForm vehicleId={vehicleId} />
       ) : (
         <Link
           href={buildLoginUrl(`/vehiculos/${vehicleId}`)}

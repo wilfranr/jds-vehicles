@@ -1,6 +1,6 @@
 # F3-02: Reservar desde el detalle y abrir WhatsApp
 
-- **Estado:** TODO
+- **Estado:** REVIEW
 - **Fase:** 3
 - **Depende de:** F3-01
 - **Prioridad:** Alta
@@ -27,11 +27,11 @@ Listado de reservas y página de detalle (F3-03), cancelación por el usuario (l
 
 ## Criterios de aceptación
 
-- [ ] Con el cliente demo, reservar el Corolla crea la fila, deja el vehículo `RESERVADO` y lleva a la página de confirmación con el código `RES-AAAA-XXXX`; el catálogo ya lo muestra como reservado.
-- [ ] Dos navegadores reservando el mismo auto a la vez: uno confirma y el otro ve el mensaje de "ya reservado" (sin error 500).
-- [ ] El enlace de WhatsApp contiene el código, la marca/modelo y el nombre; no contiene la placa ni el documento.
-- [ ] Funciona sin JavaScript. Manipular `userId`/`vehicleId` en el cuerpo no permite reservar para otro usuario ni un vehículo no disponible o vendido.
-- [ ] `pnpm check` y `pnpm build` pasan; CI en verde.
+- [x] Con el cliente demo, reservar el Corolla crea la fila, deja el vehículo `RESERVADO` y lleva a la página de confirmación con el código `RES-AAAA-XXXX`; el catálogo ya lo muestra como reservado.
+- [x] Dos navegadores reservando el mismo auto a la vez: uno confirma y el otro ve el mensaje de "ya reservado" (sin error 500).
+- [x] El enlace de WhatsApp contiene el código, la marca/modelo y el nombre; no contiene la placa ni el documento.
+- [x] Funciona sin JavaScript. Manipular `userId`/`vehicleId` en el cuerpo no permite reservar para otro usuario ni un vehículo no disponible o vendido.
+- [x] `pnpm check` y `pnpm build` pasan en local; CI: ver el PR.
 
 ## Verificación
 
@@ -40,3 +40,29 @@ Listado de reservas y página de detalle (F3-03), cancelación por el usuario (l
 ## Recordatorio de proceso
 
 Rama `issue/F3-02-reservar-whatsapp` + PR; al terminar, estado `REVIEW`. **No fusionar ni marcar `DONE`.**
+
+## Notas de entrega
+
+**Rama apilada:** esta rama parte de `issue/F3-01-servicio-reservas` (PR #29, aún sin fusionar) y el PR apunta a esa rama; al fusionar F3-01, GitHub lo reapunta a `main`. Para F3-01 añadí en este tramo: `already_reserved_by_you` devuelve ahora el `codigoReserva` existente (hace falta para llevar al usuario a su reserva).
+
+**Qué se hizo**
+
+- `src/app/(public)/vehiculos/[id]/actions.ts`: `reserveVehicleAction`; la lógica es `submitReservation` (`src/server/reservations/submit-reservation.ts`, inyectable). Orden probado: sesión vigente (`getFreshUser`) → validación de `vehicleId` (regla estricta ya extraída a `src/lib/vehicle-id.ts`; la página la reexporta) → límite → servicio. Del formulario solo se lee `vehicleId`; el usuario sale de la sesión.
+- Límite de reservas: 10 intentos por hora y por usuario (`checkReserveAllowed` / `recordReserveAttempt` en `limiters.ts`), con el mensaje genérico `auth.tooManyAttempts`.
+- Resultados: `created` → guarda `whatsappLink` y redirige a `/mi-cuenta/reservas/<codigo>?nueva=1`; `already_reserved_by_you` → a esa reserva (sin `?nueva`); `limit_reached` → mensaje con enlace «Ver mis reservas»; `inactive_user` o usuario desactivado → `signOut` y `/login` (como F2-05); `not_available` → refresca la caché y la ficha pasa a «Reservado». Si falla guardar el enlace, la reserva confirmada igualmente redirige (se reconstruye en F3-03).
+- `src/lib/whatsapp.ts`: `buildReservationMessage` / `buildReservationWhatsAppUrl` (plantilla de la documentación en `site-content.ts` → `reservations.whatsappMessage`; valores en una línea y acotados a 100 caracteres; no se interpretan marcadores dentro de los valores). Nunca incluye placa ni documento.
+- `ReserveCta` (DISPONIBLE con sesión): `ReserveForm` (cliente, `useActionState`), botón ámbar «Reservar este vehículo» con estado «Reservando…» y errores con `role="alert"`. El formulario solo envía `vehicleId`. Sin sesión sigue «Inicia sesión para reservar» y la reserva siempre exige un clic. El botón secundario de WhatsApp se mantiene.
+- Caché: la acción pasa `invalidateCatalogFromAction` (`updateTag`).
+
+**Tests:** `submit-reservation.test.ts` (orden, `userId` ignorado, 9 formatos de `vehicleId` inválidos, límite, cada resultado, fallo al guardar el enlace), mensaje de WhatsApp (plantilla, saneamiento, sin marcadores anidados, URL), límite de reservas y `VehicleDetail.test` actualizado (el formulario solo contiene `vehicleId`). Total 256 pruebas en verde.
+
+**Verificado a mano** (build de producción, BD sembrada, dos navegadores con IP distinta): con cliente demo y un segundo usuario temporal pulsando «Reservar» a la vez sobre el Corolla, exactamente uno redirige a `/mi-cuenta/reservas/RES-2026-XXXX?nueva=1` y el otro permanece en la ficha sin error 500 (ver punto 1 de revisión); una sola fila, estado `PENDIENTE_CONTACTO`, `fecha_expiracion` a +48 h, vehículo `RESERVADO`; el enlace guardado contiene código, `Toyota Corolla` y nombre, sin placa ni documento; una visita anónima a `/vehiculos/1` ya muestra «Este vehículo se encuentra reservado» sin esperar los 60 s. Datos del seed restaurados (0 reservas, vehículo 1 `DISPONIBLE`, usuario temporal borrado).
+
+**Para revisar**
+
+1. **El perdedor de la carrera ve el panel «Este vehículo se encuentra reservado», no el texto «acaba de ser reservado por otra persona»:** al refrescar la caché la ficha re-renderiza con el vehículo ya `RESERVADO`, así que el formulario (y su mensaje) desaparece. Cumple el fondo (aviso claro, sin 500) y evita mostrar un botón obsoleto; si se prefiere ver el texto explícito, hay que omitir `refreshCatalog` en ese caso (la ficha quedaría desactualizada hasta 60 s). El mensaje `notAvailable` sí se usa si la caché no se refresca.
+2. **`/mi-cuenta/reservas/<codigo>` aún no existe en esta rama** (lo crea F3-03): tras reservar, el destino da 404 hasta fusionar F3-03. La reserva y el enlace sí quedan guardados.
+3. **Sin JavaScript** la ficha `/vehiculos/[id]` no se muestra (contenido en streaming bajo `loading.tsx`, limitación conocida desde F1/F2); el formulario en sí es un `<form action>` estándar de React y funciona sin JS cuando la página se entrega completa.
+4. `reserveAvailableCta` («Consultar disponibilidad por WhatsApp») queda sin uso en componentes; no lo borré para no ampliar el alcance.
+
+**Cómo verificar**: `pnpm check && pnpm build`; con `pnpm start` (`AUTH_TRUST_HOST=true`), iniciar sesión con `carlos.gomez@example.com` / `Cliente123*`, reservar `/vehiculos/1` y restaurar con `DELETE FROM reservas; UPDATE vehiculos SET disponibilidad='DISPONIBLE' WHERE id=1;`.

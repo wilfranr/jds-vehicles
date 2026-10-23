@@ -22,3 +22,15 @@ describe('limitador de cambio de contraseña', () => {
     expect(checkPasswordChangeAllowed(103).allowed).toBe(true);
   });
 });
+
+describe('limitador de reservas', () => {
+  it('permite 10 intentos por hora por usuario y no afecta a otros', async () => {
+    const { checkReserveAllowed, recordReserveAttempt } = await import('./limiters');
+    for (let i = 0; i < 10; i++) {
+      expect(checkReserveAllowed(201).allowed).toBe(true);
+      recordReserveAttempt(201);
+    }
+    expect(checkReserveAllowed(201).allowed).toBe(false);
+    expect(checkReserveAllowed(202).allowed).toBe(true);
+  });
+});
