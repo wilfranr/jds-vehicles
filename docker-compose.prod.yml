@@ -1,0 +1,145 @@
+# Producción (F6-02). Todos los nombres llevan el prefijo `jds_`: el servidor comparte máquina con otra aplicación.
+# Uso: docker compose --env-file /ruta/segura/.env.prod -f docker-compose.prod.yml <orden>
+# El archivo de entorno real vive SOLO en el servidor (chmod 600, fuera del repositorio): ver .env.prod.example.
+name: jds
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: '10m'
+    max-file: '5'
+
+services:
+  db:
+    image: mysql:8.0.46
+    container_name: jds_db
+    restart: unless-stopped
+    init: true
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+      - --innodb-buffer-pool-size=256M
+      - --max-connections=60
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?define MYSQL_ROOT_PASSWORD en el archivo de entorno}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-jds_vehiculos}
+      MYSQL_USER: ${MYSQL_USER:-jds}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?define MYSQL_PASSWORD en el archivo de entorno}
+    # SIN puertos publicados: solo la red interna de Docker llega a la base de datos.
+    volumes:
+      - jds_mysql_data:/var/lib/mysql
+    networks: [internal]
+    mem_limit: 1g
+    mem_reservation: 512m
+    healthcheck:
+      # MYSQL_PWD evita la contraseña en la línea de comandos del proceso.
+      test:
+        [
+          'CMD-SHELL',
+          'MYSQL_PWD="$$MYSQL_ROOT_PASSWORD" mysqladmin ping -h 127.0.0.1 -u root --silent',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    logging: *logging
+
+  # Servicio de un solo uso: aplica las migraciones pendientes (`prisma migrate deploy`) y termina.
+  # Solo arranca con la BD sana (`depends_on`). Nunca `migrate dev` ni `db push`.
+  migrate:
+    build:
+      context: .
+      target: tools
+    image: jds_tools:${JDS_VERSION:-local}
+    container_name: jds_migrate
+    restart: 'no'
+    init: true
+    command: ['pnpm', 'prisma', 'migrate', 'deploy']
+    env_file: ${JDS_ENV_FILE:-.env.prod}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [internal]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 512m
+    logging: *logging
+
+  app:
+    build:
+      context: .
+      target: runner
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?define NEXT_PUBLIC_SITE_URL en el archivo de entorno}
+        NEXT_PUBLIC_WHATSAPP_NUMBER: ${NEXT_PUBLIC_WHATSAPP_NUMBER:-}
+        GIT_COMMIT: ${GIT_COMMIT:-desconocido}
+    image: jds_app:${JDS_VERSION:-local}
+    container_name: jds_app
+    restart: unless-stopped
+    init: true
+    env_file: ${JDS_ENV_FILE:-.env.prod}
+    environment:
+      NODE_OPTIONS: --max-old-space-size=512
+    # SIN puertos publicados: la entrada pública es el proxy (F6-03). Un solo proceso de Node (limitadores en memoria).
+    expose: ['3000']
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    volumes:
+      - jds_uploads:/data/uploads
+    networks: [internal]
+    # Sistema de archivos de solo lectura: solo se escribe en las fotos, /tmp y la caché de Next.
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/.next/cache:uid=1000,gid=1000,size=256m
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 768m
+    mem_reservation: 384m
+    logging: *logging
+
+  # Herramientas de operación (no se levanta con `up`): primer administrador, respaldos y restauración.
+  #   docker compose ... run --rm tools pnpm admin:crear
+  #   docker compose ... run --rm tools bash scripts/backup.sh
+  tools:
+    build:
+      context: .
+      target: tools
+    image: jds_tools:${JDS_VERSION:-local}
+    container_name: jds_tools
+    profiles: [tools]
+    init: true
+    env_file: ${JDS_ENV_FILE:-.env.prod}
+    environment:
+      # Red interna de Docker: el certificado autofirmado de MySQL no se verifica con el cliente MariaDB.
+      DB_CLIENT_SSL: 'off'
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - jds_uploads:/data/uploads
+      - jds_backups:/backups
+    networks: [internal]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 512m
+    logging: *logging
+
+networks:
+  internal:
+    name: jds_internal
+    # Red de usuario sin salida publicada: el acceso externo lo da únicamente el proxy (F6-03).
+
+volumes:
+  jds_mysql_data:
+    name: jds_mysql_data
+  jds_uploads:
+    name: jds_uploads
+  jds_backups:
+    name: jds_backups

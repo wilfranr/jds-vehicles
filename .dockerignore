@@ -1,0 +1,27 @@
+# Nunca entran en la imagen: secretos, historial, dependencias locales, datos y artefactos de pruebas.
+.env
+.env.*
+!.env.example
+!.env.prod.example
+.git
+.gitignore
+.github
+.husky
+node_modules
+.next
+out
+build
+dist
+coverage
+test-results
+playwright-report
+.e2e-uploads
+uploads
+backups
+*.log
+*.tsbuildinfo
+docs
+ISSUES
+Dockerfile
+docker-compose*.yml
+.dockerignore

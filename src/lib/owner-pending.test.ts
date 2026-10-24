@@ -8,7 +8,15 @@ import { describe, expect, it } from 'vitest';
 const root = path.resolve(__dirname, '../..');
 const MARKER = 'TODO(owner)';
 const SCAN = ['src', 'prisma', 'scripts', 'e2e', '.github'];
-const ROOT_FILES = ['README.md', '.env.example', 'next.config.ts', 'package.json'];
+const ROOT_FILES = [
+  'README.md',
+  '.env.example',
+  '.env.prod.example',
+  'Dockerfile',
+  'docker-compose.prod.yml',
+  'next.config.ts',
+  'package.json',
+];
 const SKIP_DIRS = new Set(['node_modules', '.next', 'migrations']);
 // Usan el marcador como dato, no como pendiente: las pruebas (fixtures) y la lógica que lo detecta.
 const EXEMPT = new Set([path.join('src', 'lib', 'legal.ts')]);
