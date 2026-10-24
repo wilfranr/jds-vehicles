@@ -133,7 +133,7 @@ Datos del propietario: servidor propio en Oracle Cloud con Ubuntu/Debian y Docke
 | [F6-02](F6-02-imagen-produccion.md)       | Imagen de producción y Docker Compose       | Agente               | F5-03        | DONE   |
 | [F6-03](F6-03-proxy-https-red.md)         | Proxy inverso, HTTPS y red                  | Agente               | F5-01, F6-02 | DONE   |
 | [F6-04](F6-04-script-despliegue.md)       | Script de despliegue, versiones y reversión | Agente               | F6-02, F6-03 | DONE   |
-| [F6-05](F6-05-puesta-en-marcha.md)        | Puesta en marcha en el servidor             | Orquestador (SSH)    | F6-01, F6-04 | TODO   |
+| [F6-05](F6-05-puesta-en-marcha.md)        | Puesta en marcha en el servidor             | Orquestador (SSH)    | F6-01, F6-04 | DONE   |
 | [F6-06](F6-06-verificacion-produccion.md) | Verificación en producción y runbook        | Orquestador + agente | F6-05        | TODO   |
 
 El agente desarrollador **no** recibe acceso al servidor: prepara scripts y los prueba en local con Docker.
