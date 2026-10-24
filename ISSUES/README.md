@@ -129,7 +129,7 @@ Datos del propietario: servidor propio en Oracle Cloud con Ubuntu/Debian y Docke
 
 | ID                                        | Título                                      | Responsable          | Depende de   | Estado |
 | :---------------------------------------- | :------------------------------------------ | :------------------- | :----------- | :----- |
-| [F6-01](F6-01-reconocimiento-servidor.md) | Reconocimiento del servidor (solo lectura)  | Orquestador (SSH)    | —            | TODO   |
+| [F6-01](F6-01-reconocimiento-servidor.md) | Reconocimiento del servidor (solo lectura)  | Orquestador (SSH)    | —            | DONE   |
 | [F6-02](F6-02-imagen-produccion.md)       | Imagen de producción y Docker Compose       | Agente               | F5-03        | TODO   |
 | [F6-03](F6-03-proxy-https-red.md)         | Proxy inverso, HTTPS y red                  | Agente               | F5-01, F6-02 | TODO   |
 | [F6-04](F6-04-script-despliegue.md)       | Script de despliegue, versiones y reversión | Agente               | F6-02, F6-03 | TODO   |

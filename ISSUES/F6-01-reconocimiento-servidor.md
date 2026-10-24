@@ -1,6 +1,6 @@
 # F6-01: Reconocimiento del servidor Oracle (solo lectura)
 
-- **Estado:** TODO
+- **Estado:** DONE
 - **Fase:** 6
 - **Responsable:** orquestador, por SSH, con autorización paso a paso del propietario (el agente desarrollador **no** accede al servidor)
 - **Depende de:** — (puede hacerse ya)
@@ -16,6 +16,14 @@ Datos conocidos (propietario): servidor propio en Oracle Cloud, Ubuntu/Debian co
 2. El orquestador lo ejecuta por SSH tras la confirmación del propietario y registra el resultado **sin datos sensibles** en `docs/DESPLIEGUE.md` (sección "Servidor"): arquitectura, versiones, puertos ocupados, recursos.
 3. Decisiones derivadas, anotadas en el mismo documento: plataforma de las imágenes (`linux/amd64` o `linux/arm64`), si hay otros servicios en el servidor (y por tanto qué puertos usar), memoria disponible para la aplicación y MySQL, y qué debe abrir el propietario en la consola de Oracle (listas de seguridad / reglas de entrada para 80 y 443).
 4. Lista de lo que el propietario debe hacer en la consola de Oracle (no se puede automatizar desde aquí).
+
+## Resultado (2026-10-23, reconocimiento de solo lectura por SSH)
+
+- Ubuntu 24.04 LTS, **arquitectura ARM (aarch64)**, 4 CPU, ~23 GB de RAM, ~32 GB de disco libres. Docker 29.1 y Compose 2.40. El usuario de despliegue está en los grupos `docker` y `sudo` (sudo sin contraseña).
+- **El servidor ya aloja otra aplicación** (otro proyecto del propietario: contenedores propios y MySQL en `127.0.0.1:3306`) servida por **nginx del host en el puerto 80** (raíz). Puertos ocupados: 22, 80, 111, 1025, 3306 (solo local), 8000, 8025, 8080 (solo local). **El 443 está libre.** No hay `ufw`; `iptables` acepta la entrada.
+- La lista de seguridad de Oracle solo permitía 22 y 80; el propietario añadió **443/TCP** (lista "443" asociada a la subred pública).
+- **Decisiones derivadas:** (1) imágenes `linux/arm64`, construidas en el propio servidor; (2) JDS convive con la otra app: **solo publica el 443**, nunca toca nginx ni los puertos 80, 3306, 8000, 8080; (3) no se instala ni se activa `ufw` (afectaría a la otra aplicación y a Docker); la protección de red es la lista de seguridad de Oracle; (4) la BD de JDS vive en una red interna de Docker, sin puerto publicado; nombres de contenedores, red y volúmenes con prefijo `jds_` para no chocar con los existentes.
+- Nada de esto incluye IPs, llaves ni configuraciones de la otra app.
 
 ## Criterios de aceptación
 
