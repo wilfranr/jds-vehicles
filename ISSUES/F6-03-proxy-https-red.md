@@ -1,6 +1,6 @@
 # F6-03: Proxy inverso, HTTPS y red
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 6
 - **Depende de:** F5-01, F6-02
 - **Prioridad:** Alta

@@ -1,6 +1,6 @@
 # F6-02: Imagen de producción y Docker Compose
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 6
 - **Depende de:** F5-03 (entorno validado, salud, respaldos, primer administrador)
 - **Prioridad:** Alta
