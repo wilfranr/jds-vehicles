@@ -1,6 +1,6 @@
 # F6-03: Proxy inverso, HTTPS y red
 
-- **Estado:** TODO
+- **Estado:** REVIEW
 - **Fase:** 6
 - **Depende de:** F5-01, F6-02
 - **Prioridad:** Alta
@@ -21,12 +21,47 @@ Decisión del propietario: **por ahora se accede solo por la IP del servidor, si
 
 ## Criterios de aceptación
 
-- [ ] Iniciar sesión funciona por HTTPS con el certificado interno (la cookie se guarda).
-- [ ] Una cabecera `X-Forwarded-For` falsa enviada por el cliente no cambia la IP vista por la aplicación.
-- [ ] Sin HSTS en modo IP; con `HSTS=on` aparece.
-- [ ] `app` y `db` no son alcanzables desde fuera del compose.
-- [ ] CI en verde.
+- [x] Iniciar sesión funciona por HTTPS con el certificado interno (la cookie se guarda).
+- [x] Una cabecera `X-Forwarded-For` falsa enviada por el cliente no cambia la IP vista por la aplicación.
+- [x] Sin HSTS en modo IP; con `HSTS=on` aparece.
+- [x] `app` y `db` no son alcanzables desde fuera del compose.
+- [x] CI en verde.
 
 ## Recordatorio de proceso
 
 Rama `issue/<ID>-<slug>` **desde `main` actualizado**, sin encadenar. PR al terminar y estado `REVIEW`; **no fusionar ni marcar `DONE`**. Pruebas con BD como `*.db.test.ts`; e2e con datos propios. `pnpm check`, `pnpm build` y `pnpm test:e2e` antes de empujar. **Nunca** poner secretos, IPs privadas ni llaves en el repositorio, en logs ni en las notas de entrega. **Lee `AGENTS.md` y la documentación local de Next.**
+
+## Notas de entrega
+
+Guía en `docs/despliegue/PROXY.md`. **Dependencia:** `docker-compose.proxy.yml` se usa _junto a_ `docker-compose.prod.yml` de F6-02 (servicio `app` sano); este PR sale de `main` sin encadenar y solo añade el proxy, por lo que **debe fusionarse después de F6-02 (#74)**. Las pruebas se hicieron en local combinando ambas ramas (los archivos de F6-02 no forman parte de este PR). Sin secretos ni IPs reales en el repositorio.
+
+**Qué se hizo**
+
+1. Servicio `proxy` (`caddy:2.10.2`, fijada) en un _overlay_ `docker-compose.proxy.yml`: **publica solo el 443** (`HTTPS_PORT` / `HTTPS_BIND` configurables para pruebas), no el 80 ni el 2019; solo lectura, `cap_drop: ALL` + `NET_BIND_SERVICE`, 128 MB, logs rotados. `app` y `db` siguen sin puertos.
+2. `deploy/proxy/Caddyfile` + fragmentos: `auto_https disable_redirects`, API de administración desactivada, solo HTTP/1.1 y HTTP/2, **sin escuchar el 80** (comprobado dentro del contenedor: solo `:::443`), `tls internal` (modo IP) o ACME solo por TLS-ALPN-01 (modo dominio, `SITE_ADDRESS`/`TLS_MODE`), compresión `zstd`/`gzip`, límite de cuerpo de 1 MB salvo `POST /admin/vehiculos/<id>/fotos` (55 MB; la app admite 51).
+3. IP real: Caddy sustituye las `X-Forwarded-*` del cliente; la app usa `TRUST_PROXY=true`/`TRUST_PROXY_HOPS=1`.
+4. **HSTS:** la app lo emite si ve `X-Forwarded-Proto: https`; el proxy lo **elimina** con `HSTS=off` (por defecto; `header_down -Strict-Transport-Security`) y lo fija con `HSTS=on`.
+5. Pruebas: `src/server/deploy-proxy.test.ts` (13: solo el 443, sin el 80, solo lectura, HSTS off por defecto, sin `trusted_proxies`, límites, ALPN, sin IPs en la plantilla), `scripts/docker/proxy-check.sh` (comprobación externa reutilizable en el servidor) y un job de CI **«Proxy config (caddy validate)»** para IP/dominio.
+6. Firewall: no se instala `ufw`; documentado (lista de seguridad de Oracle ya abierta, cualquier firewall del host solo con confirmación explícita).
+
+**Hallazgo:** al entrar por IP el TLS fallaba con _«tlsv1 alert internal error»_: los navegadores no envían SNI para una IP y, tras el reenvío de puertos de Docker, la dirección local de la conexión es la del contenedor, así que Caddy no encontraba certificado. Se resolvió con `default_sni {$SITE_ADDRESS}` (cubierto por test).
+
+**Evidencia (local, `https://127.0.0.1:8443`, stack de F6-02 + proxy)**
+
+- Rutas: `/` 200 (HTTP/2), `/login` 200, `/admin` 307 (a login), `/media/no-existe.webp` 404, `/api/health` 200. HTTP plano en el puerto HTTPS → 400. `proxy-check.sh`: «PROXY OK» (15 comprobaciones).
+- Cabeceras: CSP sin `unsafe-eval`, COOP/CORP, `X-Frame-Options`, sin `X-Powered-By`. Estáticos con `cache-control: public, max-age=31536000, immutable` (la de la app). `content-encoding: zstd` y `gzip` según `Accept-Encoding`.
+- **HSTS:** conectando directo a la app con `X-Forwarded-Proto: https` responde `max-age=31536000; includeSubDomains`; por el proxy con `HSTS=off` → ninguna cabecera; con `HSTS=on` → `max-age=31536000; includeSubDomains`.
+- **Inicio de sesión por HTTPS** con el certificado interno: las cookies `__Secure-authjs.*` se guardan (`Secure`, `HttpOnly`, `SameSite=Lax`) y `/admin` carga con sesión.
+- **IP falsa:** 7 inicios de sesión fallidos, cada uno con `X-Forwarded-For` y `X-Real-IP` distintos y falsos: la app **bloqueó en el 6.º intento** y los eventos `login_failed`/`login_blocked` registraron siempre la IP real de la conexión (ninguna de las falsas).
+- **Subidas:** foto de 3,8 MB por el proxy → «Se subió 1 fotografía.»; POST de 56 MB a `/admin/vehiculos/<id>/fotos` → **413**; POST de 2 MB a otra ruta → **413**.
+- **Aislamiento:** `docker ps` solo muestra publicado `127.0.0.1:8443->443/tcp` (el resto son puertos «expuestos» sin publicar); `localhost:3000` no responde; `db` con `Ports={}`.
+- CA interna: `root.crt` exportable con `docker cp` y, usada como `--cacert`, la verificación TLS pasa (`ssl_verify=0`).
+- `caddy validate`: válida en modo IP+`internal`, dominio+`acme`+`HSTS=on` y dominio+`internal`.
+
+**Pruebas:** `pnpm check` (84 archivos, 788 pruebas), `pnpm build`, `pnpm test:e2e` ×2: 157/157 (el PR no toca código de la aplicación).
+
+**A revisar**
+
+- **Let's Encrypt para IP:** en enero de 2026 se anunciaron certificados de IP (vida corta); no se verificó que Caddy 2.10.2 los emita y exigen el 443 accesible desde Internet. Queda como alternativa documentada, sin depender de ella.
+- Mientras el navegador no confíe en la CA interna mostrará aviso de certificado (instrucciones para instalarla en `PROXY.md`).
+- El respaldo/arranque ordenado del proxy en el despliegue (`up` con ambos _compose_) lo cubre F6-04.

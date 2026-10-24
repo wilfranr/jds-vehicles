@@ -1,0 +1,6 @@
+# Modo dominio: certificado público de Let's Encrypt. Solo el reto TLS-ALPN-01 (por el 443): el 80 es de otra aplicación.
+tls {
+	issuer acme {
+		disable_http_challenge
+	}
+}

@@ -1,0 +1,38 @@
+# Proxy inverso de JDS Vehículos (F6-03). Única puerta de entrada: solo se publica el 443.
+# Variables (ver deploy/proxy/env.proxy.example): SITE_ADDRESS, TLS_MODE (internal|acme), HSTS (on|off).
+{
+	# El 80 pertenece a otra aplicación del servidor: ni se escucha ni se redirige.
+	auto_https disable_redirects
+	# Sin API de administración, sin instalar la CA en el sistema del contenedor, solo HTTP/1.1 y HTTP/2 (TCP).
+	admin off
+	skip_install_trust
+	servers {
+		protocols h1 h2
+	}
+	# Los navegadores no envían SNI al entrar por IP y, tras el reenvío de puertos de Docker, la dirección local de la
+	# conexión es la del contenedor: sin esto el TLS falla con «internal error». Se sirve el certificado de SITE_ADDRESS.
+	default_sni {$SITE_ADDRESS}
+}
+
+https://{$SITE_ADDRESS} {
+	# internal → certificado de la CA interna de Caddy (acceso por IP); acme → certificado público (con dominio).
+	import /etc/caddy/tls-{$TLS_MODE:internal}.caddy
+
+	encode zstd gzip
+
+	# Límite bajo por defecto (las Server Actions de Next admiten 1 MB); solo la subida de fotos acepta ~55 MB
+	# (la aplicación admite 10 fotos de 5 MB + 1 MB de formulario = 51 MB).
+	@fotos path_regexp ^/admin/vehiculos/[0-9]+/fotos$
+	handle @fotos {
+		request_body {
+			max_size 55MB
+		}
+		import /etc/caddy/upstream.caddy
+	}
+	handle {
+		request_body {
+			max_size 1MB
+		}
+		import /etc/caddy/upstream.caddy
+	}
+}

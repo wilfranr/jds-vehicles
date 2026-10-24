@@ -251,3 +251,20 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  # F6-03: valida la configuración del proxy (Caddy) en los dos modos, sin levantar nada ni publicar puertos.
+  proxy-config:
+    name: Proxy config (caddy validate)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate Caddyfile (IP mode, domain mode)
+        run: |
+          for mode in "198.51.100.10 internal off" "www.ejemplo.test acme on" "www.ejemplo.test internal off"; do
+            read -r addr tls hsts <<<"$mode"
+            docker run --rm -e SITE_ADDRESS="$addr" -e TLS_MODE="$tls" -e HSTS="$hsts" \
+              -v "$PWD/deploy/proxy:/etc/caddy:ro" caddy:2.10.2 caddy validate --config /etc/caddy/Caddyfile
+          done
