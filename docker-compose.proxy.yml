@@ -1,0 +1,43 @@
+# Proxy HTTPS (F6-03). Se usa JUNTO a docker-compose.prod.yml:
+#   docker compose --env-file .env.prod -f docker-compose.prod.yml -f docker-compose.proxy.yml up -d
+# Es la ÚNICA puerta de entrada: publica solo el 443 (nunca el 80, que es de otra aplicación). `app` y `db` siguen sin puertos.
+services:
+  proxy:
+    image: caddy:2.10.2
+    container_name: jds_proxy
+    restart: unless-stopped
+    init: true
+    env_file: ${JDS_ENV_FILE:-.env.prod}
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:?define SITE_ADDRESS (IP o dominio) en el archivo de entorno}
+      TLS_MODE: ${TLS_MODE:-internal}
+      HSTS: ${HSTS:-off}
+    ports:
+      # HTTPS_PORT permite otro puerto del host (pruebas locales); HTTPS_BIND restringe la interfaz.
+      - '${HTTPS_BIND:-0.0.0.0}:${HTTPS_PORT:-443}:443'
+    volumes:
+      - ./deploy/proxy:/etc/caddy:ro
+      - jds_caddy_data:/data
+      - jds_caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+    networks: [internal]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt: ['no-new-privileges:true']
+    mem_limit: 128m
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '5'
+
+volumes:
+  # La CA interna y los certificados: conservarlos evita que el navegador vuelva a avisar tras cada reinicio.
+  jds_caddy_data:
+    name: jds_caddy_data
+  jds_caddy_config:
+    name: jds_caddy_config

@@ -1,0 +1,9 @@
+# Reenvío a la aplicación. Caddy NO confía en las cabeceras X-Forwarded-* que envíe el cliente: las sustituye por
+# las suyas (X-Forwarded-For = IP real de la conexión, X-Forwarded-Proto, X-Forwarded-Host). La aplicación usa
+# TRUST_PROXY=true y TRUST_PROXY_HOPS=1 (un solo proxy delante). No se activa `trusted_proxies`.
+reverse_proxy app:3000 {
+	# La aplicación emite HSTS cuando ve X-Forwarded-Proto: https; el interruptor HSTS=on|off de este proxy decide.
+	import /etc/caddy/hsts-{$HSTS:off}.caddy
+	health_uri /api/health/live
+	health_interval 15s
+}
