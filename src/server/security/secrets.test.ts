@@ -43,12 +43,15 @@ describe('secretos en el repositorio', () => {
     expect(ignored('.env.local')).toBe(true);
     expect(ignored('.env.production')).toBe(true);
     expect(ignored('.env.example')).toBe(false);
+    expect(ignored('.env.prod.example')).toBe(false);
+    expect(ignored('.env.prod')).toBe(true);
+    expect(ignored('.env.prod.local')).toBe(true);
   });
 
   it('ningún archivo .env* (salvo el de ejemplo) está versionado', () => {
     const tracked = execFileSync('git', ['ls-files'], { cwd: root, encoding: 'utf8' })
       .split('\n')
-      .filter((f) => /(^|\/)\.env/.test(f) && !f.endsWith('.env.example'));
+      .filter((f) => /(^|\/)\.env/.test(f) && !/\.env(\.prod)?\.example$/.test(f));
     expect(tracked).toEqual([]);
   });
 

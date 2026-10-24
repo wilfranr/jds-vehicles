@@ -26,6 +26,7 @@
     "db:seed": "prisma db seed",
     "db:generate": "prisma generate",
     "db:verificar": "prisma migrate diff --from-schema-datasource prisma/schema.prisma --to-schema-datamodel prisma/schema.prisma --exit-code",
+    "docker:humo": "bash scripts/docker/smoke.sh .env.prod.local",
     "rutas": "tsx scripts/generar-rutas.ts",
     "db:migrar": "prisma migrate deploy",
     "db:studio": "prisma studio",

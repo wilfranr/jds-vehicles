@@ -1,0 +1,2 @@
+# Modo IP: certificado de la CA interna de Caddy (el navegador avisará hasta instalar esa CA; ver docs/despliegue/PROXY.md).
+tls internal

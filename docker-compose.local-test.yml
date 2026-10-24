@@ -1,0 +1,6 @@
+# SOLO para pruebas locales (nunca en el servidor): publica la app en 127.0.0.1 para probarla sin el proxy.
+# docker compose --env-file .env.prod.local -f docker-compose.prod.yml -f docker-compose.local-test.yml up -d
+services:
+  app:
+    ports:
+      - '127.0.0.1:${LOCAL_APP_PORT:-3300}:3000'
