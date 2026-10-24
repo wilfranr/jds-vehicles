@@ -1,6 +1,6 @@
 # F6-04: Script de despliegue, versiones y reversión
 
-- **Estado:** REVIEW
+- **Estado:** DONE
 - **Fase:** 6
 - **Depende de:** F6-02, F6-03
 - **Prioridad:** Alta
