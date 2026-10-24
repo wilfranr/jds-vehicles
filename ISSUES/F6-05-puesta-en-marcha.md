@@ -1,6 +1,6 @@
 # F6-05: Puesta en marcha en el servidor (ejecución)
 
-- **Estado:** TODO
+- **Estado:** DONE
 - **Fase:** 6
 - **Responsable:** orquestador, por SSH, con autorización del propietario en cada paso que modifica el servidor
 - **Depende de:** F6-01, F6-04
@@ -13,6 +13,13 @@
 3. Tareas programadas en el servidor (`cron` o temporizador de systemd): respaldo diario (retención 14), expiración de reservas cada 15 minutos (`pnpm reservas:expirar` en el contenedor), limpieza de logs; reinicio automático tras reinicio de la máquina (`restart: unless-stopped` y Docker habilitado en el arranque). Actualizaciones de seguridad automáticas del sistema (`unattended-upgrades`) confirmadas con el propietario.
 4. Firewall según F6-03, **solo con confirmación explícita**.
 5. Registrar en `docs/DESPLIEGUE.md` cada cambio hecho en el servidor (fecha, qué, por qué) sin secretos.
+
+## Resultado (2026-10-24)
+
+- Servidor: carpeta `~/jds` (permisos 700) con el repositorio clonado por una llave de despliegue de **solo lectura** y `~/jds/.env.prod` (permisos 600, secretos generados en el servidor). Etiqueta `v0.1.0` desplegada con `deploy.sh` (primera construcción arm64 sin incidentes); contenedores `jds_app`, `jds_db` y `jds_proxy` con `restart: unless-stopped` y Docker habilitado en el arranque. Solo se publica el 443; la otra aplicación del servidor no se modificó y sigue respondiendo igual.
+- Roles sembrados con `prisma db seed` (sin `--demo`), primer administrador creado con `pnpm admin:crear` y datos de demostración cargados una sola vez (20 vehículos, 60 fotos con licencias abiertas —ver `docs/CREDITOS-FOTOS-DEMO.md`— y usuarios de prueba). Cambiar las contraseñas de prueba o borrarlas antes del lanzamiento.
+- `proxy-check.sh` contra el sitio desplegado: todo correcto (la comprobación «HTTP plano» da falso fallo porque la IP sirve otra aplicación en el 80).
+- **Decisiones del propietario (demo):** no se programa respaldo con cron (queda solo el respaldo automático de `deploy.sh` antes de cada migración); no se reinicia la máquina para demostrar el arranque automático; no se programa la expiración de reservas (`pnpm reservas:expirar`); sin `ufw`. Acceso solo por IP con certificado autofirmado.
 
 ## Criterios de aceptación
 

@@ -13,6 +13,10 @@
 4. **Simulacro**: rollback a la versión anterior y restauración de un respaldo en una BD temporal, ambos cronometrados.
 5. `docs/DESPLIEGUE.md` final (runbook): arquitectura, accesos, variables, tareas programadas, cómo desplegar, revertir, restaurar, rotar secretos, renovar certificados, pasar a dominio; `ISSUES/PENDIENTES-PROPIETARIO.md` actualizado con lo que sigue abierto antes del lanzamiento público (textos legales, cifras de marca, dominio, correo de recuperación).
 
+## Decisiones del propietario (2026-10-24)
+
+Al ser una demostración quedan **fuera de alcance**: el simulacro de reinicio de la máquina, la restauración de un respaldo programado y las tareas de cron. Siguen vigentes (cuando se pida): `smoke.sh`, el recorrido manual, la auditoría externa y la actualización final de `docs/DESPLIEGUE.md`.
+
 ## Criterios de aceptación
 
 - [ ] `smoke.sh` pasa contra el servidor.
