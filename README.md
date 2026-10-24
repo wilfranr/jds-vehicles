@@ -1,7 +1,5 @@
 # JDS Vehículos - elaborado por Dominique Rivera
 
-
-
 [![CI Pipeline](https://github.com/wilfranr/jds-vehicles/actions/workflows/ci.yml/badge.svg)](https://github.com/wilfranr/jds-vehicles/actions/workflows/ci.yml)
 
 Plataforma digital para concesionario de vehículos con catálogo público, filtros avanzados, cotizador/reserva y panel administrativo.

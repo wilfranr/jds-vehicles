@@ -125,7 +125,8 @@ export function SiteFooter({
         {/* Barra inferior de Copyright */}
         <div className="pt-space-md border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant font-body-sm text-body-sm gap-space-sm flex flex-col items-center justify-between border-t sm:flex-row">
           <p>
-            © {CURRENT_YEAR} {siteContent.businessName}. Todos los derechos reservados.
+            © {CURRENT_YEAR} {siteContent.businessName}. Todos los derechos reservados. Desarrollado
+            por Dominique Rivera, Sofia Bernal y Daniela Castillo para SENATIC - Colegio Vida Nueva.
           </p>
         </div>
       </div>
