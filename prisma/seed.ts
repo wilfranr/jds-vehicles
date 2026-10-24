@@ -66,8 +66,8 @@ async function main() {
   for (const config of configuraciones) {
     await prisma.configuracionConcesionario.upsert({
       where: { clave: config.clave },
+      // No se pisa el valor existente: el propietario lo cambia desde el panel y un nuevo seed no debe deshacerlo.
       update: {
-        valor: config.valor,
         descripcion: config.descripcion,
       },
       create: {

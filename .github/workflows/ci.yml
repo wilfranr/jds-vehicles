@@ -251,3 +251,36 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  # F6-02: construye la imagen de producción (sin publicarla) y ejecuta la prueba de humo con una BD de servicio
+  # (el propio compose de producción). Detecta que el Dockerfile o el compose se rompan. En x86; la imagen arm64 del
+  # servidor se construye allí (ver docs/despliegue/IMAGEN.md).
+  image:
+    name: Docker image (build + smoke)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Smoke test of the production image
+        run: |
+          # Entorno de PRUEBA, generado aquí con valores aleatorios y descartables (no son secretos reales).
+          db_pass="$(openssl rand -hex 16)"
+          {
+            echo "MYSQL_ROOT_PASSWORD=$(openssl rand -hex 16)"
+            echo "MYSQL_DATABASE=jds_vehiculos"
+            echo "MYSQL_USER=jds"
+            echo "MYSQL_PASSWORD=${db_pass}"
+            echo "DATABASE_URL=mysql://jds:${db_pass}@db:3306/jds_vehiculos"
+            echo "AUTH_SECRET=$(openssl rand -base64 36 | tr -d '\n')"
+            echo "AUTH_TRUST_HOST=true"
+            echo "TRUST_PROXY=true"
+            echo "TRUST_PROXY_HOPS=1"
+            echo "NEXT_PUBLIC_SITE_URL=http://localhost:3399"
+            echo "NEXT_PUBLIC_WHATSAPP_NUMBER=573000000000"
+            echo "UPLOADS_DIR=/data/uploads"
+            echo "LOG_LEVEL=info"
+          } > "$RUNNER_TEMP/env.prod.ci"
+          chmod 600 "$RUNNER_TEMP/env.prod.ci"
+          scripts/docker/smoke.sh "$RUNNER_TEMP/env.prod.ci"
