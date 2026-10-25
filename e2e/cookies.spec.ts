@@ -3,7 +3,7 @@ import { essentialCookies } from '../src/lib/legal-content';
 import { randomIp, sessionFor, TestData } from './helpers';
 
 // Cookies (F5-04): la aplicación solo usa cookies estrictamente necesarias; si aparece otra, esta prueba falla.
-// También: sin contenido legal, /privacidad y /terminos dan 404 y nada las enlaza. Datos propios.
+// También: /privacidad y /terminos responden 200 y el registro las enlaza. Datos propios.
 
 const data = new TestData();
 test.afterEach(async () => {
@@ -73,26 +73,21 @@ test.describe('Cookies', () => {
   });
 });
 
-test.describe('Páginas legales sin contenido del propietario', () => {
+test.describe('Páginas legales', () => {
   for (const path of ['/privacidad', '/terminos']) {
-    test(`${path} responde 404`, async ({ request }) => {
+    test(`${path} responde 200`, async ({ request }) => {
       const response = await request.get(path, { headers: { 'x-forwarded-for': randomIp() } });
-      expect(response.status()).toBe(404);
+      expect(response.status()).toBe(200);
     });
   }
 
-  test('ninguna página enlaza a ellas (pie, registro) y el sitemap no las lista', async ({
-    page,
-    request,
-  }) => {
+  test('el registro enlaza a ambas y el sitemap las lista', async ({ page, request }) => {
     await page.context().setExtraHTTPHeaders({ 'x-forwarded-for': randomIp() });
-    for (const path of ['/', '/registro', '/contacto']) {
-      await page.goto(path);
-      await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
-      await expect(page.locator('a[href="/privacidad"], a[href="/terminos"]')).toHaveCount(0);
-    }
+    await page.goto('/registro');
+    await expect(page.locator('a[href="/privacidad"]').first()).toBeVisible();
+    await expect(page.locator('a[href="/terminos"]').first()).toBeVisible();
     const sitemap = await (await request.get('/sitemap.xml')).text();
-    expect(sitemap).not.toContain('/privacidad');
-    expect(sitemap).not.toContain('/terminos');
+    expect(sitemap).toContain('/privacidad');
+    expect(sitemap).toContain('/terminos');
   });
 });

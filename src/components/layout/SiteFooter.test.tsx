@@ -7,7 +7,7 @@ const base = { whatsappNumber: '573000000000', instagramUrl: 'https://instagram.
 
 describe('SiteFooter (enlaces legales)', () => {
   it('sin contenido legal no hay enlaces a /privacidad ni /terminos ni columna legal', () => {
-    render(<SiteFooter {...base} />);
+    render(<SiteFooter {...base} legalLinks={[]} />);
     expect(screen.queryByRole('link', { name: 'Política de privacidad' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Términos del servicio' })).not.toBeInTheDocument();
     expect(screen.queryByText('Legal')).not.toBeInTheDocument();

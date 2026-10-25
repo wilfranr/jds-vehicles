@@ -335,7 +335,7 @@ export function RegisterForm({ legalLinks = [] }: { legalLinks?: LegalLink[] }) 
           <span className="text-on-surface">{copy.consentimiento}</span>
         </label>
         {legalLinks.length > 0 && (
-          <p className="text-on-surface-variant pl-7 text-xs">
+          <p className="text-on-surface-variant pl-7 text-sm">
             {siteContent.legal.consentSeeLabel}{' '}
             {legalLinks.map((link, index) => (
               <React.Fragment key={link.href}>

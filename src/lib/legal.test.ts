@@ -22,12 +22,10 @@ const only = (privacidad: LegalDocument | null, terminos: LegalDocument | null =
   ({ privacidad, terminos }) as LegalContent;
 
 describe('contenido legal entregado', () => {
-  it('mientras el propietario no lo aporte no hay documentos ni enlaces', () => {
-    expect(legalContent.privacidad).toBeNull();
-    expect(legalContent.terminos).toBeNull();
-    expect(getLegalDocument('privacidad')).toBeNull();
-    expect(getLegalDocument('terminos')).toBeNull();
-    expect(getLegalLinks()).toEqual([]);
+  it('los documentos entregados son publicables y se enlazan', () => {
+    expect(getLegalDocument('privacidad')).toBe(legalContent.privacidad);
+    expect(getLegalDocument('terminos')).toBe(legalContent.terminos);
+    expect(getLegalLinks().map((link) => link.href)).toEqual(['/privacidad', '/terminos']);
   });
 
   it('el canal de derechos está vacío hasta que el propietario lo aporte', () => {
